@@ -1,0 +1,108 @@
+:root {
+  /* === Color Palette === */
+  --color-bg: #0b0f1a; /* Dark navy background */
+  --color-surface: #151a28; /* Surface layer for cards/sections */
+  --color-primary: #1f8ef1; /* Accent blue */
+  --color-secondary: #f39c12; /* Highlight orange (e.g., ratings, buttons) */
+  --color-helper: #7f8c8d; /* Muted grey (helper text, dividers) */
+  --color-white: #ffffff;
+  --color-muted: #aab1b7;
+  --color-danger: #e74c3c;
+  --color-success: #2ecc71;
+
+  /* === Typography === */
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+
+  /* === Spacing === */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* === Border Radius === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* === Shadows for Dark Theme === */
+  --shadow-sm: 0 1px 2px rgba(255, 255, 255, 0.05);
+  --shadow-md: 0 4px 8px rgba(255, 255, 255, 0.07);
+  --shadow-lg: 0 8px 16px rgba(255, 255, 255, 0.1);
+
+  /* === Thematic Glow Shadows === */
+  --shadow-blue-glow: 0 0 8px rgba(31, 142, 241, 0.4); /* from --color-primary */
+  --shadow-orange-glow: 0 0 8px rgba(243, 156, 18, 0.4); /* from --color-secondary */
+  --shadow-danger-glow: 0 0 8px rgba(231, 76, 60, 0.4); /* danger */
+  --shadow-success-glow: 0 0 8px rgba(46, 204, 113, 0.4); /* success */
+
+  /* === Transition === */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* === Body Defaults === */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+  height: 100vh;
+  width: 100vw;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+  }
+}
+
+/* === Scrollbar Styles === */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-surface);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary); /* Accent blue */
+  border-radius: 10px;
+  border: 2px solid var(--color-surface);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-secondary); /* Highlight orange on hover */
+  border: 2px solid var(--color-surface);
+}
+
+/*  media queries for typography */
+/* @media (max-width: 1200px) {
+  :root {
+    --font-size-base: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+  }
+}
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 0.75rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.125rem;
+  }
+}
+@media (max-width: 480px) {
+  :root {
+    --font-size-base: 0.625rem;
+    --font-size-lg: 0.875rem;
+    --font-size-xl: 1rem;
+  }
+} */
