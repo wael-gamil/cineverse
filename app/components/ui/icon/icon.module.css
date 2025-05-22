@@ -1,0 +1,9 @@
+.primaryStroke {
+  stroke: var(--color-primary);
+}
+.secondaryStroke {
+  stroke: var(--color-secondary);
+}
+.whiteStroke {
+  stroke: var(--color-white);
+}
