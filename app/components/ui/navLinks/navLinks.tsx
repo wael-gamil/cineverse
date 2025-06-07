@@ -14,13 +14,15 @@ const NAV_LINKS = [
   { name: 'Reviews', path: '/reviews' },
   { name: 'Watchlist', path: '/watchlist' },
 ];
-export default function NavLinks({
-  isMobile = false,
-  closeMenu,
-}: NavLinksProps) {
+
+export default function NavLinks({ isMobile = false, closeMenu }: NavLinksProps) {
   const pathname = usePathname();
+
   return (
-    <ul className={isMobile ? styles.navbar_MobileLinks : styles.navbar_Links}>
+    <ul
+      className={styles.navLinks}
+      data-mobile={isMobile ? 'true' : 'false'}
+    >
       {NAV_LINKS.map(({ name, path }) => (
         <li key={name}>
           <Link

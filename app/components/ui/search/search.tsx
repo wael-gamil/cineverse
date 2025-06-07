@@ -45,10 +45,13 @@ export default function Search({ minimizeWhenSmall = false }: SearchProps) {
     >
       {minimizeWhenSmall ? (
         <Button
+          variant='ghost'
+          color='neutral'
+          size='small'
+          ariaLabel='Toggle Search'
           onClick={toggleSearch}
-          aria-label='Search'
-          disabled={!isActive}
-          variant='secondary'
+          borderRadius='fullRadius'
+          hide={!isActive && !isOpen}
         >
           <Icon name='search' whiteStroke />
         </Button>
