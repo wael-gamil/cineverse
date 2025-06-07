@@ -1,0 +1,196 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-md);
+}
+
+.toggleButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(26, 26, 27, 0.5);
+  backdrop-filter: blur(10px);
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: var(--font-size-md);
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255 255 255 / 0.05);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.toggleButton:hover {
+  background-color: rgba(26, 26, 27, 0.7);
+  border-color: var(--color-primary);
+}
+
+.toggleIcon {
+  font-size: 1.25rem;
+}
+
+.countBadge {
+  margin-left: auto;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  min-width: 2rem;
+  text-align: center;
+  user-select: none;
+}
+
+.filterPanel {
+  margin-top: var(--space-md);
+  background-color: rgba(26, 26, 27, 0.5);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  border: 1px solid rgba(255 255 255 / 0.05);
+  box-shadow: 0 8px 24px var(--shadow-md);
+  animation: slideDown 0.3s ease forwards;
+  z-index: 1000;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+
+  /* Scrollable for long lists */
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+.options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.options::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 3px;
+}
+
+.optionButton {
+  background-color: var(--color-bg);
+  color: var(--color-gray);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.25s ease, color 0.25s ease,
+    box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.optionButton:hover {
+  background-color: var(--color-primary-hover);
+  color: var(--color-white);
+  box-shadow: 0 0 8px var(--shadow-md);
+}
+
+.optionSelected {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 0 10px var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.clearWrapper {
+  margin-top: var(--space-md);
+  border-top: 1px solid rgba(255 255 255 / 0.1);
+  padding-top: var(--space-md);
+  text-align: right;
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  color: var(--color-gray);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.clearButton:hover {
+  color: var(--color-white);
+}
+
+/* New Show more / less button */
+.showMoreButton {
+  margin-top: var(--space-xs);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+  align-self: flex-start;
+  padding: 0;
+}
+
+.showMoreButton:hover,
+.showMoreButton:focus-visible {
+  color: var(--color-primary-hover);
+  outline: none;
+  text-decoration: underline;
+}
