@@ -1,4 +1,4 @@
-export type Movies = {
+export type Movie = {
   id: number;
   title: string;
   overview: string;
@@ -6,6 +6,7 @@ export type Movies = {
   imdbRating: number;
   genres: string[];
   posterUrl: string;
+  slug: string;
 };
 export type MovieDetails = {
   id: number;
@@ -60,4 +61,16 @@ export type Review = {
 export type Stats = {
   totalReviews: number;
   watchlistCount: number;
+};
+
+export type FilterOpt = {
+  title: string;
+  key: string;
+  options: [
+    {
+      label: string;
+      value: string;
+    }
+  ];
+  multiple: boolean;
 };
