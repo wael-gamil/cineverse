@@ -9,7 +9,7 @@ import {
   FilterOpt,
 } from '@/app/constants/types/movie';
 
-const BASE_URL = 'https://c388-156-193-112-152.ngrok-free.app/';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 const fetcher = async function fetcher(
   endpoint: string,
