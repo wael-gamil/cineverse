@@ -1,28 +1,38 @@
 :root {
   /* === Color Palette === */
-  --color-bg: #0b0f1a; /* Dark navy background */
-  --color-surface: #151a28; /* Surface layer for cards/sections */
-  --color-primary: #1f8ef1; /* Accent blue */
-  --color-secondary: #f39c12; /* Highlight orange (e.g., ratings, buttons) */
-  --color-helper: #7f8c8d; /* Muted grey (helper text, dividers) */
+  --color-bg: #0b0f1a;
+  --color-surface: #151a28;
+  --color-primary: #1f8ef1;
+  --color-secondary: #f39c12;
+  --color-helper: #7f8c8d;
   --color-white: #ffffff;
   --color-muted: #aab1b7;
   --color-danger: #e74c3c;
   --color-success: #2ecc71;
+  --color-button-blue: #2563eb; /* New blue for buttons (a richer, deeper blue) */
 
-  /* === Typography === */
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
+  /* === Typography (responsive with clamp) === */
+  --font-size-sm: clamp(
+    0.6rem,
+    0.5rem + 1vw,
+    0.875rem
+  ); /* min 9.6px, max 14px */
+  --font-size-base: clamp(
+    0.8rem,
+    0.75rem + 1vw,
+    1rem
+  ); /* min 12.8px, max 16px */
+  --font-size-lg: clamp(1rem, 1rem + 1vw, 1.25rem); /* min 16px, max 20px */
+  --font-size-xl: clamp(1.25rem, 1.2rem + 1vw, 1.5rem); /* min 20px, max 24px */
+  --font-size-xxl: clamp(2rem, 1.8rem + 1vw, 2.5rem); /* min 32px, max 40px */
 
-  /* === Spacing === */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-xxl: 48px;
+  /* === Spacing (responsive with clamp) === */
+  --space-xs: clamp(2px, 1px + 0.5vw, 4px);
+  --space-sm: clamp(4px, 2px + 1vw, 8px);
+  --space-md: clamp(8px, 4px + 1.5vw, 16px);
+  --space-lg: clamp(12px, 8px + 2vw, 24px);
+  --space-xl: clamp(16px, 12px + 2.5vw, 32px);
+  --space-xxl: clamp(24px, 20px + 3vw, 48px);
 
   /* === Border Radius === */
   --radius-sm: 4px;
@@ -30,16 +40,16 @@
   --radius-lg: 12px;
   --radius-full: 9999px;
 
-  /* === Shadows for Dark Theme === */
-  --shadow-sm: 0 1px 2px rgba(255, 255, 255, 0.05);
-  --shadow-md: 0 4px 8px rgba(255, 255, 255, 0.07);
-  --shadow-lg: 0 8px 16px rgba(255, 255, 255, 0.1);
+  /* === Shadows === */
+  --shadow-sm: 0 1px 2px rgba(255 255 255 / 0.05);
+  --shadow-md: 0 4px 8px rgba(255 255 255 / 0.07);
+  --shadow-lg: 0 8px 16px rgba(255 255 255 / 0.1);
 
   /* === Thematic Glow Shadows === */
-  --shadow-blue-glow: 0 0 8px rgba(31, 142, 241, 0.4); /* from --color-primary */
-  --shadow-orange-glow: 0 0 8px rgba(243, 156, 18, 0.4); /* from --color-secondary */
-  --shadow-danger-glow: 0 0 8px rgba(231, 76, 60, 0.4); /* danger */
-  --shadow-success-glow: 0 0 8px rgba(46, 204, 113, 0.4); /* success */
+  --shadow-blue-glow: 0 0 8px rgba(31 142 241 / 0.4);
+  --shadow-orange-glow: 0 0 8px rgba(243 156 18 / 0.4);
+  --shadow-danger-glow: 0 0 8px rgba(231 76 60 / 0.4);
+  --shadow-success-glow: 0 0 8px rgba(46 204 113 / 0.4);
 
   /* === Transition === */
   --transition-fast: 0.2s ease;
@@ -52,7 +62,6 @@ body {
   background-color: var(--color-bg);
   color: var(--color-white);
   height: 100vh;
-  width: 100vw;
 }
 
 @media (prefers-color-scheme: light) {
