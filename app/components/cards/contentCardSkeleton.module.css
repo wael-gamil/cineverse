@@ -1,0 +1,64 @@
+/* Common skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -150% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
+
+.poster,
+.ratingBadge,
+.title,
+.meta,
+.button {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Poster Placeholder */
+.skeletonPosterWrapper {
+  aspect-ratio: 2/3;
+}
+.poster {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+}
+
+/* Rating Badge Placeholder */
+.ratingBadge {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  width: 3em;
+  height: 1.5em;
+  border-radius: var(--radius-full);
+}
+
+/* Content Info Placeholders */
+.title {
+  width: 70%;
+  height: 1.2em;
+  border-radius: var(--radius-sm);
+}
+
+.meta {
+  width: 50%;
+  height: 1em;
+  border-radius: var(--radius-sm);
+  margin-top: 0.3em;
+}
+
+.button {
+  width: 100%;
+  height: 2.5em;
+  border-radius: var(--radius-sm);
+}
