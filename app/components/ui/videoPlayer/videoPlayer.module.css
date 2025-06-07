@@ -1,0 +1,133 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.container:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  transform: scale(1.02);
+}
+
+.container.playing {
+  cursor: default;
+  box-shadow: 0 0 0 transparent;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  background-color: #000;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  pointer-events: all;
+  user-select: none;
+  background-size: cover;
+  background-position: center;
+  z-index: 2;
+}
+
+.overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55); /* Adjust darkness here */
+  backdrop-filter: blur(4px); /* Optional: soft blur */
+  z-index: -1; /* Ensure it’s behind the text */
+}
+
+.container.playing .overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.playButton {
+  background-color: #1f8ef1;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(31, 142, 241, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.playButton:hover,
+.playButton:focus-visible {
+  background-color: #1479d5;
+  box-shadow: 0 6px 18px rgba(20, 121, 213, 0.6);
+  outline: none;
+}
+
+.playButton svg {
+  width: 28px;
+  height: 28px;
+  stroke: white;
+  stroke-width: 3;
+  pointer-events: none;
+}
+
+.caption {
+  margin-top: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.caption p {
+  margin-top: 0.25rem;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: #cfd8f7;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  .playButton {
+    width: 54px;
+    height: 54px;
+  }
+
+  .playButton svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .caption {
+    font-size: 1.1rem;
+  }
+
+  .caption p {
+    font-size: 0.85rem;
+  }
+}
