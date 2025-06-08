@@ -3,33 +3,34 @@ import styles from '@/app/components/ui/Icon/icon.module.css';
 export const Icon = ({
   name,
   className = '',
-  primaryStroke,
-  secondaryStroke,
-  whiteStroke,
+  strokeColor = 'black',
   width = 24,
   height = 24,
 }: {
   name: string;
   className?: string;
-  primaryStroke?: boolean;
-  secondaryStroke?: boolean;
-  whiteStroke?: boolean;
+  strokeColor?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'white'
+    | 'black'
+    | 'muted';
   width?: number | string;
   height?: number | string;
 }) => {
+  const colorClass = styles[`stroke_${strokeColor}`] || '';
+
   const svgProps = {
     xmlns: 'http://www.w3.org/2000/svg',
     width,
     height,
     viewBox: '0 0 24 24',
     fill: 'none',
-    stroke: '#000000',
     strokeWidth: 2,
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
-    className: `${className} ${primaryStroke ? styles.primaryStroke : ''} ${
-      secondaryStroke ? styles.secondaryStroke : ''
-    } ${whiteStroke ? styles.whiteStroke : ''}`,
+    className: `${className} ${styles.icon} ${colorClass}`,
   };
 
   switch (name) {
@@ -144,6 +145,15 @@ export const Icon = ({
         <svg {...svgProps}>
           <polyline points='23 6 13.5 15.5 8.5 10.5 1 18'></polyline>
           <polyline points='17 6 23 6 23 12'></polyline>
+        </svg>
+      );
+    case 'calendar':
+      return (
+        <svg {...svgProps}>
+          <rect x='3' y='4' width='18' height='18' rx='2' ry='2'></rect>
+          <line x1='16' y1='2' x2='16' y2='6'></line>
+          <line x1='8' y1='2' x2='8' y2='6'></line>
+          <line x1='3' y1='10' x2='21' y2='10'></line>
         </svg>
       );
     default:

@@ -1,9 +1,40 @@
-.primaryStroke {
+.icon {
+  stroke: var(--color-black); /* default fallback */
+}
+.icon:hover {
+  animation: wiggle 0.4s ease;
+}
+.stroke_primary {
   stroke: var(--color-primary);
 }
-.secondaryStroke {
+
+.stroke_secondary {
   stroke: var(--color-secondary);
 }
-.whiteStroke {
+
+.stroke_success {
+  stroke: var(--color-success);
+}
+
+.stroke_white {
   stroke: var(--color-white);
+}
+
+.stroke_black {
+  stroke: var(--color-black);
+}
+.stroke_muted {
+  stroke: var(--color-muted);
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(4deg);
+  }
+  75% {
+    transform: rotate(-4deg);
+  }
 }

@@ -34,6 +34,7 @@ export const getMovies = async (filters: {
   year?: string;
   rate?: string;
   lang?: string;
+  sortBy?: string;
 }): Promise<Movie[]> => {
   try {
     //applying filters
@@ -43,6 +44,7 @@ export const getMovies = async (filters: {
       year: filters.year,
       rate: filters.rate,
       lang: filters.lang,
+      sortBy: filters.sortBy,
     };
     Object.entries(filterMap).forEach(([key, value]) => {
       value && query.set(key, value);
@@ -54,7 +56,6 @@ export const getMovies = async (filters: {
     if (!rawData) {
       return [];
     }
-    console.log(rawData);
     //constructing movie data
     const movies: Movie[] = rawData.map((movie: any) => ({
       id: movie.id,

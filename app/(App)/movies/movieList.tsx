@@ -8,6 +8,7 @@ type MoviesListProps = {
     year: string;
     rate: string;
     lang: string;
+    sortBy?: string;
   };
 };
 
