@@ -1,13 +1,27 @@
 import styles from '@/app/components/ui/Icon/icon.module.css';
 
-export const Icon = ({
-  name,
-  className = '',
-  strokeColor = 'black',
-  width = 24,
-  height = 24,
-}: {
-  name: string;
+type IconName =
+  | 'film'
+  | 'user'
+  | 'search'
+  | 'burger'
+  | 'close'
+  | 'play'
+  | 'star'
+  | 'plus'
+  | 'message-square'
+  | 'eye'
+  | 'bar-chart-3'
+  | 'info'
+  | 'user-alt'
+  | 'sparkles'
+  | 'trending-up'
+  | 'calendar'
+  | 'sliders-horizontal'
+  | 'dot';
+
+type IconProps = {
+  name: IconName;
   className?: string;
   strokeColor?:
     | 'primary'
@@ -18,7 +32,17 @@ export const Icon = ({
     | 'muted';
   width?: number | string;
   height?: number | string;
-}) => {
+  hide?: boolean;
+};
+
+export const Icon = ({
+  name,
+  className = '',
+  strokeColor = 'black',
+  width = 24,
+  height = 24,
+  hide = false,
+}: IconProps) => {
   const colorClass = styles[`stroke_${strokeColor}`] || '';
 
   const svgProps = {
@@ -30,7 +54,9 @@ export const Icon = ({
     strokeWidth: 2,
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
-    className: `${className} ${styles.icon} ${colorClass}`,
+    className: `${className} ${styles.icon} ${colorClass} ${
+      hide && styles.hide
+    }`,
   };
 
   switch (name) {
@@ -154,6 +180,32 @@ export const Icon = ({
           <line x1='16' y1='2' x2='16' y2='6'></line>
           <line x1='8' y1='2' x2='8' y2='6'></line>
           <line x1='3' y1='10' x2='21' y2='10'></line>
+        </svg>
+      );
+    case 'sliders-horizontal':
+      return (
+        <svg {...svgProps}>
+          <line x1='21' y1='4' x2='14' y2='4'></line>
+          <line x1='10' y1='4' x2='3' y2='4'></line>
+          <circle cx='12' cy='4' r='2'></circle>
+          <line x1='21' y1='12' x2='12' y2='12'></line>
+          <line x1='8' y1='12' x2='3' y2='12'></line>
+          <circle cx='10' cy='12' r='2'></circle>
+          <line x1='21' y1='20' x2='16' y2='20'></line>
+          <line x1='12' y1='20' x2='3' y2='20'></line>
+          <circle cx='14' cy='20' r='2'></circle>
+        </svg>
+      );
+    case 'dot':
+      return (
+        <svg {...svgProps}>
+          <circle
+            cx='12'
+            cy='12'
+            r='4'
+            fill='currentColor'
+            stroke='none'
+          ></circle>
         </svg>
       );
     default:

@@ -5,88 +5,70 @@
   transition: var(--transition-normal);
   border: 2px solid transparent;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
   background-color: transparent;
   color: var(--color-white);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: var(--space-sm);
-
-  transform: translateZ(0);
 }
+
 /* === Variant: Solid === */
 .solid.primary {
   background-color: var(--color-button-blue);
   color: var(--color-white);
-  border: 1px solid var(--color-button-blue);
 }
 .solid.primary:hover {
-  background-color: transparent;
-  color: var(--color-button-blue);
-  box-shadow: 0 0 12px var(--color-button-blue);
-  transform: scale(1.03);
-  border-color: var(--color-button-blue);
+  background-color: var(--color-primary-60);
+  box-shadow: var(--shadow-blue-glow);
 }
 
 .solid.neutral {
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-60);
   color: var(--color-white);
-  border: 1px solid var(--color-surface);
 }
+
 .solid.neutral:hover {
-  background-color: var(--color-bg);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
-  transform: scale(1.03);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 /* === Variant: Outline === */
 .outline.primary {
   background-color: transparent;
-  color: var(--color-button-blue);
-  border: 1px solid var(--color-button-blue);
+  border: 1px solid var(--color-primary-60);
 }
 .outline.primary:hover {
-  background-color: var(--color-button-blue);
-  color: var(--color-white);
-  box-shadow: 0 0 12px var(--color-button-blue);
-  transform: scale(1.03);
+  border: 1px solid var(--color-button-blue);
+  box-shadow: var(--shadow-blue-glow);
 }
 
 .outline.neutral {
   background-color: transparent;
-  color: var(--color-muted);
-  border: 1px solid var(--color-muted);
+  border: 1px solid var(--color-surface);
 }
 .outline.neutral:hover {
-  background-color: var(--color-muted);
-  color: var(--color-bg);
-  box-shadow: 0 0 10px rgba(170, 177, 183, 0.3);
-  transform: scale(1.03);
+  border: 1px solid var(--color-white);
+  box-shadow: var(--shadow-lg);
 }
 
 /* === Variant: Ghost === */
 .ghost.primary {
   background-color: transparent;
-  color: var(--color-button-blue);
-  border: none;
 }
 .ghost.primary:hover {
-  background-color: rgba(31, 128, 224, 0.08);
-  box-shadow: 0 0 8px rgba(31, 128, 224, 0.3);
-  transform: translateY(-1px);
+  background-color: var(--color-primary-20);
+  box-shadow: var(--shadow-blue-glow);
 }
 
 .ghost.neutral {
   background-color: transparent;
-  color: var(--color-muted);
-  border: none;
 }
 .ghost.neutral:hover {
-  background-color: rgba(170, 177, 183, 0.08);
-  box-shadow: 0 0 8px rgba(170, 177, 183, 0.2);
-  transform: translateY(-1px);
+  background-color: var(--color-white-20);
+  box-shadow: var(--shadow-md);
 }
+
 /* === Disabled === */
 .disabled {
   background-color: var(--color-bg);
@@ -104,12 +86,14 @@
 /* === Alignment === */
 .left {
   align-self: flex-start;
+  justify-content: flex-start;
 }
 .center {
   align-self: center;
 }
 .right {
   align-self: flex-end;
+  justify-content: flex-end;
 }
 
 /* === Radius === */
@@ -119,47 +103,4 @@
 .fullRadius {
   border-radius: var(--radius-full);
   padding: var(--space-sm) var(--space-sm);
-}
-
-/* === Variant: Solid === */
-.solid.primary:hover {
-  background-color: var(--color-button-blue-hover, #2563eb);
-  color: var(--color-white);
-  box-shadow: 0 2px 8px rgba(31, 142, 241, 0.15);
-  border-color: var(--color-button-blue-hover, #2563eb);
-}
-
-.solid.neutral:hover {
-  background-color: var(--color-surface-hover, #23272f);
-  color: var(--color-white);
-  box-shadow: 0 2px 8px rgba(170, 177, 183, 0.1);
-  border-color: var(--color-surface-hover, #23272f);
-}
-
-/* === Variant: Outline === */
-.outline.primary:hover {
-  background-color: var(--color-button-blue);
-  color: var(--color-white);
-  box-shadow: 0 2px 8px rgba(31, 142, 241, 0.1);
-  border-color: var(--color-button-blue);
-}
-
-.outline.neutral:hover {
-  background-color: var(--color-muted);
-  color: var(--color-bg);
-  box-shadow: 0 2px 8px rgba(170, 177, 183, 0.08);
-  border-color: var(--color-muted);
-}
-
-/* === Variant: Ghost === */
-.ghost.primary:hover {
-  background-color: rgba(31, 142, 241, 0.08);
-  color: var(--color-button-blue);
-  box-shadow: 0 2px 8px rgba(31, 142, 241, 0.08);
-}
-
-.ghost.neutral:hover {
-  background-color: rgba(170, 177, 183, 0.08);
-  color: var(--color-muted);
-  box-shadow: 0 2px 8px rgba(170, 177, 183, 0.06);
 }

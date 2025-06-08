@@ -19,6 +19,8 @@
   --color-white-60: rgba(255, 255, 255, 0.6);
   --color-danger-60: rgba(231, 76, 60, 0.6);
   --color-success-60: rgba(46, 204, 113, 0.6);
+  --color-white-20: rgba(255, 255, 255, 0.2);
+  --color-primary-20: rgba(31, 142, 241, 0.2);
 
   /* === Typography (responsive with clamp) === */
   --font-size-sm: clamp(
@@ -92,13 +94,13 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--color-primary); /* Accent blue */
+  background-color: var(--color-button-blue); /* Accent blue */
   border-radius: 10px;
-  border: 2px solid var(--color-surface);
+  /* border: 2px solid var(--color-surface); */
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-secondary); /* Highlight orange on hover */
+  background-color: var(--color-primary); /* Highlight orange on hover */
   border: 2px solid var(--color-surface);
 }
 

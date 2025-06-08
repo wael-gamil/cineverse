@@ -77,7 +77,7 @@ export default function ContentCard({
           <div className={styles.infoButtonWrapper}>
             <Button
               borderRadius='fullRadius'
-              variant='outline'
+              variant='ghost'
               color='neutral'
               ariaLabel='show more info'
             >
