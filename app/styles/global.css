@@ -11,6 +11,15 @@
   --color-success: #2ecc71;
   --color-button-blue: #2563eb; /* New blue for buttons (a richer, deeper blue) */
 
+  /* === Transparent Colors === */
+  --color-bg-60: rgba(11, 15, 26, 0.6);
+  --color-surface-60: rgba(21, 26, 40, 0.6);
+  --color-primary-60: rgba(31, 142, 241, 0.6);
+  --color-secondary-60: rgba(243, 156, 18, 0.6);
+  --color-white-60: rgba(255, 255, 255, 0.6);
+  --color-danger-60: rgba(231, 76, 60, 0.6);
+  --color-success-60: rgba(46, 204, 113, 0.6);
+
   /* === Typography (responsive with clamp) === */
   --font-size-sm: clamp(
     0.6rem,
