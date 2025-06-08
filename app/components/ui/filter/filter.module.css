@@ -2,7 +2,6 @@
   position: relative;
   width: 100%;
   max-width: 960px;
-  margin: 0 auto;
   padding: var(--space-md);
 }
 
@@ -193,4 +192,109 @@
   color: var(--color-primary-hover);
   outline: none;
   text-decoration: underline;
+}
+.wrapper {
+  position: relative;
+}
+
+.toggleIcon {
+  margin-right: var(--space-xs);
+}
+
+.countBadge {
+  margin-left: var(--space-xs);
+  background-color: var(--color-primary);
+  color: var(--color-black);
+  padding: 0 var(--space-xs);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+}
+
+.filterPanel {
+  margin-top: var(--space-md);
+  background-color: rgba(20, 20, 20, 0.95);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  z-index: 100;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-md);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  font-weight: 700;
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-xs);
+  color: var(--color-white);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.optionButton {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.3s, border-color 0.3s;
+  user-select: none;
+}
+
+.optionButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.optionSelected {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-black);
+  font-weight: 700;
+}
+
+.showMoreButton {
+  margin-top: var(--space-xs);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  align-self: flex-start;
+}
+
+.clearWrapper {
+  margin-top: var(--space-md);
+  text-align: center;
+}
+
+.clearButton {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  transition: background-color 0.2s;
+}
+
+.clearButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
