@@ -1,300 +1,147 @@
-.wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 960px;
-  padding: var(--space-md);
-}
-
-.toggleButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: rgba(26, 26, 27, 0.5);
-  backdrop-filter: blur(10px);
-  color: var(--color-white);
-  font-weight: 500;
-  font-size: var(--font-size-md);
-  padding: 0.5rem 1.5rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(255 255 255 / 0.05);
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.toggleButton:hover {
-  background-color: rgba(26, 26, 27, 0.7);
-  border-color: var(--color-primary);
-}
-
-.toggleIcon {
-  font-size: 1.25rem;
-}
-
-.countBadge {
-  margin-left: auto;
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.15rem 0.6rem;
-  border-radius: 9999px;
-  min-width: 2rem;
-  text-align: center;
-  user-select: none;
-}
-
-.filterPanel {
-  margin-top: var(--space-md);
-  background-color: rgba(26, 26, 27, 0.5);
-  backdrop-filter: blur(12px);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  border: 1px solid rgba(255 255 255 / 0.05);
-  box-shadow: 0 8px 24px var(--shadow-md);
-  animation: slideDown 0.3s ease forwards;
-  z-index: 1000;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
   gap: var(--space-md);
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.sectionTitle {
-  font-weight: 600;
-  font-size: var(--font-size-lg);
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-md);
 }
 
 .options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-sm);
-
-  /* Scrollable for long lists */
-  max-height: 280px;
+  max-height: 280px; /* scrollable */
   overflow-y: auto;
-  padding-right: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-primary) transparent;
+  padding: var(--space-xs);
 }
 
-.options::-webkit-scrollbar {
-  width: 6px;
+/* Divider */
+.divider {
+  width: 90%;
+  margin: auto;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-white) 50%,
+    transparent 100%
+  );
+  position: relative;
+  animation: pulse 3s ease-in-out infinite;
 }
 
-.options::-webkit-scrollbar-track {
-  background: transparent;
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
 }
 
-.options::-webkit-scrollbar-thumb {
-  background-color: var(--color-primary);
-  border-radius: 3px;
-}
-
-.optionButton {
-  background-color: var(--color-bg);
-  color: var(--color-gray);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-lg);
+/* Inputs */
+.numberInput {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
   font-size: var(--font-size-sm);
   font-weight: 500;
-  border: 1px solid transparent;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.25s ease, color 0.25s ease,
-    box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.optionButton:hover {
-  background-color: var(--color-primary-hover);
-  color: var(--color-white);
-  box-shadow: 0 0 8px var(--shadow-md);
-}
-
-.optionSelected {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  box-shadow: 0 0 10px var(--shadow-md);
-  border-color: var(--color-primary);
-}
-
-.clearWrapper {
-  margin-top: var(--space-md);
-  border-top: 1px solid rgba(255 255 255 / 0.1);
-  padding-top: var(--space-md);
-  text-align: right;
-}
-
-.clearButton {
-  background: none;
-  border: none;
-  color: var(--color-gray);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  user-select: none;
-  transition: color 0.2s ease;
-}
-
-.clearButton:hover {
-  color: var(--color-white);
-}
-
-/* New Show more / less button */
-.showMoreButton {
-  margin-top: var(--space-xs);
-  background: none;
-  border: none;
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.2s ease;
-  align-self: flex-start;
-  padding: 0;
-}
-
-.showMoreButton:hover,
-.showMoreButton:focus-visible {
-  color: var(--color-primary-hover);
-  outline: none;
-  text-decoration: underline;
-}
-.wrapper {
-  position: relative;
-}
-
-.toggleIcon {
-  margin-right: var(--space-xs);
-}
-
-.countBadge {
-  margin-left: var(--space-xs);
-  background-color: var(--color-primary);
-  color: var(--color-black);
-  padding: 0 var(--space-xs);
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: var(--font-size-xs);
-}
-
-.filterPanel {
-  margin-top: var(--space-md);
-  background-color: rgba(20, 20, 20, 0.95);
-  padding: var(--space-md);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-  z-index: 100;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-md);
-}
-
-.section {
-  display: flex;
-  flex-direction: column;
-}
-
-.sectionTitle {
-  font-weight: 700;
-  font-size: var(--font-size-md);
-  margin-bottom: var(--space-xs);
-  color: var(--color-white);
-}
-
-.options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-}
-
-.optionButton {
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-full);
   border: 1px solid transparent;
-  background-color: transparent;
+  background-color: var(--color-surface);
   color: var(--color-white);
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-  transition: background-color 0.3s, border-color 0.3s;
-  user-select: none;
+  transition: all var(--transition-normal);
+  appearance: none;
 }
 
-.optionButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.numberInput:hover {
+  border-color: var(--color-primary-60);
 }
 
-.optionSelected {
-  background-color: var(--color-primary);
+.numberInput:focus {
+  outline: none;
   border-color: var(--color-primary);
-  color: var(--color-black);
-  font-weight: 700;
+  box-shadow: var(--shadow-blue-glow);
 }
 
-.showMoreButton {
+/* Remove default number input spinner arrows for WebKit */
+.numberInput::-webkit-inner-spin-button,
+.numberInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Remove default number input spinner arrows for Firefox */
+.numberInput[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.sliderInput {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
   margin-top: var(--space-xs);
-  background: none;
-  border: none;
-  color: var(--color-primary);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  align-self: flex-start;
+  margin-bottom: var(--space-sm);
+  transition: background var(--transition-normal);
 }
 
-.clearWrapper {
-  margin-top: var(--space-md);
-  text-align: center;
-}
-
-.clearButton {
-  background: none;
-  border: none;
-  color: var(--color-white);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  padding: var(--space-xs) var(--space-md);
+/* WebKit (Chrome, Safari) Thumb */
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--color-primary);
+  border: 2px solid var(--color-white);
   border-radius: var(--radius-full);
-  transition: background-color 0.2s;
+  box-shadow: var(--shadow-blue-glow);
+  transition: transform var(--transition-fast),
+    background-color var(--transition-normal);
 }
 
-.clearButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.sliderInput::-webkit-slider-thumb:hover {
+  background-color: var(--color-primary-60);
+  transform: scale(1.1);
+}
+
+/* Firefox Thumb */
+.sliderInput::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--color-primary);
+  border: 2px solid var(--color-white);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-blue-glow);
+  transition: transform var(--transition-fast),
+    background-color var(--transition-normal);
+}
+
+.sliderInput::-moz-range-thumb:hover {
+  background-color: var(--color-primary-60);
+  transform: scale(1.1);
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-white);
 }
