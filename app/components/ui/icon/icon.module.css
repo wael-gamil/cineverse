@@ -26,6 +26,9 @@
 .stroke_muted {
   stroke: var(--color-muted);
 }
+.hide {
+  opacity: 0;
+}
 @keyframes wiggle {
   0%,
   100% {
