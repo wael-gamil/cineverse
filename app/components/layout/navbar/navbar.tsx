@@ -19,7 +19,7 @@ export default function Navbar() {
     <nav className={styles.navbar}>
       {/* Logo */}
       <div className={styles.navbar_Logo}>
-        <Icon name='film' primaryStroke width={30} height={30} />
+        <Icon name='film' strokeColor='primary' width={30} height={30} />
         <h1 className={`${styles.navbar_title} ${playfair.className}`}>
           CineVerse
         </h1>
@@ -37,7 +37,7 @@ export default function Navbar() {
             borderRadius='fullRadius'
           >
             <div className={styles.iconWrapper}>
-              <Icon name={isOpen ? 'close' : 'burger'} whiteStroke />
+              <Icon name={isOpen ? 'close' : 'burger'} strokeColor='white' />
             </div>
           </Button>
         </div>
@@ -52,7 +52,7 @@ export default function Navbar() {
             <Search />
             <NavLinks isMobile closeMenu={closeMenu} />
             <Button align='left' borderRadius='fullRadius'>
-              <Icon name='user' whiteStroke />
+              <Icon name='user' strokeColor='white' />
             </Button>
           </div>
         )
@@ -63,7 +63,7 @@ export default function Navbar() {
         <div className={styles.navbar_Actions}>
           <Search minimizeWhenSmall />
           <Button borderRadius='fullRadius'>
-            <Icon name='user' whiteStroke />
+            <Icon name='user' strokeColor='white' />
           </Button>
         </div>
       )}

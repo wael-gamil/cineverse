@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const trailer: Trailer = {
     trailerUrl: 'https://www.youtube.com/watch?v=YoHD9XEInc0',
   };
-  
+
   return (
     <main className={styles.container}>
       <section className={styles.section}>
@@ -53,7 +53,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 ariaLabel='Add to Watchlist'
                 width='100%'
               >
-                <Icon name='plus' whiteStroke />
+                <Icon name='plus' strokeColor='white' />
                 Add to Watchlist
               </Button>
               <Button
@@ -63,7 +63,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 width='100%'
                 align='center'
               >
-                <Icon name='play' whiteStroke />
+                <Icon name='play' strokeColor='white' />
                 Watch Trailer
               </Button>
             </div>
@@ -97,7 +97,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
               <div className={styles.ratings}>
                 <div className={styles.ratingItem}>
-                  <Icon name='star' secondaryStroke />
+                  <Icon name='star' strokeColor='secondary' />
                   <div className={styles.ratingInfo}>
                     <p className={styles.ratingScore}>
                       {movieDetails.imdbRating}
