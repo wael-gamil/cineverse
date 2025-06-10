@@ -60,12 +60,15 @@
   font-weight: 500;
   border-radius: var(--radius-lg);
   border: 1px solid transparent;
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-60);
   color: var(--color-white);
   transition: all var(--transition-normal);
   appearance: none;
 }
-
+.numberInput::placeholder {
+  color: var(--color-muted);
+  font-size: var(--font-size-base);
+}
 .numberInput:hover {
   border-color: var(--color-primary-60);
 }
@@ -96,7 +99,7 @@
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  background: var(--color-surface);
+  background: var(--color-white-20);
   border-radius: var(--radius-sm);
   margin-top: var(--space-xs);
   margin-bottom: var(--space-sm);

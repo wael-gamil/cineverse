@@ -1,5 +1,4 @@
 .button {
-  padding: var(--space-sm) var(--space-md);
   font-size: var(--font-size-base);
   font-weight: 500;
   transition: var(--transition-normal);
@@ -13,6 +12,15 @@
   gap: var(--space-sm);
 }
 
+.sm {
+  padding: var(--space-xs) var(--space-sm);
+}
+.md {
+  padding: var(--space-sm) var(--space-md);
+}
+.lg {
+  padding: var(--space-md) var(--space-lg);
+}
 /* === Variant: Solid === */
 .solid.primary {
   background-color: var(--color-button-blue);
