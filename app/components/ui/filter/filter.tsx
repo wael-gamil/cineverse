@@ -129,6 +129,7 @@ export default function Filter({
       )}
       badge={activeFilterCount > 0 ? activeFilterCount : 'All'}
       width='full'
+      padding='lg'
     >
       <div className={styles.grid}>
         {/* Existing filter sections */}

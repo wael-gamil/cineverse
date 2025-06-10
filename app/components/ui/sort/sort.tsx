@@ -43,6 +43,8 @@ export default function Sort({ initialSortBy }: SortProps) {
       )}
       badge={sortOptions.find(o => o.value === sortBy)?.label}
       position='right'
+      solidPanel
+      padding='sm'
     >
       <div className={styles.options}>
         {sortOptions.map(option => (
@@ -55,11 +57,6 @@ export default function Sort({ initialSortBy }: SortProps) {
             width='100%'
             align='left'
           >
-            {sortBy === option.value ? (
-              <Icon name='dot' width={16} strokeColor='white' />
-            ) : (
-              <Icon name='dot' width={16} hide />
-            )}
             {option.label}
           </Button>
         ))}
