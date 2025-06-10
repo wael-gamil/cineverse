@@ -52,12 +52,11 @@ export const getMovies = async (filters: {
     const url = `contents/filter?type=MOVIE&${query.toString()}`;
     //fetching data
     const rawData = await fetcher(url, {});
-
     if (!rawData) {
       return [];
     }
     //constructing movie data
-    const movies: Movie[] = rawData.map((movie: any) => ({
+    const movies: Movie[] = rawData.content.map((movie: any) => ({
       id: movie.id,
       title: movie.title,
       overview: movie.overview,
