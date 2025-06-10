@@ -13,6 +13,7 @@ type ButtonProps = {
   align?: 'left' | 'right' | 'center';
   width?: '100%' | 'auto' | string;
   borderRadius?: 'smallRadius' | 'fullRadius';
+  padding?: 'sm' | 'md' | 'lg';
 };
 
 export default function Button({
@@ -28,6 +29,7 @@ export default function Button({
   align = 'center',
   width = 'auto',
   borderRadius = 'smallRadius',
+  padding = 'md',
 }: ButtonProps) {
   return (
     <button
@@ -35,7 +37,7 @@ export default function Button({
         hide ? styles.hide : ''
       } ${styles[align]} ${disabled ? styles.disabled : ''} ${
         styles[borderRadius]
-      } ${styles[color]}`}
+      } ${styles[color]} ${styles[padding]}`}
       onClick={onClick}
       aria-label={ariaLabel}
       type={type}
