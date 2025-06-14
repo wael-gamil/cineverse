@@ -18,7 +18,9 @@ type IconName =
   | 'trending-up'
   | 'calendar'
   | 'sliders-horizontal'
-  | 'dot';
+  | 'dot'
+  | 'arrow-left'
+  | 'arrow-right';
 
 type IconProps = {
   name: IconName;
@@ -206,6 +208,20 @@ export const Icon = ({
             fill='currentColor'
             stroke='none'
           ></circle>
+        </svg>
+      );
+    case 'arrow-left':
+      return (
+        <svg {...svgProps}>
+          <line x1='19' y1='12' x2='5' y2='12'></line>
+          <polyline points='12 19 5 12 12 5'></polyline>
+        </svg>
+      );
+    case 'arrow-right':
+      return (
+        <svg {...svgProps}>
+          <line x1='5' y1='12' x2='19' y2='12'></line>
+          <polyline points='12 5 19 12 12 19'></polyline>
         </svg>
       );
     default:
