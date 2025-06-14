@@ -1,3 +1,5 @@
+export type FilterType = '' | 'MOVIE' | 'SERIES';
+
 export type Movie = {
   id: number;
   title: string;
@@ -7,6 +9,7 @@ export type Movie = {
   genres: string[];
   posterUrl: string;
   slug: string;
+  type?: FilterType;
 };
 export type MovieDetails = {
   id: number;
@@ -74,3 +77,10 @@ export type FilterOpt = {
   ];
   multiple: boolean;
 };
+
+// export type MediaItem = {
+//   id: string;
+//   title: string;
+//   image: string;
+//   type: FilterType;
+// };

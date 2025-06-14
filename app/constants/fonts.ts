@@ -1,11 +1,16 @@
-import { Playfair_Display, Inter } from 'next/font/google';
-
-export const playfair = Playfair_Display({
-  variable: '--font-playfair',
-  subsets: ['latin'],
-});
+import { Bebas_Neue, Inter, Geist } from 'next/font/google';
 
 export const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
+});
+
+export const geist = Geist({
+  variable: '--font-geist',
+  subsets: ['latin'],
+});
+export const bebasNeue = Bebas_Neue({
+  variable: '--font-bebas',
+  subsets: ['latin'],
+  weight: '400',
 });
