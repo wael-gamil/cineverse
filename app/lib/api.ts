@@ -12,16 +12,15 @@ import {
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 const fetcher = async function fetcher(
-  endpoint: string,
+  query: string,
   params: Record<string, any>
 ) {
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
+  const response = await fetch(`${BASE_URL}${query}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
-
   if (!response.ok) {
     // throw new Error('Network response was not ok');
     return null;
@@ -29,13 +28,16 @@ const fetcher = async function fetcher(
 
   return response.json();
 };
-export const getMovies = async (filters: {
-  genres?: string[];
-  year?: string;
-  rate?: string;
-  lang?: string;
-  sortBy?: string;
-}): Promise<Movie[]> => {
+export const getMovies = async (
+  filters: {
+    genres?: string[];
+    year?: string;
+    rate?: string;
+    lang?: string;
+    sortBy?: string;
+  },
+  page = 1
+): Promise<{ content: Movie[]; totalPages: number; currentPage: number }> => {
   try {
     //applying filters
     const query = new URLSearchParams();
@@ -49,11 +51,15 @@ export const getMovies = async (filters: {
     Object.entries(filterMap).forEach(([key, value]) => {
       value && query.set(key, value);
     });
-    const url = `contents/filter?type=MOVIE&${query.toString()}`;
+    const url = `contents/filter?type=MOVIE&${query.toString()}&page=${page}`;
     //fetching data
     const rawData = await fetcher(url, {});
     if (!rawData) {
-      return [];
+      return {
+        content: [],
+        totalPages: 0,
+        currentPage: 1,
+      };
     }
     //constructing movie data
     const movies: Movie[] = rawData.content.map((movie: any) => ({
@@ -66,13 +72,49 @@ export const getMovies = async (filters: {
       posterUrl: movie.posterPath,
       slug: movie.slug,
     }));
-    return movies;
+    return {
+      content: movies,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+    };
   } catch (error) {
     console.error('Error fetching movies:', error);
-    return [];
+    return {
+      content: [],
+      totalPages: 0,
+      currentPage: 1,
+    };
   }
 };
 
+export const getSearchResults = async (
+  query: string,
+  page = 1
+): Promise<{ content: Movie[]; totalPages: number; currentPage: number }> => {
+  try {
+    const url = `contents/search?q${query && `=${query}`}&page=${page}`;
+    const rawData = await fetcher(url, {});
+    const movies: Movie[] = rawData.content.map((movie: any) => ({
+      id: movie.id,
+      title: movie.title,
+      overview: movie.overview,
+      releaseDate: movie.releaseDate,
+      imdbRating: movie.rate,
+      genres: movie.genres,
+      posterUrl: movie.posterPath,
+      slug: movie.slug,
+      type: movie.type,
+    }));
+
+    return {
+      content: movies,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 export const getMovieDetails = async (slug: string): Promise<MovieDetails> => {
   try {
     const rawData = await fetcher(`contents/${slug}`, {});
