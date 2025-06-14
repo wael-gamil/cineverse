@@ -110,7 +110,7 @@
 }
 .fullRadius {
   border-radius: var(--radius-full);
-  min-width: var(--space-xxl);
-  min-height: var(--space-xxl);
+  min-width: 40px;
+  min-height: 40px;
   padding: 0;
 }
