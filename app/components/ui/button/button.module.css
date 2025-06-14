@@ -44,19 +44,19 @@
 /* === Variant: Outline === */
 .outline.primary {
   background-color: transparent;
-  border: 1px solid var(--color-primary-60);
+  border: 2px solid var(--color-primary-60);
 }
 .outline.primary:hover {
-  border: 1px solid var(--color-button-blue);
+  border: 2px solid var(--color-button-blue);
   box-shadow: var(--shadow-blue-glow);
 }
 
 .outline.neutral {
   background-color: transparent;
-  border: 1px solid var(--color-surface);
+  border: 2px solid var(--color-surface);
 }
 .outline.neutral:hover {
-  border: 1px solid var(--color-white);
+  border: 2px solid var(--color-white);
   box-shadow: var(--shadow-lg);
 }
 
@@ -110,5 +110,7 @@
 }
 .fullRadius {
   border-radius: var(--radius-full);
-  padding: var(--space-sm) var(--space-sm);
+  min-width: var(--space-xxl);
+  min-height: var(--space-xxl);
+  padding: 0;
 }
