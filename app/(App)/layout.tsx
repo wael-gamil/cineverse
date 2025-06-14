@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { playfair, inter } from '@/app/constants/fonts';
+import { inter, geist } from '@/app/constants/fonts';
 import '@/app/styles/global.css';
 import '@/app/styles/reset.css';
 import Navbar from '@/app/components/layout/navbar/navbar';
@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className={`${inter.className} ${playfair.className}`}>
+    <html lang='en' className={`${geist.className} ${inter.className}`}>
       <body>
         <Navbar />
         {children}
