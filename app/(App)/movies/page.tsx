@@ -17,6 +17,7 @@ export default async function Movies({
   const rate = awaitedSearchParams['rate'] || '';
   const lang = awaitedSearchParams['lang'] || '';
   const sortBy = awaitedSearchParams['sortBy'] || '';
+  const page = parseInt(awaitedSearchParams['page'] || '0', 10);
 
   //construct filters
   const filtersSelected = {
@@ -43,9 +44,8 @@ export default async function Movies({
           lang,
           sortBy,
         }}
+        page={page}
       />
-
-      <span>Pagination</span>
     </section>
   );
 }
