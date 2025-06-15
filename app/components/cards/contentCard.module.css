@@ -44,6 +44,7 @@
 
 .ratingBadge,
 .typeBadge {
+  min-width: 60px;
   position: absolute;
   top: var(--space-md);
   padding: var(--space-xs) var(--space-sm);

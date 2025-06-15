@@ -1,0 +1,27 @@
+.searchBar {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--transition-normal);
+}
+
+.inputWrapper:hover {
+  background-color: var(--color-white-20);
+}
+
+.inputLabel {
+  color: var(--color-white);
+  font-size: var(--font-size-base);
+  opacity: 0.8;
+  user-select: none;
+}
