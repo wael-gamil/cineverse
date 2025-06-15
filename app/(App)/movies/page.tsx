@@ -17,8 +17,7 @@ export default async function Movies({
   const rate = awaitedSearchParams['rate'] || '';
   const lang = awaitedSearchParams['lang'] || '';
   const sortBy = awaitedSearchParams['sortBy'] || '';
-  const page = parseInt(awaitedSearchParams['page'] || '0', 10);
-
+  const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
   //construct filters
   const filtersSelected = {
     genres: genres,

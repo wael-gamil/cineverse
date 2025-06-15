@@ -15,7 +15,7 @@ export default async function Search({
 }) {
   const awaitedSearchParams = await searchParams;
   const query = awaitedSearchParams.q || '';
-  const page = parseInt(awaitedSearchParams.page || '1', 10);
+  const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
 
   const { content, totalPages, currentPage } = await getSearchResults(
     query,
