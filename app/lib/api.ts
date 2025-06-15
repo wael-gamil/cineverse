@@ -1,5 +1,5 @@
 import {
-  Movie,
+  Content,
   MovieDetails,
   Crew,
   Trailer,
@@ -28,18 +28,24 @@ const fetcher = async function fetcher(
 
   return response.json();
 };
-export const getMovies = async (
-  filters: {
-    genres?: string[];
-    year?: string;
-    rate?: string;
-    lang?: string;
-    sortBy?: string;
-  },
+
+type ContentType = 'MOVIE' | 'SERIES';
+
+type Filters = {
+  genres?: string[];
+  year?: string;
+  rate?: string;
+  lang?: string;
+  sortBy?: string;
+};
+
+export const getContents = async (
+  type: ContentType,
+  filters: Filters,
   page = 0
-): Promise<{ content: Movie[]; totalPages: number; currentPage: number }> => {
+): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
   try {
-    //applying filters
+    // Construct query parameters
     const query = new URLSearchParams();
     const filterMap: Record<string, string | undefined> = {
       genres: filters.genres?.join(','),
@@ -48,11 +54,13 @@ export const getMovies = async (
       lang: filters.lang,
       sortBy: filters.sortBy,
     };
+
     Object.entries(filterMap).forEach(([key, value]) => {
-      value && query.set(key, value);
+      if (value) query.set(key, value);
     });
-    const url = `contents/filter?type=MOVIE&${query.toString()}&page=${page}&size=24`;
-    //fetching data
+
+    const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=24`;
+
     const rawData = await fetcher(url, {});
     if (!rawData) {
       return {
@@ -61,8 +69,8 @@ export const getMovies = async (
         currentPage: 0,
       };
     }
-    //constructing movie data
-    const movies: Movie[] = rawData.content.map((movie: any) => ({
+
+    const movies: Content[] = rawData.content.map((movie: any) => ({
       id: movie.id,
       title: movie.title,
       overview: movie.overview,
@@ -72,13 +80,14 @@ export const getMovies = async (
       posterUrl: movie.posterPath,
       slug: movie.slug,
     }));
+
     return {
       content: movies,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
     };
   } catch (error) {
-    console.error('Error fetching movies:', error);
+    console.error('Error fetching content:', error);
     return {
       content: [],
       totalPages: 0,
@@ -90,11 +99,11 @@ export const getMovies = async (
 export const getSearchResults = async (
   query: string,
   page = 0
-): Promise<{ content: Movie[]; totalPages: number; currentPage: number }> => {
+): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
   try {
     const url = `contents/search?q${query && `=${query}`}&page=${page}`;
     const rawData = await fetcher(url, {});
-    const movies: Movie[] = rawData.content.map((movie: any) => ({
+    const movies: Content[] = rawData.content.map((movie: any) => ({
       id: movie.id,
       title: movie.title,
       overview: movie.overview,
