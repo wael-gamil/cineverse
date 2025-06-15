@@ -1,0 +1,230 @@
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: var(--space-xxl);
+  gap: var(--space-lg);
+}
+
+/* Hero Section */
+.heroSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+  animation: sectionEnter 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+@keyframes sectionEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.iconWrapper {
+  position: relative;
+  animation: floatIcon 4s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.iconBackground {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-primary);
+  filter: blur(50px);
+  border-radius: var(--radius-full);
+}
+
+.iconForeground {
+  background-color: var(--color-surface-60);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--color-primary-60);
+  border-radius: var(--radius-full);
+  padding: var(--space-md);
+}
+
+.heroTitle {
+  display: flex;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xxl);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-shadow: var(--shadow-blue-glow);
+}
+.titleCine {
+  background: linear-gradient(
+    90deg,
+    var(--color-white),
+    var(--color-helper),
+    var(--color-muted),
+    var(--color-white)
+  );
+}
+.titleVerse {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    var(--color-button-blue),
+    var(--color-primary),
+    var(--color-primary-60)
+  );
+}
+.titleCine,
+.titleVerse {
+  background-size: 400% 400%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientPulse 3s ease-in-out infinite;
+}
+.titleCine:hover,
+.titleVerse:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+  transition: transform var(--transition-normal),
+    filter var(--transition-normal);
+}
+@keyframes gradientPulse {
+  0%,
+  100% {
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+  }
+  50% {
+    background-size: 400% 400%;
+    background-position: 100% 50%;
+  }
+}
+
+.heroSubtitleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.subtitleLine {
+  width: 3rem;
+  height: 1px;
+  background: linear-gradient(to left, transparent, #1f80e0);
+}
+.subtitleLine:nth-child(1) {
+  background: linear-gradient(to right, transparent, #1f80e0);
+}
+
+.heroSubtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-muted);
+  letter-spacing: 0.05em;
+}
+
+.heroDescription {
+  color: var(--color-muted);
+  font-size: var(--font-size-base);
+  max-width: 40rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.heroStats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #ccc;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.statItem:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.statItem:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.statItem:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  animation: pulse 1.5s infinite;
+}
+
+.DividerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  overflow: hidden;
+}
+
+.Divider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-primary) 50%,
+    transparent 100%
+  );
+  position: relative;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05); /* Very light zoom */
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+}
+.controls {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
