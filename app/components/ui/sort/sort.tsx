@@ -12,7 +12,11 @@ type SortProps = {
 export default function Sort({ initialSortBy }: SortProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [sortBy, setSortBy] = useState<string>(initialSortBy || '');
+  const [sortBy, setSortBy] = useState(initialSortBy || '');
+
+  useEffect(() => {
+    setSortBy(initialSortBy || '');
+  }, [initialSortBy]);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
