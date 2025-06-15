@@ -1,7 +1,7 @@
 import styles from './page.module.css';
 import { Icon } from '@/app/components/ui/icon/icon';
 
-export default function MoviesLayout({
+export default async function ContentListLayout({
   children,
 }: {
   children: React.ReactNode;

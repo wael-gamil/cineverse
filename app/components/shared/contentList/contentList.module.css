@@ -1,11 +1,11 @@
-.moviesList {
+.contentList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
   gap: var(--space-md);
   justify-items: center;
 }
 
-.moviesList > * {
+.contentList > * {
   max-width: 275px;
   min-width: 275px;
 }

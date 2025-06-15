@@ -1,6 +1,6 @@
 export type FilterType = '' | 'MOVIE' | 'SERIES';
 
-export type Movie = {
+export type Content = {
   id: number;
   title: string;
   overview: string;
@@ -11,6 +11,7 @@ export type Movie = {
   slug: string;
   type?: FilterType;
 };
+
 export type MovieDetails = {
   id: number;
   title: string;
