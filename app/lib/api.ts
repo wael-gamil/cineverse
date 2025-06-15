@@ -36,7 +36,7 @@ export const getMovies = async (
     lang?: string;
     sortBy?: string;
   },
-  page = 1
+  page = 0
 ): Promise<{ content: Movie[]; totalPages: number; currentPage: number }> => {
   try {
     //applying filters
@@ -51,14 +51,14 @@ export const getMovies = async (
     Object.entries(filterMap).forEach(([key, value]) => {
       value && query.set(key, value);
     });
-    const url = `contents/filter?type=MOVIE&${query.toString()}&page=${page}`;
+    const url = `contents/filter?type=MOVIE&${query.toString()}&page=${page}&size=24`;
     //fetching data
     const rawData = await fetcher(url, {});
     if (!rawData) {
       return {
         content: [],
         totalPages: 0,
-        currentPage: 1,
+        currentPage: 0,
       };
     }
     //constructing movie data
@@ -82,14 +82,14 @@ export const getMovies = async (
     return {
       content: [],
       totalPages: 0,
-      currentPage: 1,
+      currentPage: 0,
     };
   }
 };
 
 export const getSearchResults = async (
   query: string,
-  page = 1
+  page = 0
 ): Promise<{ content: Movie[]; totalPages: number; currentPage: number }> => {
   try {
     const url = `contents/search?q${query && `=${query}`}&page=${page}`;
