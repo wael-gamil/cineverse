@@ -1,5 +1,15 @@
 export type FilterType = '' | 'MOVIE' | 'SERIES';
 
+export type ContentType = 'MOVIE' | 'SERIES';
+
+export type Filters = {
+  genres?: string[];
+  year?: string;
+  rate?: string;
+  lang?: string;
+  sortBy?: string;
+};
+
 export type Content = {
   id: number;
   title: string;
@@ -25,23 +35,22 @@ export type MovieDetails = {
   language: string;
   productionCountry: string;
 };
-export type Crew = {
-  director: {
-    id: number;
-    name: string;
-    path: string;
-  };
-  casts: Array<Cast>;
-};
-export type Cast = {
+export type Person = {
   id: number;
   name: string;
-  characterName: string;
   path: string;
 };
 
+export type Director = Person;
+export type CastMember = Person & {
+  characterName: string;
+};
+export type Credits = {
+  director: Director;
+  casts: CastMember[];
+};
 export type Trailer = {
-  trailerUrl: string;
+  trailer: string;
 };
 export type Provider = {
   name: string;
@@ -79,9 +88,136 @@ export type FilterOpt = {
   multiple: boolean;
 };
 
-// export type MediaItem = {
-//   id: string;
-//   title: string;
-//   image: string;
-//   type: FilterType;
-// };
+export type BaseContent = {
+  id: number;
+  title: string;
+  overview: string;
+  posterPath: string;
+  releaseDate: string;
+};
+
+export type Movie = BaseContent & {
+  backdropPath: string;
+  runtime: number;
+  language: string;
+  productionCountry: string;
+  imdbRate: number;
+  platformRate: number;
+  genres: string[];
+  type: 'movie';
+};
+
+export type Series = BaseContent & {
+  backdropPath: string;
+  language: string;
+  productionCountry: string;
+  imdbRate: number;
+  platformRate: number;
+  numberOfSeasons: number;
+  numberOfEpisodes: number;
+  status: 'Continuing' | 'Ended';
+  genres: string[];
+  type: 'series';
+};
+
+export type Season = BaseContent & {
+  seasonNumber: number;
+  rate: number;
+  numberOfEpisodes: number;
+  type: 'season';
+};
+
+export type Episode = BaseContent & {
+  episodeNumber: number;
+  rate: number;
+  runTime: number;
+  type: 'episode';
+};
+
+export type ContentDetailsType = Movie | Series | Season | Episode;
+
+export type NormalizedContent = {
+  type: 'movie' | 'series' | 'season' | 'episode';
+  id: number;
+  title: string;
+  description: string;
+  releaseDate: string;
+  imageUrl: string;
+  backgroundUrl: string;
+  runtime?: number;
+  imdbRate?: number;
+  platformRate?: number;
+  genres?: string[];
+  status?: 'Continuing' | 'Ended';
+  additionalInfo?: string[];
+};
+
+export function normalizeContent(
+  data: Movie | Series | Season | Episode
+): NormalizedContent {
+  if ('runtime' in data) {
+    // Movie
+    return {
+      type: 'movie',
+      id: data.id,
+      title: data.title,
+      description: data.overview,
+      releaseDate: data.releaseDate,
+      imageUrl: data.posterPath,
+      backgroundUrl: data.backdropPath,
+      runtime: data.runtime,
+      imdbRate: data.imdbRate,
+      platformRate: data.platformRate,
+      genres: data.genres,
+    };
+  }
+
+  if ('numberOfSeasons' in data) {
+    // Series
+    return {
+      type: 'series',
+      id: data.id,
+      title: data.title,
+      description: data.overview,
+      releaseDate: data.releaseDate,
+      imageUrl: data.posterPath,
+      backgroundUrl: data.backdropPath,
+      imdbRate: data.imdbRate,
+      platformRate: data.platformRate,
+      genres: data.genres,
+      status: data.status,
+      additionalInfo: [
+        `${data.numberOfSeasons} seasons`,
+        `${data.numberOfEpisodes} episodes`,
+      ],
+    };
+  }
+
+  if ('seasonNumber' in data) {
+    // Season
+    return {
+      type: 'season',
+      id: data.id,
+      title: data.title,
+      description: data.overview,
+      releaseDate: data.releaseDate,
+      imageUrl: data.posterPath,
+      backgroundUrl: '', // Optional
+      imdbRate: data.rate,
+      additionalInfo: [`${data.numberOfEpisodes} episodes`],
+    };
+  }
+
+  // Episode
+  return {
+    type: 'episode',
+    id: data.id,
+    title: data.title,
+    description: data.overview,
+    releaseDate: data.releaseDate,
+    imageUrl: data.posterPath,
+    backgroundUrl: '', // Optional
+    imdbRate: data.rate,
+    runtime: data.runTime,
+  };
+}

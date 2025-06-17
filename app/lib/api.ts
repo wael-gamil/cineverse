@@ -1,24 +1,32 @@
 import {
   Content,
-  MovieDetails,
-  Crew,
-  Trailer,
-  Provider,
-  Review,
-  Stats,
   FilterOpt,
+  Filters,
+  ContentType,
+  Movie,
+  Series,
+  Season,
+  Episode,
+  Trailer,
+  Review,
+  Provider,
+  Stats,
+  Credits,
 } from '@/app/constants/types/movie';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 const fetcher = async function fetcher(
   query: string,
-  params: Record<string, any>
+  revalidateSeconds: number = 60
 ) {
   const response = await fetch(`${BASE_URL}${query}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+    },
+    next: {
+      revalidate: revalidateSeconds,
     },
   });
   if (!response.ok) {
@@ -27,16 +35,6 @@ const fetcher = async function fetcher(
   }
 
   return response.json();
-};
-
-type ContentType = 'MOVIE' | 'SERIES';
-
-type Filters = {
-  genres?: string[];
-  year?: string;
-  rate?: string;
-  lang?: string;
-  sortBy?: string;
 };
 
 export const getContents = async (
@@ -61,7 +59,7 @@ export const getContents = async (
 
     const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=24`;
 
-    const rawData = await fetcher(url, {});
+    const rawData = await fetcher(url);
     if (!rawData) {
       return {
         content: [],
@@ -70,19 +68,18 @@ export const getContents = async (
       };
     }
 
-    const movies: Content[] = rawData.content.map((movie: any) => ({
-      id: movie.id,
-      title: movie.title,
-      overview: movie.overview,
-      releaseDate: movie.releaseDate,
-      imdbRating: movie.rate,
-      genres: movie.genres,
-      posterUrl: movie.posterPath,
-      slug: movie.slug,
+    const content: Content[] = rawData.content.map((content: any) => ({
+      id: content.id,
+      title: content.title,
+      overview: content.overview,
+      releaseDate: content.releaseDate,
+      imdbRating: content.rate,
+      genres: content.genres,
+      posterUrl: content.posterPath,
+      slug: content.slug,
     }));
-
     return {
-      content: movies,
+      content: content,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
     };
@@ -95,15 +92,29 @@ export const getContents = async (
     };
   }
 };
-
+export const getFilterOptions = async (): Promise<FilterOpt[]> => {
+  try {
+    const rawData = await fetcher(`contents/filter/options`);
+    const filteredData = rawData.filter(
+      (data: { key: string }) => data.key !== 'type' && data.key !== 'sortBy'
+    );
+    return filteredData;
+  } catch (error) {
+    throw error;
+  }
+};
 export const getSearchResults = async (
   query: string,
   page = 0
-): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
+): Promise<{
+  contents: Content[];
+  totalPages: number;
+  currentPage: number;
+}> => {
   try {
     const url = `contents/search?q${query && `=${query}`}&page=${page}`;
-    const rawData = await fetcher(url, {});
-    const movies: Content[] = rawData.content.map((movie: any) => ({
+    const rawData = await fetcher(url);
+    const contents: Content[] = rawData.content.map((movie: any) => ({
       id: movie.id,
       title: movie.title,
       overview: movie.overview,
@@ -116,7 +127,7 @@ export const getSearchResults = async (
     }));
 
     return {
-      content: movies,
+      contents: contents,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
     };
@@ -124,70 +135,107 @@ export const getSearchResults = async (
     throw error;
   }
 };
-export const getMovieDetails = async (slug: string): Promise<MovieDetails> => {
+export const getContentDetails = async (
+  slug: string
+): Promise<Movie | Series> => {
   try {
-    const rawData = await fetcher(`contents/${slug}`, {});
-    if (!rawData) {
-      throw new Error('Movie not found');
+    const rawData = await fetcher(`contents/${slug}`, 300);
+    if ('numberOfSeasons' in rawData) {
+      return { ...rawData, type: 'series' } as Series;
+    } else {
+      return { ...rawData, type: 'movie' } as Movie;
     }
-
-    const movieDetails: MovieDetails = {
-      id: rawData.id,
-      title: rawData.title,
-      overview: rawData.overview,
-      releaseDate: rawData.releaseDate,
-      imdbRating: rawData.imdbRate,
-      platformRating: rawData.platformRate,
-      genres: rawData.genres,
-      posterUrl: rawData.posterPath,
-      runtime: rawData.runtime,
-      language: rawData.language,
-      productionCountry: rawData.productionCountry,
-    };
-    return movieDetails;
   } catch (error) {
-    console.error('Error fetching movie details:', error);
     throw error;
   }
 };
+export const getAllSeasonDetails = async (id: number): Promise<Season[]> => {
+  try {
+    const rawData = await fetcher(`contents/${id}/seasons`);
+    return rawData as Season[];
+  } catch (error) {
+    throw error;
+  }
+};
+export const getSeasonDetails = async (
+  seriesId: number,
+  seasonNumber: number
+): Promise<Season> => {
+  try {
+    const rawData = await fetcher(
+      `contents/${seriesId}/seasons/${seasonNumber}`
+    );
+    return rawData as Season;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getAllEpisodeDetails = async (
+  seriesId: number,
+  seasonNumber: number
+): Promise<Episode[]> => {
+  try {
+    const rawData = await fetcher(
+      `contents/${seriesId}/seasons/${seasonNumber}/episodes`
+    );
+    return rawData as Episode[];
+  } catch (error) {
+    throw error;
+  }
+};
+export const getEpisodeDetails = async (
+  seriesId: number,
+  seasonNumber: number,
+  episodeNumber: number
+): Promise<Episode> => {
+  try {
+    const rawData = await fetcher(
+      `contents/${seriesId}/seasons/${seasonNumber}/episodes/${episodeNumber}`
+    );
+    return rawData as Episode;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getContentTrailer = async (id: number): Promise<Trailer> => {
   try {
-    const rawData = await fetcher(`contents/${id}/trailer`, {});
-    if (!rawData) {
-      return {
-        trailerUrl: 'https://www.youtube.com/watch?v=UaVTIH8mujA',
-      };
-    }
-    const trailer: Trailer = {
-      trailerUrl: rawData.trailer,
-    };
-    return trailer;
-  } catch (error) {
-    console.error('Error fetching trailer:', error);
-    throw error;
-  }
-};
-export const getFilterOptions = async (): Promise<FilterOpt[]> => {
-  try {
-    const rawData = await fetcher(`contents/filter/options`, {});
-    const filteredData = rawData.filter(
-      (data: { key: string }) => data.key !== 'type' && data.key !== 'sortBy'
-    );
-    return filteredData;
+    const rawData = await fetcher(`contents/${id}/trailer`);
+    return rawData as Trailer;
   } catch (error) {
     throw error;
   }
 };
 
-// export const getMovieDetails = (id: number): Promise<MovieDetails> =>
-//   fetcher(`movies/${id}`, {});
-// export const getMovieCrew = (id: number): Promise<Crew> =>
-//   fetcher(`movies/${id}/cast`, {});
-// export const getMovieTrailer = (id: number): Promise<Trailer> =>
-//   fetcher(`movies/${id}/trailer`, {});
-// export const getMovieProviders = (id: number): Promise<Provider[]> =>
-//   fetcher(`movies/${id}/provider`, {});
-// export const getMovieReviews = (id: number): Promise<Review[]> =>
-//   fetcher(`movies/${id}/review`, {});
-// export const getMovieStats = (id: number): Promise<Stats> =>
-//   fetcher(`movies/${id}/stats`, {});
+export const getContentProviders = async (id: number): Promise<Provider[]> => {
+  try {
+    const rawData = await fetcher(`contents/${id}/providers`);
+    return rawData as Provider[];
+  } catch (error) {
+    throw error;
+  }
+};
+export const getContentStats = async (id: number): Promise<Stats> => {
+  try {
+    const rawData = await fetcher(`contents/${id}/stats`);
+    return rawData as Stats;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getContentReviews = async (id: number): Promise<Review[]> => {
+  try {
+    const rawData = await fetcher(`contents/${id}/reviews`);
+    return rawData as Review[];
+  } catch (error) {
+    throw error;
+  }
+};
+export const getContentCredits = async (id: number): Promise<Credits> => {
+  try {
+    const rawData = await fetcher(`contents/${id}/credits`);
+    return rawData as Credits;
+  } catch (error) {
+    throw error;
+  }
+};

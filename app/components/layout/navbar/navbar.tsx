@@ -7,11 +7,25 @@ import NavLinks from '../../ui/navLinks/navLinks';
 import SearchBar from '../../ui/search/searchBar';
 import Button from '../../ui/button/button';
 import useIsMobile from '@/app/hooks/useIsMobile';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isShrunk, setIsShrunk] = useState(false);
   const isMobile = useIsMobile(850);
+
+  const pathname = usePathname();
+
+  const allowedPathsWithSpacer = [
+    '/explore',
+    '/reviews',
+    '/search',
+    '/watchlist',
+    '/',
+  ];
+  const showSpacer = allowedPathsWithSpacer.some(
+    path => pathname === path || pathname.startsWith(`${path}/`)
+  );
 
   const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
   const closeMenu = useCallback(() => setIsOpen(false), []);
@@ -122,9 +136,11 @@ export default function Navbar() {
         </div>
       </nav>
       {/* Spacer to preserve layout when navbar shrinks */}
-      <div
-        className={`${styles.navbarSpacer} ${isShrunk ? styles.shrunk : ''}`}
-      />
+      {showSpacer && (
+        <div
+          className={`${styles.navbarSpacer} ${isShrunk ? styles.shrunk : ''}`}
+        />
+      )}
     </>
   );
 }

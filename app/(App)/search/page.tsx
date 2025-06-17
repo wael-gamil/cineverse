@@ -17,7 +17,7 @@ export default async function Search({
   const query = awaitedSearchParams.q || '';
   const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
 
-  const { content, totalPages, currentPage } = await getSearchResults(
+  const { contents, totalPages, currentPage } = await getSearchResults(
     query,
     page
   );
@@ -40,7 +40,7 @@ export default async function Search({
       </div>
 
       <SearchResult
-        movieRes={content}
+        contents={contents}
         query={query}
         totalPages={totalPages}
         currentPage={currentPage}

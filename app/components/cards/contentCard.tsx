@@ -1,44 +1,43 @@
 'use client';
 import styles from './contentCard.module.css';
-import { Movie } from '@/app/constants/types/movie';
+import { Content } from '@/app/constants/types/movie';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Icon } from '../ui/icon/icon';
 import Button from '../ui/button/button';
-import useIsMobile from '@/app/hooks/useIsMobile'; // adjust path as needed
+import useIsMobile from '@/app/hooks/useIsMobile'; 
 
 type ContentCardProps = {
-  movie: Movie;
+  content: Content;
   displayTypeBadge?: boolean;
   type?: 'movie' | 'tv';
 };
 
 export default function ContentCard({
-  movie,
+  content,
   type,
   displayTypeBadge,
 }: ContentCardProps) {
   const router = useRouter();
   const isMobile = useIsMobile();
-
   return (
     <div
       className={styles.cardWrapper}
-      onClick={() => router.push(`/${movie.slug}`)}
+      onClick={() => router.push(`/${content.slug}`)}
     >
       {/* Poster with overlay */}
       <Image
-        src={movie.posterUrl || '/placeholder.svg'}
-        alt={movie.title}
+        src={content.posterUrl || '/placeholder.svg'}
+        alt={content.title}
         fill
         sizes='(max-width: 768px) 100vw, 400px'
         className={styles.posterImage}
       />
       <div className={styles.gradientOverlay} />
-      {movie.imdbRating && (
+      {content.imdbRating && (
         <div className={styles.ratingBadge}>
           <Icon name='star' strokeColor='secondary' width={16} />
-          <span>{movie.imdbRating.toFixed(1)}</span>
+          <span>{content.imdbRating.toFixed(1)}</span>
         </div>
       )}
       {displayTypeBadge && (
@@ -48,24 +47,24 @@ export default function ContentCard({
             strokeColor={type === 'tv' ? 'secondary' : 'primary'}
             width={16}
           />
-          <span>{type === 'tv' ? 'Series' : 'Movie'}</span>
+          <span>{type === 'tv' ? 'Series' : 'movie'}</span>
         </div>
       )}
       {/* Show all info always on mobile, else only on hover */}
       {isMobile ? (
-        <div className={styles.movieDetailsMobile}>
-          <h3 className={styles.movieTitle}>{movie.title}</h3>
-          {movie.overview && (
-            <p className={styles.movieOverview}>{movie.overview}</p>
+        <div className={styles.contentDetailsMobile}>
+          <h3 className={styles.contentTitle}>{content.title}</h3>
+          {content.overview && (
+            <p className={styles.contentOverview}>{content.overview}</p>
           )}
 
           <div className={styles.metaInfo}>
             <Icon name='calendar' strokeColor='muted' width={16} />
-            <span>{movie.releaseDate?.split('-')[0]}</span>
+            <span>{content.releaseDate?.split('-')[0]}</span>
           </div>
 
           <div className={styles.genres}>
-            {movie.genres.slice(0, 3).map(genre => (
+            {content.genres.slice(0, 3).map(genre => (
               <span key={genre} className={styles.genreBadge}>
                 {genre}
               </span>
@@ -85,19 +84,19 @@ export default function ContentCard({
             </Button>
           </div>
 
-          <div className={styles.movieDetails}>
-            <h3 className={styles.movieTitle}>{movie.title}</h3>
-            {movie.overview && (
-              <p className={styles.movieOverview}>{movie.overview}</p>
+          <div className={styles.contentDetails}>
+            <h3 className={styles.contentTitle}>{content.title}</h3>
+            {content.overview && (
+              <p className={styles.contentOverview}>{content.overview}</p>
             )}
 
             <div className={styles.metaInfo}>
               <Icon name='calendar' strokeColor='white' width={16} />
-              <span>{movie.releaseDate?.split('-')[0]}</span>
+              <span>{content.releaseDate?.split('-')[0]}</span>
             </div>
 
             <div className={styles.genres}>
-              {movie.genres.slice(0, 3).map(genre => (
+              {content.genres.slice(0, 3).map(genre => (
                 <span key={genre} className={styles.genreBadge}>
                   {genre}
                 </span>
@@ -107,9 +106,9 @@ export default function ContentCard({
         </div>
       )}
       <div className={styles.bottomTitle}>
-        <h3>{movie.title}</h3>
+        <h3>{content.title}</h3>
         <p>
-          {movie.releaseDate?.split('-')[0]} • {movie.genres[0]}
+          {content.releaseDate?.split('-')[0]} • {content.genres[0]}
         </p>
       </div>
     </div>

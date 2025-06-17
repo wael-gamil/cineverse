@@ -37,7 +37,7 @@ export default async function ContentList({ filters, page, fetchData }: Props) {
     <>
       <div className={styles.contentList}>
         {content.map(item => (
-          <ContentCard key={item.id} movie={item} />
+          <ContentCard key={item.id} content={item} />
         ))}
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
