@@ -1,6 +1,6 @@
 'use client';
 import styles from './searchResult.module.css';
-import { FilterType, Movie } from '@/app/constants/types/movie';
+import { FilterType, Content } from '@/app/constants/types/movie';
 import ContentCard from '../../cards/contentCard';
 import Button from '../button/button';
 import Pagination from '../pagination/pagination';
@@ -9,13 +9,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  movieRes: Movie[];
+  contents: Content[];
   query: string;
   currentPage: number;
   totalPages: number;
 };
 export default function SearchResult({
-  movieRes,
+  contents,
   query,
   currentPage,
   totalPages,
@@ -28,7 +28,7 @@ export default function SearchResult({
   ];
   const [activeFilter, setActiveFilter] = useState<FilterType>('');
 
-  const filtered = movieRes.filter(item => {
+  const filtered = contents.filter(item => {
     const matchesQuery = item.title.toLowerCase().includes(query.toLowerCase());
     const matchesFilter = activeFilter === '' || item.type === activeFilter;
     return matchesQuery && matchesFilter;
@@ -76,13 +76,16 @@ export default function SearchResult({
           </div>
         </div>
       ) : (
-        <div className={styles.grid}>
-          {filtered.map(item => (
-            <ContentCard key={item.id} movie={item} />
-          ))}
-        </div>
+        <>
+          <div className={styles.grid}>
+            {filtered.map(item => (
+              <ContentCard key={item.id} content={item} />
+            ))}
+          </div>
+
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
+        </>
       )}
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
 }

@@ -106,11 +106,15 @@ export const getFilterOptions = async (): Promise<FilterOpt[]> => {
 export const getSearchResults = async (
   query: string,
   page = 0
-): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
+): Promise<{
+  contents: Content[];
+  totalPages: number;
+  currentPage: number;
+}> => {
   try {
     const url = `contents/search?q${query && `=${query}`}&page=${page}`;
     const rawData = await fetcher(url);
-    const movies: Content[] = rawData.content.map((movie: any) => ({
+    const contents: Content[] = rawData.content.map((movie: any) => ({
       id: movie.id,
       title: movie.title,
       overview: movie.overview,
@@ -123,7 +127,7 @@ export const getSearchResults = async (
     }));
 
     return {
-      content: movies,
+      contents: contents,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
     };
