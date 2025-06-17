@@ -119,7 +119,7 @@
   opacity: 1;
 }
 
-.movieDetailsMobile {
+.contentDetailsMobile {
   position: relative;
   background: rgba(0, 0, 0, 0.6); /* soft overlay */
   padding: var(--space-md);
@@ -132,28 +132,28 @@
   gap: var(--space-sm);
   z-index: 10;
 }
-.movieDetailsMobile .movieTitle {
+.contentDetailsMobile .contentTitle {
   font-size: var(--font-size-base);
 }
-.movieDetailsMobile .movieOverview {
+.contentDetailsMobile .contentOverview {
   font-size: var(--font-size-sm);
   color: var(--color-muted);
 }
-.movieDetailsMobile .metaInfo {
+.contentDetailsMobile .metaInfo {
   color: var(--color-muted);
 }
 
-.movieDetails {
+.contentDetails {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
-.movieTitle {
+.contentTitle {
   font-size: var(--font-size-lg);
   font-weight: 800;
 }
 
-.movieOverview {
+.contentOverview {
   font-size: var(--font-size-sm);
   line-height: 1.4;
   display: -webkit-box;
