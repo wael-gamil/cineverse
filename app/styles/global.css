@@ -21,6 +21,7 @@
   --color-success-60: rgba(46, 204, 113, 0.6);
   --color-white-20: rgba(255, 255, 255, 0.2);
   --color-primary-20: rgba(31, 142, 241, 0.2);
+  --color-bg-20: rgba(11, 15, 26, 0.2);
 
   /* === Typography (responsive with clamp) === */
   --font-size-sm: clamp(
@@ -73,6 +74,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-white);
   height: 100vh;
+  user-select: none;
 }
 
 @media (prefers-color-scheme: light) {
