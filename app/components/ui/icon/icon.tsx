@@ -7,6 +7,7 @@ type IconName =
   | 'burger'
   | 'close'
   | 'play'
+  | 'pause' // <-- Added pause here
   | 'star'
   | 'plus'
   | 'message-square'
@@ -20,8 +21,17 @@ type IconName =
   | 'sliders-horizontal'
   | 'dot'
   | 'arrow-left'
-  | 'arrow-right';
-
+  | 'arrow-right'
+  | 'chevron-down'
+  | 'expand'
+  | 'contract'
+  | 'volumeoff'
+  | 'volumeup'
+  | 'mute'
+  | 'speaker'
+  | 'speaker-mini'
+  | 'share'
+  | 'popcorn';
 type IconProps = {
   name: IconName;
   className?: string;
@@ -108,6 +118,13 @@ export const Icon = ({
       return (
         <svg {...svgProps}>
           <polygon points='5 3 19 12 5 21 5 3'></polygon>
+        </svg>
+      );
+    case 'pause':
+      return (
+        <svg {...svgProps}>
+          <rect x='6' y='4' width='4' height='16'></rect>
+          <rect x='14' y='4' width='4' height='16'></rect>
         </svg>
       );
     case 'star':
@@ -224,6 +241,122 @@ export const Icon = ({
           <polyline points='12 5 19 12 12 19'></polyline>
         </svg>
       );
+    case 'chevron-down':
+      return (
+        <svg {...svgProps}>
+          <polyline points='6 9 12 15 18 9'></polyline>
+        </svg>
+      );
+    case 'expand':
+      return (
+        <svg {...svgProps}>
+          <polyline points='16 3 21 3 21 8'></polyline>
+          <line x1='14' y1='10' x2='21' y2='3'></line>
+          <polyline points='8 21 3 21 3 16'></polyline>
+          <line x1='10' y1='14' x2='3' y2='21'></line>
+        </svg>
+      );
+    case 'contract':
+      return (
+        <svg {...svgProps}>
+          <polyline points='21 16 21 21 16 21'></polyline>
+          <line x1='21' y1='21' x2='14' y2='14'></line>
+          <polyline points='3 8 3 3 8 3'></polyline>
+          <line x1='3' y1='3' x2='10' y2='10'></line>
+        </svg>
+      );
+    case 'volumeoff':
+      return (
+        <svg {...svgProps}>
+          <polygon points='11 5 6 9H2v6h4l5 4V5z'></polygon>
+          <line x1='23' y1='9' x2='17' y2='15'></line>
+          <line x1='17' y1='9' x2='23' y2='15'></line>
+        </svg>
+      );
+    case 'volumeup':
+      return (
+        <svg {...svgProps}>
+          <polygon points='11 5 6 9H2v6h4l5 4V5z'></polygon>
+          <path d='M19 7c1.5 1.5 2.5 3.5 2.5 5.5s-1 4-2.5 5.5'></path>
+          <path d='M15 9.5c.7.7 1.5 1.7 1.5 2.5s-.8 1.8-1.5 2.5'></path>
+        </svg>
+      );
+    case 'mute':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          {/* Speaker shape */}
+          <polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5' />
+
+          {/* Mute cross (X) */}
+          <line x1='18' y1='9' x2='23' y2='15' />
+          <line x1='23' y1='9' x2='18' y2='15' />
+        </svg>
+      );
+    case 'speaker':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          {/* Speaker shape */}
+          <polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5' />
+          {/* Volume waves */}
+          <path d='M15 9c1.5 1.5 1.5 4.5 0 6' />
+          <path d='M17.5 6.5c3 3 3 8 0 11' />
+        </svg>
+      );
+    case 'speaker-mini':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          {/* Speaker shape */}
+          <polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5' />
+          {/* Volume waves */}
+          <path d='M15 9c1.5 1.5 1.5 4.5 0 6' />
+        </svg>
+      );
+    case 'share':
+      return (
+        <svg {...svgProps}>
+          <circle cx='18' cy='5' r='3'></circle>
+          <circle cx='6' cy='12' r='3'></circle>
+          <circle cx='18' cy='19' r='3'></circle>
+          <line x1='8.59' y1='13.51' x2='15.42' y2='17.49'></line>
+          <line x1='15.41' y1='6.51' x2='8.59' y2='10.49'></line>
+        </svg>
+      );
+    case 'popcorn':
+      return (
+        <span
+          className={`${className} ${styles.icon} ${colorClass} ${
+            hide && styles.hide
+          }`}
+          style={{ fontSize: typeof width === 'number' ? `${width}px` : width }}
+        >
+          🍿
+        </span>
+      );
+
     default:
       return null;
   }
