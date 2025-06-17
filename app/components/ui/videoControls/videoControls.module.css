@@ -1,0 +1,107 @@
+.controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: var(--color-bg-60);
+  backdrop-filter: blur(16px);
+  padding: var(--space-sm) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  z-index: 10000;
+  color: var(--color-white);
+  font-family: inherit;
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.time {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.rightSection {
+  display: flex;
+  gap: var(--space-lg);
+}
+.controlBtn {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.controlBtn:hover {
+  background: var(--color-white-20);
+}
+
+.volumeWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.volumePopup {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-width 0.3s ease;
+}
+
+.volumeWrapper:hover .volumePopup {
+  opacity: 1;
+  max-width: 100px;
+}
+
+.closeBtn {
+  font-size: var(--font-size-lg);
+  background: var(--color-white-20);
+  border: none;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.closeBtn:hover {
+  background: var(--color-danger-60);
+}
+.progress,
+.volumeBar {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--color-muted);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+.progress::-webkit-slider-thumb,
+.volumeBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: var(--shadow-blue-glow);
+  opacity: 0;
+}
+.progress:hover::-webkit-slider-thumb,
+.volumeBar::-webkit-slider-thumb {
+  opacity: 1;
+}
