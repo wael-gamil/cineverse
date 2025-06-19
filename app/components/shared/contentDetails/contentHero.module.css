@@ -3,6 +3,8 @@
   position: relative;
   height: 100%;
   overflow: hidden;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
 }
 
 /* === Background Layers === */
@@ -159,8 +161,8 @@
   box-shadow: var(--shadow-orange-glow);
 }
 .statusRed {
-  background: var(--color-success-60);
-  box-shadow: var(--shadow-success-glow);
+  background: var(--color-danger-60);
+  box-shadow: var(--shadow-danger-glow);
 }
 /* === Genres === */
 .genreList {
@@ -189,16 +191,13 @@
   color: var(--color-white-60);
   max-width: 36rem;
   max-height: calc(1.5em * 3); /* Approx. 3 lines */
-  overflow-y: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
   text-shadow: var(--shadow-md);
-  padding-right: 1rem; /* Prevent text cut-off */
-
-  /* Hide scrollbars (cross-browser) */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-}
-.description::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
 }
 .actions {
   display: flex;

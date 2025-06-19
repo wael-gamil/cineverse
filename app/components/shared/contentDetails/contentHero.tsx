@@ -7,12 +7,12 @@ import VideoControls from '../../ui/videoControls/videoControls';
 import Button from '../../ui/button/button';
 import { Icon } from '../../ui/icon/icon';
 
-interface ContentHeroProps {
+type ContentHeroProps = {
   content: NormalizedContent;
   trailerUrl?: string;
   backgroundUrl?: string;
   genres?: string[];
-}
+};
 
 function getYouTubeVideoId(url: string): string {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
@@ -32,6 +32,17 @@ export default function ContentHero({
   const [isMuted, setIsMuted] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const genreList = content.genres || genres;
+  const runtime =
+    content.runtime && !isNaN(Number(content.runtime))
+      ? (() => {
+          const totalMinutes = Number(content.runtime);
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          return hours > 0
+            ? `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`
+            : `${minutes}m`;
+        })()
+      : content.runtime;
   // Load YouTube API once
   useEffect(() => {
     if (!videoId || player) return;
@@ -78,8 +89,15 @@ export default function ContentHero({
 
   // Handle mute/unmute when entering/exiting focus mode
   useEffect(() => {
+    if (!trailerFocusMode && player) {
+      if (isMuted) {
+        player.mute();
+      } else {
+        player.unMute();
+        player.setVolume(20);
+      }
+    }
     if (!player || !trailerFocusMode) return;
-
     const interval = setInterval(() => {
       const currentTime = player.getCurrentTime();
       const duration = player.getDuration();
@@ -90,6 +108,7 @@ export default function ContentHero({
         clearInterval(interval); // Stop checking
       }
     }, 1000); // check every second
+    console.log(isMuted);
 
     return () => clearInterval(interval);
   }, [player, trailerFocusMode]);
@@ -106,6 +125,7 @@ export default function ContentHero({
       setIsMuted(true);
     }
   };
+
   const handlePlayTrailer = () => {
     setIsFadingOut(true);
     setTimeout(() => {
@@ -166,25 +186,30 @@ export default function ContentHero({
               {content.imdbRate && (
                 <div className={styles.infoBox}>
                   <Icon name='star' strokeColor='secondary' />
-                  <p className={styles.infoValue}>{content.imdbRate}</p>
+                  <p className={styles.infoValue}>
+                    {content.imdbRate.toFixed(1)}
+                  </p>
                   <p className={styles.infoLabel}>IMDb</p>
                 </div>
               )}
-              {content.platformRate !== null && (
-                <div className={styles.infoBox}>
-                  <Icon name='popcorn' />
-                  <p className={styles.infoValue}>{content.platformRate}</p>
-                  <p className={styles.infoLabel}>Rating</p>
-                </div>
-              )}
+              {typeof content.platformRate === 'number' &&
+                content.platformRate > 0 && (
+                  <div className={styles.infoBox}>
+                    <Icon name='popcorn' />
+                    <p className={styles.infoValue}>{content.platformRate}</p>
+                    <p className={styles.infoLabel}>Rating</p>
+                  </div>
+                )}
               {content.releaseDate && (
                 <div className={styles.infoBox}>
-                  <p className={styles.infoValue}>{content.releaseDate}</p>
+                  <p className={styles.infoValue}>
+                    {new Date(content.releaseDate).getFullYear()}
+                  </p>
                 </div>
               )}
-              {content.runtime && (
+              {runtime && (
                 <div className={styles.infoBox}>
-                  <p className={styles.infoValue}>{content.runtime} min</p>
+                  <p className={styles.infoValue}>{runtime}</p>
                 </div>
               )}
               {content.status && (
@@ -215,10 +240,14 @@ export default function ContentHero({
             <div className={styles.actions}>
               {videoId && (
                 <Button color='primary' onClick={handlePlayTrailer}>
+                  <Icon name='play' strokeColor='white' />
                   Play Trailer
                 </Button>
               )}
-              <Button color='neutral'>Add to Watchlist</Button>
+              <Button color='neutral'>
+                <Icon name='bookmark' strokeColor='white' />
+                Add to Watchlist
+              </Button>
               <Button
                 color='neutral'
                 onClick={() => {
