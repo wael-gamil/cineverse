@@ -1,6 +1,6 @@
 import styles from '@/app/components/ui/Icon/icon.module.css';
 
-type IconName =
+export type IconName =
   | 'film'
   | 'user'
   | 'search'
@@ -23,6 +23,7 @@ type IconName =
   | 'arrow-left'
   | 'arrow-right'
   | 'chevron-down'
+  | 'chevron-up'
   | 'expand'
   | 'contract'
   | 'volumeoff'
@@ -31,7 +32,20 @@ type IconName =
   | 'speaker'
   | 'speaker-mini'
   | 'share'
-  | 'popcorn';
+  | 'popcorn'
+  | 'tv'
+  | 'clock'
+  | 'languages'
+  | 'bookmark'
+  | 'badge'
+  | 'status'
+  | 'tv-alt'
+  | 'globe'
+  | 'starFilled'
+  | 'PlusCircle'
+  | 'ThumbsUp'
+  | 'MessageSquare'
+  | 'ExternalLink';
 type IconProps = {
   name: IconName;
   className?: string;
@@ -247,6 +261,12 @@ export const Icon = ({
           <polyline points='6 9 12 15 18 9'></polyline>
         </svg>
       );
+    case 'chevron-up':
+      return (
+        <svg {...svgProps}>
+          <polyline points='6 15 12 9 18 15'></polyline>
+        </svg>
+      );
     case 'expand':
       return (
         <svg {...svgProps}>
@@ -356,7 +376,120 @@ export const Icon = ({
           🍿
         </span>
       );
-
+    case 'tv':
+      return (
+        <svg {...svgProps}>
+          <rect x='2' y='7' width='20' height='15' rx='2' ry='2'></rect>
+          <polyline points='17 2 12 7 7 2'></polyline>
+        </svg>
+      );
+    case 'clock':
+      return (
+        <svg {...svgProps}>
+          <circle cx='12' cy='12' r='10'></circle>
+          <polyline points='12 6 12 12 16 14'></polyline>
+        </svg>
+      );
+    case 'languages':
+      return (
+        <svg {...svgProps}>
+          <circle cx='12' cy='12' r='10'></circle>
+          <path d='M4 12h16'></path>
+          <path d='M12 2a15.3 15.3 0 0 1 0 20'></path>
+          <path d='M12 2a15.3 15.3 0 0 0 0 20'></path>
+          <path d='M8 8h8'></path>
+          <path d='M8 16h8'></path>
+        </svg>
+      );
+    case 'bookmark':
+      return (
+        <svg {...svgProps}>
+          <path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'></path>
+        </svg>
+      );
+    case 'badge':
+      return (
+        <svg {...svgProps}>
+          {/* Outer medal circle */}
+          <circle cx='12' cy='12' r='8' />
+          {/* Inner medal circle */}
+          <circle cx='12' cy='12' r='4' />
+          {/* Medal ribbon left */}
+          <rect x='8' y='2' width='2' height='6' rx='1' />
+          {/* Medal ribbon right */}
+          <rect x='14' y='2' width='2' height='6' rx='1' />
+        </svg>
+      );
+    case 'status':
+      return (
+        <svg {...svgProps}>
+          <circle cx='12' cy='12' r='10'></circle>
+          <circle cx='12' cy='12' r='6'></circle>
+          <circle
+            cx='12'
+            cy='12'
+            r='2'
+            fill='currentColor'
+            stroke='none'
+          ></circle>
+        </svg>
+      );
+    case 'tv-alt':
+      return (
+        <svg {...svgProps}>
+          <rect x='3' y='7' width='18' height='13' rx='2' ry='2'></rect>
+          <line x1='8' y1='2' x2='16' y2='2'></line>
+          <line x1='12' y1='2' x2='12' y2='7'></line>
+        </svg>
+      );
+    case 'globe':
+      return (
+        <svg {...svgProps}>
+          <circle cx='12' cy='12' r='10'></circle>
+          <ellipse cx='12' cy='12' rx='10' ry='4'></ellipse>
+          <ellipse cx='12' cy='12' rx='4' ry='10'></ellipse>
+          <line x1='2' y1='12' x2='22' y2='12'></line>
+          <line x1='12' y1='2' x2='12' y2='22'></line>
+        </svg>
+      );
+    case 'starFilled':
+      return (
+        <svg {...svgProps}>
+          <polygon
+            points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'
+            fill='currentColor'
+            stroke='none'
+          />
+        </svg>
+      );
+    case 'PlusCircle':
+      return (
+        <svg {...svgProps}>
+          <circle cx='12' cy='12' r='10' />
+          <line x1='12' y1='8' x2='12' y2='16' />
+          <line x1='8' y1='12' x2='16' y2='12' />
+        </svg>
+      );
+    case 'ThumbsUp':
+      return (
+        <svg {...svgProps}>
+          <path d='M2 10h4l1-4h6l1 4h4l-2 8H4z' />
+        </svg>
+      );
+    case 'MessageSquare':
+      return (
+        <svg {...svgProps}>
+          <path d='M3 3h18v12H3z' />
+          <path d='M3 15l3 3 3-3H3z' />
+        </svg>
+      );
+    case 'ExternalLink':
+      return (
+        <svg {...svgProps}>
+          <path d='M8 4h8v8H8z' />
+          <path d='M12 2v4h4' />
+        </svg>
+      );
     default:
       return null;
   }
