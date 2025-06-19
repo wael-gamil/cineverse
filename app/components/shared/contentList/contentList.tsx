@@ -1,9 +1,10 @@
 // components/shared/ContentList.tsx
-
-import ContentCard from '@/app/components/cards/contentCard';
+import Card from '../../cards/card';
 import Pagination from '@/app/components/ui/pagination/pagination';
 import styles from './contentList.module.css';
 import { Content } from '@/app/constants/types/movie';
+import Badge from '../../ui/badge/badge';
+import { Icon } from '../../ui/icon/icon';
 
 type Filters = {
   genres: string[];
@@ -32,12 +33,49 @@ export default async function ContentList({ filters, page, fetchData }: Props) {
   if (!content || content.length === 0) {
     return <div className={styles.contentList}>No content found.</div>;
   }
-
+  console.log('Content List:', content, totalPages, currentPage);
   return (
     <>
       <div className={styles.contentList}>
         {content.map(item => (
-          <ContentCard key={item.id} content={item} />
+          <Card
+            title={item.title}
+            key={item.id}
+            subtitle={
+              item.releaseDate
+                ? `${item.releaseDate.split('-')[0]} • ${item.genres[0]}`
+                : ''
+            }
+            badges={[
+              {
+                iconName: 'star',
+                color: 'secondary',
+                number: item.imdbRate,
+                position: 'top-left',
+              },
+            ]}
+            imageUrl={item.posterUrl || '/images/placeholder.jpg'}
+            description={item.overview}
+            href={`/${item.slug}`}
+            layout='overlay'
+          >
+            <div className={styles.contentDetails}>
+              <div className={styles.date}>
+                <Icon name='calendar' strokeColor='muted' width={16} />
+                <span>{item.releaseDate?.split('-')[0]}</span>
+              </div>
+              <div className={styles.genres}>
+                {item.genres.slice(0, 3).map(genre => (
+                  <Badge
+                    key={genre}
+                    text={genre}
+                    color='primary'
+                    className={styles.genreBadge}
+                  />
+                ))}
+              </div>
+            </div>
+          </Card>
         ))}
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
