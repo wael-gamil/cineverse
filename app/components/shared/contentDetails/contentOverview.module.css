@@ -1,0 +1,111 @@
+/* === Wrapper === */
+.overview {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: var(--space-md) var(--space-xxl);
+  gap: var(--space-xxl);
+}
+
+@media (min-width: 1024px) {
+  .overview {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+/* === Shared === */
+.heading {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background-color: var(--color-surface-60);
+  padding: var(--space-xl) var(--space-xl);
+  border-radius: var(--radius-lg);
+}
+.outer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* === Left Section === */
+.description {
+  font-size: var(--font-size-lg);
+  color: var(--color-muted);
+  line-height: 1.5;
+  max-width: 50rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* === Stat Card === */
+.card {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+.iconWrapper {
+  background-color: var(--color-white-20);
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+}
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+}
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+.value {
+  font-weight: 600;
+  color: var(--white);
+}
+
+/* === Rating Block === */
+.ratingBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ratingWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.imdbScore {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-white-20);
+}
+
+/* === Stat Row === */
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  flex: 1;
+}
+
+.statValue {
+  font-weight: 600;
+  color: var(--white);
+}
