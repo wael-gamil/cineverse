@@ -102,6 +102,8 @@
   opacity: 0;
 }
 .progress:hover::-webkit-slider-thumb,
+.progress:focus::-webkit-slider-thumb,
+.progress:active::-webkit-slider-thumb,
 .volumeBar::-webkit-slider-thumb {
   opacity: 1;
 }
