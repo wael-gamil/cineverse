@@ -1,84 +1,73 @@
-// 'use client';
+'use client';
 
-// import { useEffect, useRef, useState } from 'react';
-// import OverviewSection from './OverviewSection';
-// import CastCrewSection from './CastCrewSection';
-// import SeasonsEpisodesSection from './SeasonsEpisodesSection';
-// import ReviewsSection from './ReviewsSection';
+import { useEffect, useRef, useState } from 'react';
+import styles from './contentSectionWrapper.module.css';
+import { useIsInViewOnce } from '@/app/hooks/useIsInView';
+import CreditsSection from './creditsSection';
+import ReviewsSection from './reviewsSection';
+import SeasonsSection from './seasonsSection';
+import { Credits, Review, Season } from '@/app/constants/types/movie';
 
-// type SectionType = 'overview' | 'cast' | 'seasons' | 'reviews';
+type SectionType = 'credits' | 'seasons' | 'reviews';
 
-// interface Props {
-//   section: SectionType;
-//   slug: string;
-// }
+type ContentSectionWrapperProps = {
+  section: SectionType;
+  id: number;
+};
 
-// export default function ContentSectionWrapper({ section, slug }: Props) {
-//   const ref = useRef<HTMLDivElement | null>(null);
-//   const [isVisible, setIsVisible] = useState(false);
-//   const [data, setData] = useState<any>(null);
+export default function ContentSectionWrapper({
+  section,
+  id,
+}: ContentSectionWrapperProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<any>(null);
+  const isVisible = useIsInViewOnce(ref, '0px', 0.6);
 
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(
-//       ([entry]) => {
-//         if (entry.isIntersecting) {
-//           setIsVisible(true);
-//           observer.disconnect();
-//         }
-//       },
-//       { rootMargin: '200px' }
-//     );
+  useEffect(() => {
+    if (!isVisible || data) return;
 
-//     if (ref.current) observer.observe(ref.current);
-//     return () => observer.disconnect();
-//   }, []);
+    const fetchData = async () => {
+      try {
+        let response;
+        switch (section) {
+          case 'credits':
+            response = await fetch(`/api/proxy/credits?id=${id}`);
+            break;
+          case 'reviews':
+            response = await fetch(`/api/proxy/reviews?id=${id}`);
+            break;
+          case 'seasons':
+            response = await fetch(`/api/proxy/seasons?id=${id}`);
+            break;
+          default:
+            return;
+        }
 
-//   useEffect(() => {
-//     if (!isVisible || data) return;
+        if (!response.ok) {
+          console.error(`Failed to fetch ${section}:`, response.status);
+          return;
+        }
 
-//     const fetchData = async () => {
-//       let result;
-//       switch (section) {
-//         case 'overview':
-//           result = await fetch(`/api/content/stats?slug=${slug}`).then(res =>
-//             res.json()
-//           );
-//           break;
-//         case 'cast':
-//           result = await fetch(`/api/content/cast?slug=${slug}`).then(res =>
-//             res.json()
-//           );
-//           break;
-//         case 'seasons':
-//           result = await fetch(`/api/content/seasons?slug=${slug}`).then(res =>
-//             res.json()
-//           );
-//           break;
-//         case 'reviews':
-//           result = await fetch(`/api/content/reviews?slug=${slug}`).then(res =>
-//             res.json()
-//           );
-//           break;
-//       }
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        console.error(`Fetch error for ${section}:`, err);
+      }
+    };
 
-//       setData(result);
-//     };
+    fetchData();
+  }, [isVisible, id, section, data]);
 
-//     fetchData();
-//   }, [isVisible, slug, section, data]);
-
-//   if (!data) return <div ref={ref} className='min-h-[300px]' />;
-
-//   switch (section) {
-//     case 'overview':
-//       return <OverviewSection data={data} />;
-//     case 'cast':
-//       return <CastCrewSection data={data} />;
-//     case 'seasons':
-//       return <SeasonsEpisodesSection data={data} />;
-//     case 'reviews':
-//       return <ReviewsSection data={data} />;
-//     default:
-//       return null;
-//   }
-// }
+  if (!data) return <div ref={ref} className={styles.container} />;
+  console.log(`Rendering ${section} section with data:`, data);
+  switch (section) {
+    case 'credits':
+      return <CreditsSection data={data as Credits} />;
+    case 'seasons':
+      return <SeasonsSection data={data as Season[]} seriesId={id} />;
+    case 'reviews':
+      return <ReviewsSection data={data as Review[]} />;
+    default:
+      return null;
+  }
+}
