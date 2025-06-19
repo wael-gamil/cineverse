@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isShrunk, setIsShrunk] = useState(false);
-  const isMobile = useIsMobile(850);
+  const isMobile = useIsMobile(930);
 
   const pathname = usePathname();
 

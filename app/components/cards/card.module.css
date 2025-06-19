@@ -1,0 +1,160 @@
+.cardWrapper {
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.cardWrapper:hover {
+  transform: scale(1.03);
+  box-shadow: var(--shadow-blue-glow);
+}
+
+/* === IMAGE WRAPPER === */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius-lg);
+  transition: transform 0.6s ease;
+}
+
+/* === GRADIENT OVERLAY (ONLY FOR OVERLAY MODE) === */
+.gradientOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  z-index: 2;
+}
+
+/* === HOVER OVERLAY === */
+.hoverOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.95),
+    rgba(31, 128, 224, 0.18),
+    rgba(0, 0, 0, 0.98)
+  );
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-lg);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  z-index: 100;
+}
+
+.cardWrapper:hover .hoverOverlay {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* === INFO BUTTON === */
+.infoButtonWrapper {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 4;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.cardWrapper:hover .infoButtonWrapper {
+  opacity: 1;
+}
+
+/* === BELOW LAYOUT DETAILS === */
+.belowDetails {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background: var(--color-surface-70);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* === CONTENT STYLING (SHARED) === */
+.contentTitle {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  line-height: 1.2;
+  color: var(--color-white);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contentOverview {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contentDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* === BADGE POSITIONING (FOR OVERLAY LAYOUT) === */
+.badge {
+  position: absolute;
+  top: var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
+  background-color: var(--color-surface-60);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--color-white);
+  z-index: 10;
+  box-shadow: var(--shadow-md);
+}
+
+.top-left {
+  left: var(--space-md);
+}
+
+.top-right {
+  right: var(--space-md);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .hoverOverlay {
+    display: none;
+  }
+
+  .infoButtonWrapper {
+    display: none;
+  }
+}

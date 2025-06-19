@@ -1,0 +1,38 @@
+import { Credits } from '@/app/constants/types/movie';
+import styles from './creditsSection.module.css';
+import Card from '../../cards/card';
+
+type CreditsSectionProps = {
+  data: Credits;
+};
+
+export default function CreditsSection({ data }: CreditsSectionProps) {
+  return (
+    <section className={styles.section}>
+      {/* Section Header */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.heading}>Cast & Crew</h2>
+      </div>
+
+      {/* Cast Grid */}
+      <div className={styles.creditsGrid}>
+        {/* Director Card */}
+        <Card
+          title={data.director.name}
+          description='Director'
+          imageUrl={data.director.path}
+          layout='below'
+        />
+        {data.casts.map((actor, index) => (
+          <Card
+            key={index}
+            title={actor.name}
+            description={actor.characterName}
+            imageUrl={actor.path}
+            layout='below'
+          />
+        ))}
+      </div>
+    </section>
+  );
+}

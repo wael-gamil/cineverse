@@ -15,6 +15,9 @@ export default function VideoControls({ player, onClose }: VideoControlsProps) {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const croppedDuration = Math.max(0, duration - 10);
+  const fillPercent = croppedDuration
+    ? Math.min(100, Math.max(0, (progress / croppedDuration) * 100))
+    : 0;
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setFullscreen] = useState(false);
   const hideTimeout = useRef<number | undefined>(undefined);
@@ -105,9 +108,7 @@ export default function VideoControls({ player, onClose }: VideoControlsProps) {
         onChange={onSeek}
         className={styles.progress}
         style={{
-          background: `linear-gradient(to right, var(--color-primary) ${
-            (progress / croppedDuration) * 100
-          }%, var(--color-muted) ${(progress / croppedDuration) * 100}%)`,
+          background: `linear-gradient(to right, var(--color-primary) ${fillPercent}%, var(--color-muted) ${fillPercent}%)`,
         }}
       />
 

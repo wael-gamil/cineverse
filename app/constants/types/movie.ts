@@ -15,7 +15,7 @@ export type Content = {
   title: string;
   overview: string;
   releaseDate: string;
-  imdbRating: number;
+  imdbRate: number;
   genres: string[];
   posterUrl: string;
   slug: string;
@@ -27,7 +27,7 @@ export type MovieDetails = {
   title: string;
   overview: string;
   releaseDate: string;
-  imdbRating: number;
+  imdbRate: number;
   platformRating: number;
   genres: string[];
   posterUrl: string;
@@ -149,7 +149,10 @@ export type NormalizedContent = {
   platformRate?: number;
   genres?: string[];
   status?: 'Continuing' | 'Ended';
-  additionalInfo?: string[];
+  language?: string;
+  productionCountry?: string;
+  numberOfSeasons?: number;
+  numberOfEpisodes?: number;
 };
 
 export function normalizeContent(
@@ -169,6 +172,8 @@ export function normalizeContent(
       imdbRate: data.imdbRate,
       platformRate: data.platformRate,
       genres: data.genres,
+      language: data.language,
+      productionCountry: data.productionCountry,
     };
   }
 
@@ -186,10 +191,10 @@ export function normalizeContent(
       platformRate: data.platformRate,
       genres: data.genres,
       status: data.status,
-      additionalInfo: [
-        `${data.numberOfSeasons} seasons`,
-        `${data.numberOfEpisodes} episodes`,
-      ],
+      language: data.language,
+      productionCountry: data.productionCountry,
+      numberOfEpisodes: data.numberOfEpisodes,
+      numberOfSeasons: data.numberOfSeasons,
     };
   }
 
@@ -204,7 +209,7 @@ export function normalizeContent(
       imageUrl: data.posterPath,
       backgroundUrl: '', // Optional
       imdbRate: data.rate,
-      additionalInfo: [`${data.numberOfEpisodes} episodes`],
+      numberOfEpisodes: data.numberOfEpisodes,
     };
   }
 

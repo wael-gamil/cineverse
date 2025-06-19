@@ -2,8 +2,11 @@ import {
   getContentDetails,
   getSeasonDetails,
   getContentReviews,
+  getContentStats,
 } from '@/app/lib/api';
 import ContentHero from '@/app/components/shared/contentDetails/contentHero';
+import ContentOverview from '@/app/components/shared/contentDetails/contentOverview';
+import ContentSectionWrapper from '@/app/components/shared/contentDetails/contentSectionWrapper';
 import { notFound } from 'next/navigation';
 import { normalizeContent } from '@/app/constants/types/movie';
 export default async function Season({
@@ -23,6 +26,7 @@ export default async function Season({
     contentDetails.id,
     params.seasonNumber
   );
+  const stats = await getContentStats(seasonDetails.id);
   const contentReviews = await getContentReviews(seasonDetails.id);
 
   console.log(contentReviews);
@@ -33,6 +37,13 @@ export default async function Season({
         backgroundUrl={contentDetails.backdropPath}
         genres={contentDetails.genres}
       />
+      <ContentOverview
+        content={normalizeContent(seasonDetails)}
+        totalReviews={stats.totalReviews}
+        watchlistCount={stats.watchlistCount}
+        genres={contentDetails.genres}
+      />
+      <ContentSectionWrapper section='reviews' id={contentDetails.id} />
     </>
   );
 }

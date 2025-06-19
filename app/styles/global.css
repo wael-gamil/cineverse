@@ -24,20 +24,12 @@
   --color-bg-20: rgba(11, 15, 26, 0.2);
 
   /* === Typography (responsive with clamp) === */
-  --font-size-sm: clamp(
-    0.6rem,
-    0.5rem + 1vw,
-    0.875rem
-  ); /* min 9.6px, max 14px */
-  --font-size-base: clamp(
-    0.8rem,
-    0.75rem + 1vw,
-    1rem
-  ); /* min 12.8px, max 16px */
-  --font-size-lg: clamp(1rem, 1rem + 1vw, 1.25rem); /* min 16px, max 20px */
-  --font-size-xl: clamp(1.25rem, 1.2rem + 1vw, 1.5rem); /* min 20px, max 24px */
-  --font-size-xxl: clamp(2rem, 1.8rem + 1vw, 2.5rem); /* min 32px, max 40px */
-
+  --font-size-xs: clamp(0.6rem, 0.1vw + 0.7rem, 0.7rem);
+  --font-size-sm: clamp(0.75rem, 0.2vw + 0.7rem, 1rem); /* 12px–16px */
+  --font-size-base: clamp(0.9rem, 0.6vw + 0.8rem, 1.125rem); /* 14.4px–18px */
+  --font-size-lg: clamp(1.125rem, 1vw + 1rem, 1.375rem); /* 18px–22px */
+  --font-size-xl: clamp(1.25rem, 1.4vw + 1rem, 1.75rem); /* 20px–28px */
+  --font-size-xxl: clamp(2rem, 2.5vw + 1.5rem, 3rem); /* 32px–48px */
   /* === Spacing (responsive with clamp) === */
   --space-xs: clamp(2px, 1px + 0.5vw, 4px);
   --space-sm: clamp(4px, 2px + 1vw, 8px);
