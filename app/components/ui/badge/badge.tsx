@@ -6,8 +6,17 @@ export type BadgeProps = {
   iconName?: IconName;
   text?: string;
   number?: number;
-  color?: 'primary' | 'secondary' | 'muted' | 'white';
+  iconColor?: 'primary' | 'secondary' | 'muted' | 'white';
+  color?: 'color-primary' | 'color-secondary' | 'color-muted' | 'color-white'; // optional for text badges
+  numberColor?:
+    | 'color-primary'
+    | 'color-secondary'
+    | 'color-muted'
+    | 'color-white'; // optional for number badges
+  backgroundColor?: 'bg-primary' | 'bg-secondary' | 'bg-muted' | 'bg-white'; // optional for background badges
   position?: 'top-left' | 'top-right'; // optional for absolutely positioned badges
+  borderRadius?: 'border-md' | 'border-full';
+  size?: 'size-sm' | 'size-md' | 'size-lg';
   className?: string;
   style?: React.CSSProperties;
 };
@@ -16,8 +25,13 @@ export default function Badge({
   iconName,
   text,
   number,
-  color = 'white',
+  iconColor = 'white',
+  color = 'color-white',
+  numberColor = 'color-white',
+  backgroundColor = 'bg-white',
   position,
+  borderRadius = 'border-md',
+  size = 'size-md',
   className = '',
   style,
 }: BadgeProps) {
@@ -25,12 +39,16 @@ export default function Badge({
     <div
       className={`${styles.badge} ${
         position ? styles[position] : ''
-      } ${className}`}
+      } ${className} ${styles[borderRadius]} ${styles[size]} ${
+        styles[backgroundColor]
+      } ${styles[color]}`}
       style={style}
     >
-      {iconName && <Icon name={iconName} strokeColor={color} width={16} />}
+      {iconName && <Icon name={iconName} strokeColor={iconColor} width={16} />}
       {text && <span>{text}</span>}
-      {number !== undefined && <span>{number.toFixed(1)}</span>}
+      {number !== undefined && (
+        <span className={styles[numberColor]}>{number.toFixed(1)}</span>
+      )}
     </div>
   );
 }
