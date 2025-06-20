@@ -21,6 +21,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
           title={data.director.name}
           description='Director'
           imageUrl={data.director.path}
+          imageHeight='image-md'
           layout='below'
         />
         {data.casts.map((actor, index) => (
@@ -29,6 +30,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
             title={actor.name}
             description={actor.characterName}
             imageUrl={actor.path}
+            imageHeight='image-md'
             layout='below'
           />
         ))}
