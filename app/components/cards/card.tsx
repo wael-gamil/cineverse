@@ -20,6 +20,7 @@ type Badge = {
 
 type CardProps = {
   imageUrl?: string | StaticImageData;
+  imageHeight?: 'image-lg' | 'image-md';
   title: string;
   subtitle?: string;
   description?: string;
@@ -32,7 +33,9 @@ type CardProps = {
 
 export default function Card({
   imageUrl = fallbackImage,
+  imageHeight = 'image-lg',
   title,
+  subtitle,
   description,
   badges = [],
   onClick,
@@ -53,7 +56,7 @@ export default function Card({
 
   return (
     <div className={styles.cardWrapper} onClick={handleClick}>
-      <div className={styles.imageWrapper}>
+      <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
         <Image
           src={imageToUse}
           alt={title}
@@ -62,6 +65,12 @@ export default function Card({
           className={styles.posterImage}
           sizes='(max-width: 768px) 100vw, 400px'
         />
+        {layout === 'overlay' && (
+          <div className={styles.bottomTitle}>
+            <h3>{title}</h3>
+            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+          </div>
+        )}
         {layout === 'overlay' && <div className={styles.gradientOverlay} />}
 
         {layout === 'overlay' && !isMobile && (
@@ -92,7 +101,9 @@ export default function Card({
             iconName={badge.iconName}
             text={badge.text}
             number={badge.number}
-            color={badge.color || 'white'}
+            iconColor={badge.color || 'white'}
+            backgroundColor='bg-muted'
+            borderRadius='border-full'
             position={badge.position}
             className={styles.badge}
           />
