@@ -69,7 +69,8 @@ export default async function ContentList({ filters, page, fetchData }: Props) {
                   <Badge
                     key={genre}
                     text={genre}
-                    color='primary'
+                    color='color-white'
+                    backgroundColor='bg-muted'
                     className={styles.genreBadge}
                   />
                 ))}
