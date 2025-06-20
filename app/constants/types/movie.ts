@@ -74,6 +74,7 @@ export type Review = {
 export type Stats = {
   totalReviews: number;
   watchlistCount: number;
+  platformRate: number;
 };
 
 export type FilterOpt = {
@@ -122,14 +123,14 @@ export type Series = BaseContent & {
 
 export type Season = BaseContent & {
   seasonNumber: number;
-  rate: number;
+  imdbRate: number;
   numberOfEpisodes: number;
   type: 'season';
 };
 
 export type Episode = BaseContent & {
   episodeNumber: number;
-  rate: number;
+  imdbRate: number;
   runTime: number;
   type: 'episode';
 };
@@ -208,7 +209,7 @@ export function normalizeContent(
       releaseDate: data.releaseDate,
       imageUrl: data.posterPath,
       backgroundUrl: '', // Optional
-      imdbRate: data.rate,
+      imdbRate: data.imdbRate,
       numberOfEpisodes: data.numberOfEpisodes,
     };
   }
@@ -222,7 +223,7 @@ export function normalizeContent(
     releaseDate: data.releaseDate,
     imageUrl: data.posterPath,
     backgroundUrl: '', // Optional
-    imdbRate: data.rate,
+    imdbRate: data.imdbRate,
     runtime: data.runTime,
   };
 }

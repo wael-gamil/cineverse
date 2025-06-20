@@ -30,6 +30,7 @@ export default async function MovieOrSeriesPage({
         content={normalizeContent(details)}
         totalReviews={stats.totalReviews}
         watchlistCount={stats.watchlistCount}
+        platformRate={stats.platformRate}
       />
       <ContentSectionWrapper section='credits' id={details.id} />
       {details.type === 'series' && (
