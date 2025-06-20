@@ -1,9 +1,11 @@
 /* === Wrapper === */
 .overview {
-  display: grid;
-  grid-template-columns: 1fr;
+  /* display: grid;
+  grid-template-columns: 1fr; */
+  display: flex;
+  flex-direction: column;
   padding: var(--space-md) var(--space-xxl);
-  gap: var(--space-xxl);
+  gap: var(--space-md);
 }
 
 @media (min-width: 1024px) {
@@ -20,7 +22,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   background-color: var(--color-surface-60);
   padding: var(--space-xl) var(--space-xl);
   border-radius: var(--radius-lg);
@@ -28,20 +30,22 @@
 .outer {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: var(--space-md);
 }
 
 /* === Left Section === */
 .description {
   font-size: var(--font-size-lg);
-  color: var(--color-muted);
   line-height: 1.5;
   max-width: 50rem;
 }
-
+.description p {
+  color: var(--color-muted);
+}
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
   gap: var(--space-lg);
 }
 
@@ -59,6 +63,7 @@
 .titleBlock {
   display: flex;
   flex-direction: column;
+  gap: var(--space-sm);
 }
 .label {
   font-size: var(--font-size-sm);
@@ -68,8 +73,12 @@
 .value {
   font-weight: 600;
   color: var(--white);
+  display: flex;
+  gap: var(--space-sm);
 }
-
+.genreBadge {
+  background-color: var(--color-white-20) !important;
+}
 /* === Rating Block === */
 .ratingBlock {
   display: flex;
