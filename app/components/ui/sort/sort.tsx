@@ -34,6 +34,8 @@ export default function Sort({ initialSortBy }: SortProps) {
   const sortOptions = [
     { label: 'Most Recent', value: 'mostRecent' },
     { label: 'Top Rated', value: 'topRated' },
+    { label: 'Popular', value: 'popular' },
+    { label: 'Oldest', value: 'oldest' },
   ];
   return (
     <PanelWrapper
