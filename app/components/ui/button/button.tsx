@@ -3,8 +3,7 @@ import styles from './button.module.css';
 type ButtonProps = {
   children: React.ReactNode;
   variant?: 'solid' | 'outline' | 'ghost';
-  color?: 'primary' | 'neutral';
-  size?: 'small' | 'medium' | 'large';
+  color?: 'primary' | 'neutral' | 'danger';
   ariaLabel?: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -13,14 +12,13 @@ type ButtonProps = {
   align?: 'left' | 'right' | 'center';
   width?: '100%' | 'auto' | string;
   borderRadius?: 'smallRadius' | 'fullRadius';
-  padding?: 'sm' | 'md' | 'lg';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
 };
 
 export default function Button({
   children,
   variant = 'solid',
   color = 'primary',
-  size = 'medium',
   onClick,
   disabled = false,
   hide = false,
@@ -33,7 +31,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`${styles.button} ${styles[variant]} ${styles[size]} ${
+      className={`${styles.button} ${styles[variant]} ${
         hide ? styles.hide : ''
       } ${styles[align]} ${disabled ? styles.disabled : ''} ${
         styles[borderRadius]
