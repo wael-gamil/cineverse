@@ -1,4 +1,4 @@
-import styles from '@/app/components/ui/Icon/icon.module.css';
+import styles from '@/app/components/ui/icon/icon.module.css';
 
 export type IconName =
   | 'film'
@@ -43,7 +43,8 @@ export type IconName =
   | 'globe'
   | 'starFilled'
   | 'PlusCircle'
-  | 'ThumbsUp'
+  | 'thumbUp'
+  | 'thumbDown'
   | 'MessageSquare'
   | 'ExternalLink';
 type IconProps = {
@@ -470,10 +471,32 @@ export const Icon = ({
           <line x1='8' y1='12' x2='16' y2='12' />
         </svg>
       );
-    case 'ThumbsUp':
+    case 'thumbUp':
       return (
-        <svg {...svgProps}>
-          <path d='M2 10h4l1-4h6l1 4h4l-2 8H4z' />
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='1.8'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          <path d='M7 10v10H4V10h3zm5.3-7c.6 0 1 .4 1 1v4h5.6c.9 0 1.4 1 .9 1.7l-2.7 6.7c-.2.5-.6.8-1.1.8H9V10.4l3.3-7.2c.2-.1.4-.2.7-.2z' />
+        </svg>
+      );
+    case 'thumbDown':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='1.8'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          <path d='M17 14V4h3v10h-3zm-5.3 7c-.6 0-1-.4-1-1v-4H5.1c-.9 0-1.4-1-.9-1.7l2.7-6.7c.2-.5.6-.8 1.1-.8H15v8.6l-3.3 7.2c-.2.1-.4.2-.7.2z' />
         </svg>
       );
     case 'MessageSquare':
