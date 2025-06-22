@@ -154,6 +154,7 @@
 
 .bottomTitle {
   position: absolute;
+  width: 100%;
   bottom: 0;
   padding: var(--space-md);
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.9));

@@ -81,6 +81,7 @@ export default function Card({
                 variant='ghost'
                 color='neutral'
                 ariaLabel='show more info'
+                padding='none'
               >
                 <Icon name='info' strokeColor='white' />
               </Button>
