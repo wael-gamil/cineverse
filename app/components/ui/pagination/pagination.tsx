@@ -6,7 +6,7 @@ import { Icon } from '../icon/icon';
 import Button from '../button/button';
 
 type Props = {
-  currentPage: number; 
+  currentPage: number;
   totalPages: number;
 };
 
@@ -22,25 +22,51 @@ export default function Pagination({ currentPage, totalPages }: Props) {
   };
 
   const renderPageNumbers = () => {
-    const pages = [];
+    const pages: (number | string)[] = [];
 
-    for (let i = 1; i <= totalPages; i++) {
-      const isActive = currentPage + 1 === i;
+    const current = currentPage + 1;
 
-      pages.push(
+    // Always show first page
+    pages.push(1);
+
+    // Ellipsis after first if needed
+    if (current > 3) pages.push('...');
+
+    // Pages around current
+    for (let i = current - 1; i <= current + 1; i++) {
+      if (i > 1 && i < totalPages) pages.push(i);
+    }
+
+    // Ellipsis before last if needed
+    if (current < totalPages - 2) pages.push('...');
+
+    // Always show last page
+    if (totalPages > 1) pages.push(totalPages);
+
+    return pages.map((page, idx) => {
+      if (page === '...') {
+        return (
+          <span key={`ellipsis-${idx}`} className={styles.ellipsis}>
+            ...
+          </span>
+        );
+      }
+
+      const isActive = current === page;
+
+      return (
         <Button
-          key={i}
-          onClick={() => onPageChange(i)}
+          key={page}
+          onClick={() => onPageChange(Number(page))}
           borderRadius='fullRadius'
           variant={isActive ? 'solid' : 'outline'}
           color={isActive ? 'primary' : 'neutral'}
+          padding='none'
         >
-          {i}
+          {page}
         </Button>
       );
-    }
-
-    return pages;
+    });
   };
 
   const currentDisplayPage = currentPage + 1;
@@ -53,6 +79,7 @@ export default function Pagination({ currentPage, totalPages }: Props) {
         aria-label='Previous page'
         borderRadius='fullRadius'
         color='neutral'
+        padding='none'
       >
         <Icon name='arrow-left' strokeColor='muted' />
       </Button>
@@ -67,6 +94,7 @@ export default function Pagination({ currentPage, totalPages }: Props) {
         aria-label='Next page'
         borderRadius='fullRadius'
         color='neutral'
+        padding='none'
       >
         <Icon name='arrow-right' strokeColor='muted' />
       </Button>
