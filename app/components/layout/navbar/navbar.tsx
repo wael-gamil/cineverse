@@ -98,7 +98,7 @@ export default function Navbar() {
           isOpen && (
             <div className={styles.navbarMobileMenu}>
               <NavLinks isMobile closeMenu={closeMenu} />
-              <Button align='left' borderRadius='fullRadius'>
+              <Button align='left' borderRadius='fullRadius' padding='none'>
                 <Icon name='user' strokeColor='white' />
               </Button>
             </div>
@@ -109,7 +109,7 @@ export default function Navbar() {
         <div className={styles.navbarActions}>
           <SearchBar />
           {!isMobile ? (
-            <Button borderRadius='fullRadius'>
+            <Button borderRadius='fullRadius' padding='none'>
               <Icon name='user' strokeColor='white' />
             </Button>
           ) : (
@@ -119,10 +119,10 @@ export default function Navbar() {
               <Button
                 variant='ghost'
                 color='neutral'
-                size='small'
                 ariaLabel='Toggle Menu'
                 onClick={toggleMenu}
                 borderRadius='fullRadius'
+                padding='none'
               >
                 <div className={styles.iconWrapper}>
                   <Icon
