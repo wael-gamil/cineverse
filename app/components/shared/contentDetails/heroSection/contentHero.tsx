@@ -194,12 +194,12 @@ export default function ContentHero({
                   <p className={styles.infoLabel}>IMDB</p>
                 </div>
               )} */}
-              {content.imdbRate && (
+              {typeof content.imdbRate === 'number' && content.imdbRate > 0 && (
                 <Badge
                   iconName='starFilled'
                   text='IMDB'
                   color='color-primary'
-                  number={content.imdbRate}
+                  number={Number(content.imdbRate.toFixed(1))}
                   iconColor='secondary'
                   backgroundColor='bg-muted'
                   size='size-lg'
