@@ -3,28 +3,25 @@ import {
   getSeasonDetails,
   getContentReviews,
   getContentStats,
-} from '@/app/lib/api';
-import ContentHero from '@/app/components/shared/contentDetails/heroSection/contentHero';
-import ContentOverview from '@/app/components/shared/contentDetails/overviewSection/contentOverview';
-import ContentSectionWrapper from '@/app/components/shared/contentDetails/contentSectionWrapper';
+} from '@/lib/api';
+import ContentHero from '@/components/shared/contentDetails/heroSection/contentHero';
+import ContentOverview from '@/components/shared/contentDetails/overviewSection/contentOverview';
+import ContentSectionWrapper from '@/components/shared/contentDetails/contentSectionWrapper';
 import { notFound } from 'next/navigation';
-import { normalizeContent } from '@/app/constants/types/movie';
-export default async function Season({
-  params,
-}: {
-  params: { seasonNumber: number; slug: string };
-}) {
-  const contentDetails = await getContentDetails(params.slug);
+import { normalizeContent } from '@/constants/types/movie';
+type SeasonProps = {
+  params: Promise<{ seasonNumber: number; slug: string }>;
+};
+export default async function Season({ params }: SeasonProps) {
+  const { seasonNumber, slug } = await params;
+  const contentDetails = await getContentDetails(slug);
   if (
     contentDetails.type !== 'series' ||
-    contentDetails.numberOfSeasons < params.seasonNumber
+    contentDetails.numberOfSeasons < seasonNumber
   ) {
     notFound();
   }
-  const seasonDetails = await getSeasonDetails(
-    contentDetails.id,
-    params.seasonNumber
-  );
+  const seasonDetails = await getSeasonDetails(contentDetails.id, seasonNumber);
   const stats = await getContentStats(seasonDetails.id);
   return (
     <>

@@ -1,21 +1,22 @@
 // content/[type]/page.tsx
-import ContentList from '@/app/components/shared/contentList/contentList';
-import { getContents } from '@/app/lib/api';
+import ContentList from '@/components/shared/contentList/contentList';
+import { getContents } from '@/lib/api';
 import { notFound } from 'next/navigation';
-import Filter from '@/app/components/ui/filter/filter';
-import Sort from '@/app/components/ui/sort/sort';
-import { getFilterOptions } from '@/app/lib/api';
+import Filter from '@/components/ui/filter/filter';
+import Sort from '@/components/ui/sort/sort';
+import { getFilterOptions } from '@/lib/api';
 import styles from '../page.module.css';
 
 const validTypes = ['movies', 'tv-series'] as const;
 
+type ContentPageProps = {
+  params: Promise<{ type: 'movies' | 'tv-series' }>;
+  searchParams: Promise<{ [key: string]: string }>;
+};
 export default async function ContentPage({
   params,
   searchParams,
-}: {
-  params: { type: 'movies' | 'tv-series' };
-  searchParams: { [key: string]: string };
-}) {
+}: ContentPageProps) {
   const { type } = await params;
   if (!validTypes.includes(type)) return notFound();
 

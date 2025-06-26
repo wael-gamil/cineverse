@@ -1,4 +1,4 @@
-import { Episode } from '@/app/constants/types/movie';
+import { Episode } from '@/constants/types/movie';
 export async function GET(req: Request) {
   const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
   const { searchParams } = new URL(req.url);

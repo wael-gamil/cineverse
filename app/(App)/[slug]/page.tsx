@@ -2,19 +2,20 @@ import {
   getContentDetails,
   getContentTrailer,
   getContentStats,
-} from '@/app/lib/api';
-import { normalizeContent } from '@/app/constants/types/movie';
-import ContentHero from '@/app/components/shared/contentDetails/heroSection/contentHero';
-import ContentOverview from '@/app/components/shared/contentDetails/overviewSection/contentOverview';
-import ContentSectionWrapper from '@/app/components/shared/contentDetails/contentSectionWrapper';
-import SetSeriesStore from '@/app/utils/useSetSeriesStore';
+} from '@/lib/api';
+import { normalizeContent } from '@/constants/types/movie';
+import ContentHero from '@/components/shared/contentDetails/heroSection/contentHero';
+import ContentOverview from '@/components/shared/contentDetails/overviewSection/contentOverview';
+import ContentSectionWrapper from '@/components/shared/contentDetails/contentSectionWrapper';
+import SetSeriesStore from '@/utils/useSetSeriesStore';
+type MovieOrSeriesPageProps = {
+  params: Promise<{ slug: string }>;
+};
 export default async function MovieOrSeriesPage({
   params,
-}: {
-  params: { slug: string };
-}) {
-  const awaitedParams = await params;
-  const details = await getContentDetails(awaitedParams.slug);
+}: MovieOrSeriesPageProps) {
+  const { slug } = await params;
+  const details = await getContentDetails(slug);
   const trailer = await getContentTrailer(details.id);
   const stats = await getContentStats(details.id);
   return (

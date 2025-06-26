@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { inter, geist } from '@/app/constants/fonts';
-import '@/app/styles/global.css';
-import '@/app/styles/reset.css';
-import Navbar from '@/app/components/layout/navbar/navbar';
-import Footer from '@/app/components/layout/footer/footer';
-import { Providers } from '@/app/lib/providers';
+import { inter, geist } from '@/constants/fonts';
+import '@/styles/global.css';
+import '@/styles/reset.css';
+import Navbar from '@/components/layout/navbar/navbar';
+import Footer from '@/components/layout/footer/footer';
+import { Providers } from '@/lib/providers';
 
 export const metadata: Metadata = {
   title: 'CineVerse',

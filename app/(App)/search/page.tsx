@@ -1,21 +1,23 @@
 import styles from './page.module.css';
-import { getSearchResults } from '@/app/lib/api';
-import SearchInput from '@/app/components/ui/search/searchInput';
-import SearchResult from '@/app/components/ui/search/searchResult';
-import ExitButton from '@/app/components/ui/search/exitButton';
+import { getSearchResults } from '@/lib/api';
+import SearchInput from '@/components/ui/search/searchInput';
+import SearchResult from '@/components/ui/search/searchResult';
+import ExitButton from '@/components/ui/search/exitButton';
 
-type SearchProps = {
+type AwaitedSearchParams = {
   q?: string;
   page?: string;
+  [key: string]: string | undefined;
 };
+
 export default async function Search({
   searchParams,
 }: {
-  searchParams: SearchProps;
+  searchParams: Promise<AwaitedSearchParams>;
 }) {
   const awaitedSearchParams = await searchParams;
   const query = awaitedSearchParams.q || '';
-  const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
+  const page = parseInt(awaitedSearchParams.page || '1', 10) - 1;
 
   const { contents, totalPages, currentPage } = await getSearchResults(
     query,

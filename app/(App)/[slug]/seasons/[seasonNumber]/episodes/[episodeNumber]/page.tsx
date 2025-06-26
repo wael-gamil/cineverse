@@ -3,33 +3,34 @@ import {
   getSeasonDetails,
   getEpisodeDetails,
   getContentStats,
-} from '@/app/lib/api';
-import ContentHero from '@/app/components/shared/contentDetails/heroSection/contentHero';
-import ContentOverview from '@/app/components/shared/contentDetails/overviewSection/contentOverview';
-import ContentSectionWrapper from '@/app/components/shared/contentDetails/contentSectionWrapper';
+} from '@/lib/api';
+import ContentHero from '@/components/shared/contentDetails/heroSection/contentHero';
+import ContentOverview from '@/components/shared/contentDetails/overviewSection/contentOverview';
+import ContentSectionWrapper from '@/components/shared/contentDetails/contentSectionWrapper';
 import { notFound } from 'next/navigation';
-import { normalizeContent } from '@/app/constants/types/movie';
+import { normalizeContent } from '@/constants/types/movie';
 
-export default async function Episode({
-  params,
-}: {
-  params: { episodeNumber: number; seasonNumber: number; slug: string };
-}) {
-  const contentDetails = await getContentDetails(params.slug);
+type EpisodeProps = {
+  params: Promise<{
+    episodeNumber: number;
+    seasonNumber: number;
+    slug: string;
+  }>;
+};
+export default async function Episode({ params }: EpisodeProps) {
+  const { episodeNumber, seasonNumber, slug } = await params;
+  const contentDetails = await getContentDetails(slug);
   if (contentDetails.type !== 'series') {
     notFound();
   }
-  const seasonDetails = await getSeasonDetails(
-    contentDetails.id,
-    params.seasonNumber
-  );
-  if (seasonDetails.numberOfEpisodes < params.episodeNumber) {
+  const seasonDetails = await getSeasonDetails(contentDetails.id, seasonNumber);
+  if (seasonDetails.numberOfEpisodes < episodeNumber) {
     notFound();
   }
   const episodeDetails = await getEpisodeDetails(
     contentDetails.id,
-    params.seasonNumber,
-    params.episodeNumber
+    seasonNumber,
+    episodeNumber
   );
   const stats = await getContentStats(episodeDetails.id);
   return (
