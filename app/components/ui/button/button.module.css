@@ -12,15 +12,6 @@
   gap: var(--space-sm);
 }
 
-.sm {
-  padding: var(--space-xs) var(--space-sm);
-}
-.md {
-  padding: var(--space-sm) var(--space-md);
-}
-.lg {
-  padding: var(--space-md) var(--space-lg);
-}
 /* === Variant: Solid === */
 .solid.primary {
   background-color: var(--color-button-blue);
@@ -61,7 +52,9 @@
 }
 
 /* === Variant: Ghost === */
-.ghost.primary {
+.ghost.primary,
+.ghost.neutral,
+.ghost.danger {
   background-color: transparent;
 }
 .ghost.primary:hover {
@@ -69,14 +62,14 @@
   box-shadow: var(--shadow-blue-glow);
 }
 
-.ghost.neutral {
-  background-color: transparent;
-}
 .ghost.neutral:hover {
   background-color: var(--color-white-20);
   box-shadow: var(--shadow-md);
 }
-
+.ghost.danger:hover {
+  background-color: var(--color-danger-60);
+  box-shadow: var(--shadow-danger-glow);
+}
 /* === Disabled === */
 .disabled {
   background-color: var(--color-bg);
@@ -94,14 +87,12 @@
 /* === Alignment === */
 .left {
   align-self: flex-start;
-  justify-content: flex-start;
 }
 .center {
   align-self: center;
 }
 .right {
   align-self: flex-end;
-  justify-content: flex-end;
 }
 
 /* === Radius === */
@@ -112,5 +103,16 @@
   border-radius: var(--radius-full);
   min-width: 40px;
   min-height: 40px;
+}
+.none {
   padding: 0;
+}
+.sm {
+  padding: var(--space-xs) var(--space-sm);
+}
+.md {
+  padding: var(--space-sm) var(--space-md);
+}
+.lg {
+  padding: var(--space-md) var(--space-lg);
 }

@@ -3,9 +3,10 @@ import styles from './contentHero.module.css';
 import { NormalizedContent } from '@/app/constants/types/movie';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import VideoControls from '../../ui/videoControls/videoControls';
-import Button from '../../ui/button/button';
-import { Icon } from '../../ui/icon/icon';
+import VideoControls from '../../../ui/videoControls/videoControls';
+import Button from '../../../ui/button/button';
+import { Icon } from '../../../ui/icon/icon';
+import Badge from '../../../ui/badge/badge';
 
 type ContentHeroProps = {
   content: NormalizedContent;
@@ -26,23 +27,25 @@ export default function ContentHero({
   genres,
 }: ContentHeroProps) {
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
-  const videoId = trailerUrl ? getYouTubeVideoId(trailerUrl) : '';
+  const videoId = trailerUrl ? getYouTubeVideoId(trailerUrl) : null;
   const iframeRef = useRef<HTMLDivElement | null>(null);
   const [player, setPlayer] = useState<any>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const genreList = content.genres || genres;
-  const runtime =
-    content.runtime && !isNaN(Number(content.runtime))
+  const runtime: string =
+    typeof content.runtime === 'number' && !isNaN(content.runtime)
       ? (() => {
-          const totalMinutes = Number(content.runtime);
+          const totalMinutes = content.runtime;
           const hours = Math.floor(totalMinutes / 60);
           const minutes = totalMinutes % 60;
           return hours > 0
             ? `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`
             : `${minutes}m`;
         })()
-      : content.runtime;
+      : typeof content.runtime === 'string'
+      ? content.runtime
+      : '';
   // Load YouTube API once
   useEffect(() => {
     if (!videoId || player) return;
@@ -108,7 +111,6 @@ export default function ContentHero({
         clearInterval(interval); // Stop checking
       }
     }, 1000); // check every second
-    console.log(isMuted);
 
     return () => clearInterval(interval);
   }, [player, trailerFocusMode]);
@@ -146,7 +148,7 @@ export default function ContentHero({
           <div ref={iframeRef} className={styles.video} />
         ) : (
           <Image
-            src={backgroundUrl}
+            src={content.backgroundUrl || backgroundUrl}
             alt={content.title}
             fill
             className={styles.backdropImage}
@@ -183,34 +185,44 @@ export default function ContentHero({
             <h1 className={styles.title}>{content.title}</h1>
 
             <div className={styles.infoRow}>
-              {content.imdbRate && (
+              {/* {content.imdbRate && (
                 <div className={styles.infoBox}>
                   <Icon name='star' strokeColor='secondary' />
                   <p className={styles.infoValue}>
                     {content.imdbRate.toFixed(1)}
                   </p>
-                  <p className={styles.infoLabel}>IMDb</p>
+                  <p className={styles.infoLabel}>IMDB</p>
                 </div>
+              )} */}
+              {content.imdbRate && (
+                <Badge
+                  iconName='starFilled'
+                  text='IMDB'
+                  color='color-primary'
+                  number={content.imdbRate}
+                  iconColor='secondary'
+                  backgroundColor='bg-muted'
+                  size='size-lg'
+                  className={styles.imdbBadge}
+                />
               )}
-              {typeof content.platformRate === 'number' &&
-                content.platformRate > 0 && (
-                  <div className={styles.infoBox}>
-                    <Icon name='popcorn' />
-                    <p className={styles.infoValue}>{content.platformRate}</p>
-                    <p className={styles.infoLabel}>Rating</p>
-                  </div>
-                )}
+
               {content.releaseDate && (
-                <div className={styles.infoBox}>
-                  <p className={styles.infoValue}>
-                    {new Date(content.releaseDate).getFullYear()}
-                  </p>
-                </div>
+                <Badge
+                  text={content.releaseDate.split('-')[0]}
+                  iconName='calendar'
+                  backgroundColor='bg-muted'
+                  size='size-lg'
+                />
               )}
               {runtime && (
-                <div className={styles.infoBox}>
-                  <p className={styles.infoValue}>{runtime}</p>
-                </div>
+                <Badge
+                  text={runtime}
+                  iconName='clock'
+                  backgroundColor='bg-muted'
+                  size='size-lg'
+                  className={styles.runtimeBadge}
+                />
               )}
               {content.status && (
                 <div
@@ -229,9 +241,16 @@ export default function ContentHero({
 
             <div className={styles.genreList}>
               {genreList?.map(genre => (
-                <span key={genre} className={styles.genre}>
-                  {genre}
-                </span>
+                <Badge
+                  key={genre}
+                  text={genre}
+                  iconName='badge'
+                  color='color-white'
+                  backgroundColor='bg-white'
+                  className={styles.genreBadge}
+                  size='size-lg'
+                  borderRadius='border-full'
+                />
               ))}
             </div>
 

@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './card.module.css';
 import useIsMobile from '@/app/hooks/useIsMobile';
-import { Icon, IconName } from '../ui/icon/icon';
-import Button from '../ui/button/button';
-import Badge from '../ui/badge/badge';
+import { Icon, IconName } from '../../ui/icon/icon';
+import Button from '../../ui/button/button';
+import Badge from '../../ui/badge/badge';
 import fallbackImage from '@/public/avatar_fallback.png';
 
 type Badge = {
@@ -20,6 +20,7 @@ type Badge = {
 
 type CardProps = {
   imageUrl?: string | StaticImageData;
+  imageHeight?: 'image-lg' | 'image-md';
   title: string;
   subtitle?: string;
   description?: string;
@@ -28,17 +29,26 @@ type CardProps = {
   href?: string;
   layout?: 'overlay' | 'below';
   children?: React.ReactNode;
+  additionalButton?: {
+    iconName?: IconName;
+    onClick: () => void;
+  };
+  highlight?: boolean;
 };
 
 export default function Card({
   imageUrl = fallbackImage,
+  imageHeight = 'image-lg',
   title,
+  subtitle,
   description,
   badges = [],
   onClick,
   href,
   layout = 'overlay',
   children,
+  additionalButton,
+  highlight,
 }: CardProps) {
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -52,8 +62,11 @@ export default function Card({
   const imageToUse = hasError ? fallbackImage : imageUrl;
 
   return (
-    <div className={styles.cardWrapper} onClick={handleClick}>
-      <div className={styles.imageWrapper}>
+    <div
+      className={`${styles.cardWrapper} ${highlight ? styles.highlight : ''}`}
+      onClick={handleClick}
+    >
+      <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
         <Image
           src={imageToUse}
           alt={title}
@@ -62,7 +75,15 @@ export default function Card({
           className={styles.posterImage}
           sizes='(max-width: 768px) 100vw, 400px'
         />
-        {layout === 'overlay' && <div className={styles.gradientOverlay} />}
+        {layout === 'overlay' && !isMobile && (
+          <div className={styles.bottomTitle}>
+            <h3>{title}</h3>
+            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+          </div>
+        )}
+        {layout === 'overlay' && !isMobile && (
+          <div className={styles.gradientOverlay} />
+        )}
 
         {layout === 'overlay' && !isMobile && (
           <div className={styles.hoverOverlay}>
@@ -72,8 +93,13 @@ export default function Card({
                 variant='ghost'
                 color='neutral'
                 ariaLabel='show more info'
+                padding='none'
+                onClick={additionalButton?.onClick}
               >
-                <Icon name='info' strokeColor='white' />
+                <Icon
+                  name={additionalButton?.iconName || 'info'}
+                  strokeColor='white'
+                />
               </Button>
             </div>
             <div className={styles.contentDetails}>
@@ -92,7 +118,9 @@ export default function Card({
             iconName={badge.iconName}
             text={badge.text}
             number={badge.number}
-            color={badge.color || 'white'}
+            iconColor={badge.color || 'white'}
+            backgroundColor='bg-muted'
+            borderRadius='border-full'
             position={badge.position}
             className={styles.badge}
           />
@@ -103,7 +131,7 @@ export default function Card({
         <div className={styles.belowDetails}>
           <h3 className={styles.contentTitle}>{title}</h3>
           {description && (
-            <p className={styles.contentOverview}>{description}</p>
+            <p className={styles.contentBelowOverview}>{description}</p>
           )}
           {children}
         </div>

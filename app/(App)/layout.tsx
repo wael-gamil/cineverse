@@ -4,6 +4,7 @@ import '@/app/styles/global.css';
 import '@/app/styles/reset.css';
 import Navbar from '@/app/components/layout/navbar/navbar';
 import Footer from '@/app/components/layout/footer/footer';
+import { Providers } from '@/app/lib/providers';
 
 export const metadata: Metadata = {
   title: 'CineVerse',
@@ -56,7 +57,7 @@ export default function RootLayout({
     <html lang='en' className={`${geist.className} ${inter.className}`}>
       <body>
         <Navbar />
-        {children}
+        <Providers>{children}</Providers>
         {/* <Footer /> */}
       </body>
     </html>

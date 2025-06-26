@@ -1,0 +1,87 @@
+.section {
+  padding: var(--space-md) var(--space-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.heading {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.seasonTabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  overflow: hidden;
+}
+.seasonCardsWrapper {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: var(--space-lg);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.seasonCardsWrapper::-webkit-scrollbar {
+  display: none;
+}
+.seasonCards {
+  display: flex;
+  gap: var(--space-md);
+  min-width: max-content;
+}
+.seasonCards > * {
+  max-width: 200px;
+  min-width: 200px;
+}
+.episodesSection {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background-color: var(--color-surface-60);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+}
+
+.episodesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-xs);
+}
+
+.episodesHeader h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+}
+
+.episodesHeader p {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.episodesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  justify-content: flex-start;
+  gap: var(--space-md);
+}

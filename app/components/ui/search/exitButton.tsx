@@ -18,7 +18,7 @@ export default function ExitButton() {
   };
 
   return (
-    <Button onClick={handleExit} borderRadius='fullRadius'>
+    <Button onClick={handleExit} borderRadius='fullRadius' padding='none'>
       <Icon name='close' strokeColor='white' />
     </Button>
   );

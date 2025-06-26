@@ -1,6 +1,6 @@
 import { Credits } from '@/app/constants/types/movie';
 import styles from './creditsSection.module.css';
-import Card from '../../cards/card';
+import Card from '../../../cards/card/card';
 
 type CreditsSectionProps = {
   data: Credits;
@@ -17,18 +17,23 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
       {/* Cast Grid */}
       <div className={styles.creditsGrid}>
         {/* Director Card */}
-        <Card
-          title={data.director.name}
-          description='Director'
-          imageUrl={data.director.path}
-          layout='below'
-        />
+        {data.director && (
+          <Card
+            title={data.director.name}
+            description='Director'
+            imageUrl={data.director.path}
+            imageHeight='image-md'
+            layout='below'
+          />
+        )}
+
         {data.casts.map((actor, index) => (
           <Card
             key={index}
             title={actor.name}
             description={actor.characterName}
             imageUrl={actor.path}
+            imageHeight='image-md'
             layout='below'
           />
         ))}
