@@ -49,7 +49,7 @@ export default async function ContentList({ filters, page, fetchData }: Props) {
               {
                 iconName: 'star',
                 color: 'secondary',
-                number: item.imdbRate,
+                number: Number(item.imdbRate.toFixed(1)),
                 position: 'top-left',
               },
             ]}
