@@ -92,7 +92,7 @@ export default function SearchResult({
                   {
                     iconName: 'star',
                     color: 'secondary',
-                    number: item.imdbRate,
+                    number: Number(item.imdbRate.toFixed(1)),
                     position: 'top-left',
                   },
                 ]}
