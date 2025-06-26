@@ -1,0 +1,78 @@
+.section {
+  padding: var(--space-md) var(--space-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+.heading h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+}
+.heading p,
+.text p {
+  color: var(--color-muted);
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.cardWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.cardWrapper h3,
+.text h3 {
+  font-size: var(--font-size-lg);
+}
+.reviewList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+  padding: var(--space-xl) var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-60);
+  animation: fadeIn 0.3s ease;
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.subtext {
+  font-size: 0.95rem;
+  max-width: 300px;
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+/* Optional animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
