@@ -1,5 +1,5 @@
 // components/shared/ContentList.tsx
-import Card from '../../cards/card';
+import Card from '../../cards/card/card';
 import Pagination from '@/app/components/ui/pagination/pagination';
 import styles from './contentList.module.css';
 import { Content } from '@/app/constants/types/movie';
@@ -33,7 +33,6 @@ export default async function ContentList({ filters, page, fetchData }: Props) {
   if (!content || content.length === 0) {
     return <div className={styles.contentList}>No content found.</div>;
   }
-  console.log('Content List:', content, totalPages, currentPage);
   return (
     <>
       <div className={styles.contentList}>

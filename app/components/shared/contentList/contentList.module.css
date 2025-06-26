@@ -1,13 +1,8 @@
 .contentList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+  grid-template-columns: repeat(auto-fill, 275px);
   gap: var(--space-md);
-  justify-items: center;
-}
-
-.contentList > * {
-  max-width: 275px;
-  min-width: 275px;
+  justify-content: space-between;
 }
 
 .contentDetails {
