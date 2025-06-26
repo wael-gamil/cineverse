@@ -4,8 +4,8 @@ import {
   getContentReviews,
   getContentStats,
 } from '@/app/lib/api';
-import ContentHero from '@/app/components/shared/contentDetails/contentHero';
-import ContentOverview from '@/app/components/shared/contentDetails/contentOverview';
+import ContentHero from '@/app/components/shared/contentDetails/heroSection/contentHero';
+import ContentOverview from '@/app/components/shared/contentDetails/overviewSection/contentOverview';
 import ContentSectionWrapper from '@/app/components/shared/contentDetails/contentSectionWrapper';
 import { notFound } from 'next/navigation';
 import { normalizeContent } from '@/app/constants/types/movie';
@@ -15,7 +15,6 @@ export default async function Season({
   params: { seasonNumber: number; slug: string };
 }) {
   const contentDetails = await getContentDetails(params.slug);
-  console.log(contentDetails);
   if (
     contentDetails.type !== 'series' ||
     contentDetails.numberOfSeasons < params.seasonNumber
@@ -27,9 +26,6 @@ export default async function Season({
     params.seasonNumber
   );
   const stats = await getContentStats(seasonDetails.id);
-  const contentReviews = await getContentReviews(seasonDetails.id);
-
-  console.log(contentReviews);
   return (
     <>
       <ContentHero
