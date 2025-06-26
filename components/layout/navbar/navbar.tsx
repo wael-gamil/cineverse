@@ -80,7 +80,7 @@ export default function Navbar() {
         className={`${styles.navbar} ${isShrunk ? styles.navbarShrunk : ''}`}
       >
         {/* Logo Section */}
-        <Link href={'/'} className={styles.navbarLogo}>
+        <Link href={'/explore/movies'} className={styles.navbarLogo}>
           <div className={styles.iconWrapper}>
             <div className={styles.iconBackground}></div>
             <Icon name='film' strokeColor='primary' />
