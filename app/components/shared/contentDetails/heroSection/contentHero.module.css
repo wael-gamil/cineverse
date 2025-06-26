@@ -1,0 +1,248 @@
+/* === Hero Section === */
+.hero {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+/* === Background Layers === */
+.background,
+.video,
+.overlayDark,
+.overlayGradient,
+.overlayBlur,
+.spotlightEffect {
+  position: absolute;
+  inset: 0;
+}
+
+.background {
+  z-index: 0;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.2);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.aboveEverything {
+  z-index: 9999;
+}
+.backdropImage {
+  object-fit: cover;
+  transform: scale(1);
+}
+
+.overlayDark {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.4)
+  );
+  z-index: 2;
+}
+
+.overlayGradient {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 30%);
+  z-index: 2;
+}
+
+.overlayBlur {
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.spotlightEffect {
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(
+    circle at bottom left,
+    var(--color-white-20),
+    transparent
+  );
+  filter: blur(60px);
+  z-index: 2;
+}
+
+/* === Content === */
+.container {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-xxl) var(--space-xxl);
+  gap: var(--space-xl);
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+  user-select: none;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-lg);
+}
+.posterWrapper {
+  border-radius: var(--radius-lg);
+  position: relative;
+  /* min-width: 400px;
+  height: 600px; */
+  min-width: 275px;
+  height: 400px;
+  overflow: hidden;
+  transition: transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+  box-shadow: var(--shadow-md);
+}
+.posterWrapper:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-blue-glow);
+}
+
+.posterImage {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  transition: transform 0.7s ease, opacity 0.7s ease;
+  z-index: 1;
+}
+
+.title {
+  font-size: var(--font-size-xxl);
+  line-height: 1.2;
+  font-weight: 900;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+/* === Info Section === */
+.infoRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
+.infoBox,
+.status {
+  background: var(--color-white-20);
+  border: 1px solid var(--color-white-20);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.infoValue {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.infoLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-white-60);
+}
+
+.status {
+  border: none;
+  font-weight: bold;
+}
+.statusGreen {
+  background: var(--color-secondary-60);
+  box-shadow: var(--shadow-orange-glow);
+}
+.statusRed {
+  background: var(--color-danger-60);
+  box-shadow: var(--shadow-danger-glow);
+}
+/* === Genres === */
+.genreList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.genre {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-white-20);
+  background: var(--color-white-20);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-normal);
+}
+
+.genre:hover {
+  background: var(--color-white-60);
+}
+
+/* === Description & Buttons === */
+.description {
+  font-size: var(--font-size-lg);
+  line-height: 1.5;
+  color: var(--color-white-60);
+  max-width: 36rem;
+  max-height: calc(1.5em * 3); /* Approx. 3 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-shadow: var(--shadow-md);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+.fadeOut {
+  animation: fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+  .posterWrapper {
+    min-width: 275px;
+    max-width: 275px;
+    height: 400px;
+  }
+  .rightSection {
+    gap: var(--space-md);
+  }
+}
