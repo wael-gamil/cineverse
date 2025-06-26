@@ -75,7 +75,7 @@ export default function SeasonsSection({
                     {
                       iconName: 'star' as IconName,
                       color: 'secondary',
-                      number: season.imdbRate,
+                      number: Number(season.imdbRate.toFixed(1)),
                       position: 'top-left',
                     },
                   ]}
@@ -139,6 +139,7 @@ export default function SeasonsSection({
                         {
                           iconName: 'film' as IconName,
                           color: 'primary',
+                          text: 'episode',
                           number: episode.episodeNumber,
                           position: 'top-left',
                         },
