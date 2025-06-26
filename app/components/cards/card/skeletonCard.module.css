@@ -1,0 +1,39 @@
+.skeleton {
+  background-color: var(--color-surface-60);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.title {
+  width: 60%;
+  height: 20px;
+  margin-bottom: 8px;
+}
+
+.description {
+  width: 80%;
+  height: 14px;
+}
