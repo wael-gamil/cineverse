@@ -27,16 +27,20 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
           />
         )}
 
-        {data.casts.map((actor, index) => (
-          <Card
-            key={index}
-            title={actor.name}
-            description={actor.characterName}
-            imageUrl={actor.path}
-            imageHeight='image-md'
-            layout='below'
-          />
-        ))}
+        {data.casts
+          .filter(actor => {
+            return actor.path;
+          })
+          .map((actor, index) => (
+            <Card
+              key={index}
+              title={actor.name}
+              description={actor.characterName}
+              imageUrl={actor.path}
+              imageHeight='image-md'
+              layout='below'
+            />
+          ))}
       </div>
     </section>
   );
