@@ -35,20 +35,23 @@ export default function Badge({
   className = '',
   style,
 }: BadgeProps) {
-  return (
-    <div
-      className={`${styles.badge} ${
-        position ? styles[position] : ''
-      } ${className} ${styles[borderRadius]} ${styles[size]} ${
-        styles[backgroundColor]
-      } ${styles[color]}`}
-      style={style}
-    >
-      {iconName && <Icon name={iconName} strokeColor={iconColor} width={16} />}
-      {text && <span>{text}</span>}
-      {number !== undefined && (
-        <span className={styles[numberColor]}>{number.toFixed(1)}</span>
-      )}
-    </div>
-  );
+  if ((typeof number === 'number' && number > 0) || text !== undefined)
+    return (
+      <div
+        className={`${styles.badge} ${
+          position ? styles[position] : ''
+        } ${className} ${styles[borderRadius]} ${styles[size]} ${
+          styles[backgroundColor]
+        } ${styles[color]}`}
+        style={style}
+      >
+        {iconName && (
+          <Icon name={iconName} strokeColor={iconColor} width={16} />
+        )}
+        {text && <span>{text}</span>}
+        {number !== undefined && (
+          <span className={styles[numberColor]}>{number}</span>
+        )}
+      </div>
+    );
 }
