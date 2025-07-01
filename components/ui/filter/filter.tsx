@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FilterOpt } from '@/constants/types/movie';
 import PanelWrapper from '../panelWrapper/panelWrapper';
+import { useResetPageOnParamChange } from '@/hooks/useResetPageOnParamChange';
 
 type MultiFilterProps = {
   sections: FilterOpt[];
@@ -19,65 +20,79 @@ export default function Filter({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Main selected state for multi-select filters (genres, language, etc)
   const [selected, setSelected] =
     useState<Record<string, string[]>>(initialSelected);
 
-  // Additional state for release year and rating inputs
-  const [releaseYear, setReleaseYear] = useState<string>('');
-  const [minRating, setMinRating] = useState<number>(0);
+  const [debouncedYear, setDebouncedYear] = useState('');
+  const [debouncedRating, setDebouncedRating] = useState(0);
 
-  const [expandedSections, setExpandedSections] = useState<
-    Record<string, boolean>
-  >({});
-
-  // On mount, read year and rate from URL params and init state
+  const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
+  useResetPageOnParamChange([
+    'genres',
+    'year',
+    'rate',
+    'lang',
+    'sortBy',
+    'order',
+  ]);
+  // Debounce year input
   useEffect(() => {
-    const yearParam = searchParams.get('year') || '';
-    const rateParam = searchParams.get('rate') || '0';
-    setReleaseYear(yearParam);
-    setMinRating(Number(rateParam));
-  }, [searchParams]);
+    const timeout = setTimeout(() => {
+      setDebouncedYear(selected.year?.[0] || '');
+    }, 800);
+    return () => clearTimeout(timeout);
+  }, [selected.year]);
 
-  // Update URL params when filters change (selected, releaseYear, minRating)
+  // Debounce rating input
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedRating(Number(selected.rate?.[0] || 0));
+    }, 400);
+    return () => clearTimeout(timeout);
+  }, [selected.rate]);
+
+  // Update URL params when filters change
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
+    const genreValues = selected.genres || [];
+    const langValues = selected.lang || [];
 
-    // Update multi-select filters in URL
-    Object.entries(selected).forEach(([key, values]) => {
-      if (values.length > 0) {
-        params.set(key, values.join(','));
-      } else {
-        params.delete(key);
-      }
-    });
+    if (genreValues.length > 0) {
+      params.set('genres', genreValues.join(','));
+    } else {
+      params.delete('genres');
+    }
 
-    // Update release year param
-    if (releaseYear && /^\d{4}$/.test(releaseYear)) {
-      params.set('year', releaseYear);
+    if (langValues.length > 0) {
+      params.set('lang', langValues.join(','));
+    } else {
+      params.delete('lang');
+    }
+    if (debouncedYear && /^\d{4}$/.test(debouncedYear)) {
+      params.set('year', debouncedYear);
     } else {
       params.delete('year');
     }
 
-    // Update rating param
-    if (minRating > 0) {
-      params.set('rate', String(minRating));
+    if (debouncedRating > 0) {
+      params.set('rate', String(debouncedRating));
     } else {
       params.delete('rate');
     }
-
     router.push(`?${params.toString()}`, { scroll: false });
-  }, [selected, releaseYear, minRating, router, searchParams]);
+    setTimeout(() => {
+      closePanel();
+    }, 200);
+  }, [selected.genres, selected.lang, debouncedYear, debouncedRating]);
 
-  // Count active filters except 'all' or empty
-  const activeFilterCount =
-    Object.values(selected).reduce((count, arr) => {
+  const activeFilterCount = Object.entries(selected).reduce(
+    (count, [key, arr]) => {
       if (!arr || arr.length === 0) return count;
       if (arr.length === 1 && arr[0] === 'all') return count;
       return count + arr.length;
-    }, 0) +
-    (releaseYear ? 1 : 0) +
-    (minRating > 0 ? 1 : 0);
+    },
+    0
+  );
 
   function handleFilterClick(
     sectionKey: string,
@@ -105,16 +120,9 @@ export default function Filter({
     sections.forEach(s => {
       cleared[s.key] = [];
     });
+    cleared['year'] = [];
+    cleared['rate'] = [];
     setSelected(cleared);
-    setReleaseYear('');
-    setMinRating(0);
-  }
-
-  function toggleSectionExpand(key: string) {
-    setExpandedSections(prev => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
   }
 
   return (
@@ -130,25 +138,21 @@ export default function Filter({
       badge={activeFilterCount > 0 ? activeFilterCount : 'All'}
       width='full'
       padding='lg'
+      setClose={setClosePanel}
     >
       <div className={styles.grid}>
-        {/* Existing filter sections */}
         {sections.map(section => {
           const isLongList = section.options.length > 14;
-          const expanded = expandedSections[section.key] || false;
-          const optionsToShow =
-            isLongList && !expanded
-              ? section.options.slice(0, 14)
-              : section.options;
+          const optionsToShow = isLongList
+            ? section.options.slice(0, 14)
+            : section.options;
 
           return (
             <div key={section.key} className={styles.section}>
               <h3>{section.title}</h3>
               <div
                 className={styles.options}
-                style={{
-                  maxHeight: isLongList && !expanded ? undefined : 'none',
-                }}
+                style={{ maxHeight: isLongList ? undefined : 'none' }}
               >
                 {optionsToShow.map(option => {
                   const isSelected = selected[section.key]?.includes(
@@ -172,24 +176,11 @@ export default function Filter({
                   );
                 })}
               </div>
-
-              {isLongList && (
-                <Button
-                  type='button'
-                  variant='ghost'
-                  onClick={() => toggleSectionExpand(section.key)}
-                  aria-expanded={expanded}
-                  aria-controls={`${section.key}-options`}
-                  width='100%'
-                >
-                  {expanded ? 'Show less ▲' : 'Show more ▼'}
-                </Button>
-              )}
             </div>
           );
         })}
 
-        {/* Release Year Filter */}
+        {/* Release Year */}
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Release Year (From)</h3>
           <input
@@ -197,25 +188,37 @@ export default function Filter({
             min={1900}
             max={new Date().getFullYear()}
             placeholder='e.g. 2011'
-            value={releaseYear}
+            value={selected.year?.[0] || ''}
             onChange={e => {
               const val = e.target.value;
-              if (val === '' || /^\d{0,4}$/.test(val)) setReleaseYear(val);
+              if (val === '' || /^\d{0,4}$/.test(val)) {
+                setSelected(prev => ({
+                  ...prev,
+                  year: val ? [val] : [],
+                }));
+              }
             }}
             className={styles.numberInput}
           />
         </div>
 
-        {/* Rating Filter */}
+        {/* Rating */}
         <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Minimum Rating: {minRating}</h3>
+          <h3 className={styles.sectionTitle}>
+            Minimum Rating: {selected.rate?.[0] || 0}
+          </h3>
           <input
             type='range'
             min={0}
             max={9}
             step={1}
-            value={minRating}
-            onChange={e => setMinRating(Number(e.target.value))}
+            value={Number(selected.rate?.[0] || 0)}
+            onChange={e =>
+              setSelected(prev => ({
+                ...prev,
+                rate: [e.target.value],
+              }))
+            }
             className={styles.sliderInput}
           />
           <div className={styles.sliderLabels}>
