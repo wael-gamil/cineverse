@@ -57,7 +57,7 @@
 /* === Grid Right === */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: var(--space-lg);
   align-items: center;
   flex: 3;
@@ -109,7 +109,7 @@
   color: var(--white);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: var(--space-md);
 }
 
 /* === Genre Badges === */
@@ -167,8 +167,8 @@
 
 .imageWrapper {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   overflow: hidden;
   background-color: var(--color-white-10); /* optional subtle bg */
