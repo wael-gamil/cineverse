@@ -1,11 +1,13 @@
 // content/[type]/page.tsx
-import ContentList from '@/components/shared/contentList/contentList';
-import { getContents } from '@/lib/api';
+import ContentListWrapper from '@/components/shared/contentList/contentListWrapper';
 import { notFound } from 'next/navigation';
 import Filter from '@/components/ui/filter/filter';
 import Sort from '@/components/ui/sort/sort';
 import { getFilterOptions } from '@/lib/api';
 import styles from '../page.module.css';
+import { FilterOpt } from '@/constants/types/movie';
+import { Suspense } from 'react';
+import SkeletonContentList from '@/components/shared/contentList/skeletonContentList';
 
 const validTypes = ['movies', 'tv-series'] as const;
 
@@ -30,6 +32,7 @@ export default async function ContentPage({
   const rate = awaitedSearchParams['rate'] || '';
   const lang = awaitedSearchParams['lang'] || '';
   const sortBy = awaitedSearchParams['sortBy'] || '';
+  const order = awaitedSearchParams['order'] || '';
   const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
 
   const filtersSelected = {
@@ -39,19 +42,50 @@ export default async function ContentPage({
     lang: lang !== '' ? [lang] : [],
   };
 
-  const filterOpt = await getFilterOptions();
+  const rawFilterOpt: FilterOpt[] = await getFilterOptions();
+  const filterOpt = rawFilterOpt
+    .filter(item => {
+      return (
+        item.title === 'Language' ||
+        (backendType === 'MOVIE'
+          ? item.title === 'Movie Genres'
+          : item.title === 'Series Genres')
+      );
+    })
+    .map(item => {
+      if (item.key === 'genres') {
+        return {
+          ...item,
+          title: 'Genres',
+        };
+      }
+      return item;
+    });
+  const sortOpt = rawFilterOpt.filter(item => {
+    return item.key === 'sortBy';
+  })[0];
 
   return (
     <section className={styles.content}>
       <div className={styles.controls}>
         <Filter sections={filterOpt} initialSelected={filtersSelected} />
-        <Sort initialSortBy={sortBy} />
+        <Sort
+          sortOptions={sortOpt}
+          orderOptions={rawFilterOpt.find(opt => opt.key === 'order')!}
+          initialSortBy={sortBy}
+          initialOrder={order}
+        />
       </div>
-      <ContentList
-        filters={{ genres, year, rate, lang, sortBy }}
-        page={page}
-        fetchData={(filters, page) => getContents(backendType, filters, page)}
-      />
+      <Suspense
+        key={JSON.stringify(awaitedSearchParams)}
+        fallback={<SkeletonContentList />}
+      >
+        <ContentListWrapper
+          filters={{ genres, year, rate, lang, sortBy, order }}
+          page={page}
+          type={backendType}
+        />
+      </Suspense>
     </section>
   );
 }
