@@ -70,7 +70,9 @@ export default function EpisodesSection({
                 title={episode.title}
                 subtitle={episode.releaseDate}
                 description={episode.overview}
-                href={`${pathname}/episodes/${episode.episodeNumber}`}
+                href={`${pathname}/${
+                  !episodesData ? 'seasons/' + seasonNumber + '/' : ''
+                }episodes/${episode.episodeNumber}`}
                 imageUrl={
                   episode.posterPath ||
                   currentSeason?.posterPath ||
