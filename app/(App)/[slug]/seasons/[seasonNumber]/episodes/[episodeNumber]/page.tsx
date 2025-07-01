@@ -8,7 +8,14 @@ import ContentHero from '@/components/shared/contentDetails/heroSection/contentH
 import ContentOverview from '@/components/shared/contentDetails/overviewSection/contentOverview';
 import ContentSectionWrapper from '@/components/shared/contentDetails/contentSectionWrapper';
 import { notFound } from 'next/navigation';
-import { normalizeContent } from '@/constants/types/movie';
+import {
+  Movie,
+  normalizeContent,
+  Season,
+  Series,
+} from '@/constants/types/movie';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
 type EpisodeProps = {
   params: Promise<{
@@ -19,34 +26,52 @@ type EpisodeProps = {
 };
 export default async function Episode({ params }: EpisodeProps) {
   const { episodeNumber, seasonNumber, slug } = await params;
-  const contentDetails = await getContentDetails(slug);
-  if (contentDetails.type !== 'series') {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['content', slug],
+    queryFn: () => getContentDetails(slug),
+  });
+  const details = queryClient.getQueryData(['content', slug]) as
+    | Movie
+    | Series
+    | undefined;
+  if (!details) {
+    throw new Error('Content details not found');
+  }
+  if (details.type !== 'series') {
     notFound();
   }
-  const seasonDetails = await getSeasonDetails(contentDetails.id, seasonNumber);
+  await queryClient.prefetchQuery({
+    queryKey: ['season', details.id, seasonNumber],
+    queryFn: () => getSeasonDetails(details.id, seasonNumber),
+  });
+  const seasonDetails = queryClient.getQueryData([
+    'season',
+    details.id,
+    seasonNumber,
+  ]) as Season;
   if (seasonDetails.numberOfEpisodes < episodeNumber) {
     notFound();
   }
   const episodeDetails = await getEpisodeDetails(
-    contentDetails.id,
+    details.id,
     seasonNumber,
     episodeNumber
   );
-  const stats = await getContentStats(episodeDetails.id);
+  const dehydratedState = dehydrate(queryClient);
   return (
-    <>
+    <HydrationBoundary state={dehydratedState}>
       <ContentHero
         content={normalizeContent(episodeDetails)}
-        backgroundUrl={contentDetails.backdropPath}
-        genres={contentDetails.genres}
+        backgroundUrl={details.backdropPath}
+        fallbackPoster={seasonDetails.posterPath || details.posterPath}
+        genres={details.genres}
       />
       <ContentOverview
         content={normalizeContent(episodeDetails)}
-        totalReviews={stats.totalReviews}
-        watchlistCount={stats.watchlistCount}
-        genres={contentDetails.genres}
+        genres={details.genres}
       />
-      <ContentSectionWrapper section='reviews' id={contentDetails.id} />
-    </>
+      <ContentSectionWrapper section='reviews' id={details.id} />
+    </HydrationBoundary>
   );
 }

@@ -7,11 +7,14 @@ import VideoControls from '../../../ui/videoControls/videoControls';
 import Button from '../../../ui/button/button';
 import { Icon } from '../../../ui/icon/icon';
 import Badge from '../../../ui/badge/badge';
+import { useTrailerQuery } from '@/hooks/useTrailerQuery';
+import TrailerPlayer from '@/components/ui/trailerPlayer/trailerPlayer';
+import { useIsInView } from '@/hooks/useIsInView';
 
 type ContentHeroProps = {
   content: NormalizedContent;
-  trailerUrl?: string;
   backgroundUrl?: string;
+  fallbackPoster?: string;
   genres?: string[];
 };
 
@@ -22,14 +25,17 @@ function getYouTubeVideoId(url: string): string {
 
 export default function ContentHero({
   content,
-  trailerUrl,
   backgroundUrl = '',
+  fallbackPoster = '',
   genres,
 }: ContentHeroProps) {
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
+  const { data, isLoading } =
+    content.type === 'movie' || content.type === 'series'
+      ? useTrailerQuery(content.id)
+      : { data: undefined };
+  const trailerUrl = data?.trailer;
   const videoId = trailerUrl ? getYouTubeVideoId(trailerUrl) : null;
-  const iframeRef = useRef<HTMLDivElement | null>(null);
-  const [player, setPlayer] = useState<any>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const genreList = content.genres || genres;
@@ -46,77 +52,14 @@ export default function ContentHero({
       : typeof content.runtime === 'string'
       ? content.runtime
       : '';
-  // Load YouTube API once
-  useEffect(() => {
-    if (!videoId || player) return;
-
-    const createPlayer = () => {
-      if (!iframeRef.current) return;
-      const newPlayer = new (window as any).YT.Player(iframeRef.current, {
-        videoId: videoId,
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          showinfo: 0,
-          rel: 0,
-          loop: 1,
-          playlist: videoId,
-          modestbranding: 1,
-          playsinline: 1,
-        },
-        events: {
-          onReady: (event: any) => {
-            event.target.playVideo();
-            setPlayer(event.target);
-          },
-        },
-      });
-    };
-
-    const existingScript = document.getElementById('youtube-api');
-    const apiReady = (window as any).YT && (window as any).YT.Player;
-
-    if (!existingScript) {
-      const tag = document.createElement('script');
-      tag.id = 'youtube-api';
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.body.appendChild(tag);
-      (window as any).onYouTubeIframeAPIReady = createPlayer;
-    } else if (apiReady) {
-      createPlayer();
-    } else {
-      (window as any).onYouTubeIframeAPIReady = createPlayer;
-    }
-  }, [videoId, player]);
-
-  // Handle mute/unmute when entering/exiting focus mode
-  useEffect(() => {
-    if (!trailerFocusMode && player) {
-      if (isMuted) {
-        player.mute();
-      } else {
-        player.unMute();
-        player.setVolume(20);
-      }
-    }
-    if (!player || !trailerFocusMode) return;
-    const interval = setInterval(() => {
-      const currentTime = player.getCurrentTime();
-      const duration = player.getDuration();
-
-      if (duration - currentTime <= 10) {
-        setTrailerFocusMode(false); // Exit trailer focus mode
-        player.seekTo(0, true);
-        clearInterval(interval); // Stop checking
-      }
-    }, 1000); // check every second
-
-    return () => clearInterval(interval);
-  }, [player, trailerFocusMode]);
-
+  const playerRef = useRef<any>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const isHeroVisible = useIsInView(sectionRef, '0px', 0.3);
+  const [showBottomOverlay, setShowBottomOverlay] = useState(false);
   // Toggle mute/unmute
   const toggleMute = () => {
+    const player = playerRef.current;
     if (!player) return;
     if (isMuted) {
       player.unMute();
@@ -127,31 +70,106 @@ export default function ContentHero({
       setIsMuted(true);
     }
   };
-
+  const handleExitingFocusMode = () => {
+    setTimeout(() => {
+      setTrailerFocusMode(false);
+    }, 200);
+    playerRef.current.mute();
+    setIsMuted(true);
+    playerRef.current.playVideo();
+    setIsPlaying(true);
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  };
   const handlePlayTrailer = () => {
     setIsFadingOut(true);
     setTimeout(() => {
       setTrailerFocusMode(true);
-      setIsFadingOut(false); // reset for next time
-    }, 500); // matches your fadeOut animation duration
+      setIsFadingOut(false);
+    }, 500);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault(); // prevent page scroll
+        togglePlayPause();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const togglePlayPause = () => {
+    if (!playerRef.current) return;
+
+    const state = playerRef.current.getPlayerState();
+    // Ensure YT is available and fallback to numeric values if not
+    const PLAYER_STATE =
+      typeof window !== 'undefined' &&
+      (window as any).YT &&
+      (window as any).YT.PlayerState
+        ? (window as any).YT.PlayerState
+        : { PLAYING: 1, PAUSED: 2, CUED: 5 };
+
+    if (state === PLAYER_STATE.PLAYING) {
+      playerRef.current.pauseVideo();
+      setIsPlaying(false);
+      setShowBottomOverlay(true);
+    } else if (state === PLAYER_STATE.PAUSED || state === PLAYER_STATE.CUED) {
+      playerRef.current.playVideo();
+      setIsPlaying(true);
+      setTimeout(() => {
+        setShowBottomOverlay(false);
+      }, 400);
+    }
+  };
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || typeof player.pauseVideo !== 'function') return;
+
+    if (!isHeroVisible && !trailerFocusMode) {
+      player.pauseVideo();
+      setIsPlaying(false);
+      setShowBottomOverlay(true);
+    } else {
+      player.playVideo();
+      setIsPlaying(true);
+      setTimeout(() => {
+        setShowBottomOverlay(false);
+      }, 400);
+    }
+  }, [isHeroVisible, trailerFocusMode]);
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} ref={sectionRef}>
       {/* Background Video */}
       <div
         className={`${styles.background} ${
           trailerFocusMode ? styles.aboveEverything : ''
         }`}
+        onClick={togglePlayPause}
       >
         {/* YouTube Player injected here */}
         {videoId ? (
-          <div ref={iframeRef} className={styles.video} />
+          <TrailerPlayer
+            videoId={videoId}
+            focusMode={trailerFocusMode}
+            setFocusMode={setTrailerFocusMode}
+            isMuted={isMuted}
+            setIsMuted={setIsMuted}
+            onEnd={handleExitingFocusMode}
+            playerRef={playerRef}
+          />
         ) : (
           <Image
             src={content.backgroundUrl || backgroundUrl}
             alt={content.title}
             fill
-            className={styles.backdropImage}
+            className={`${styles.backdropImage} ${
+              videoId ? styles.backdropHidden : ''
+            }`}
           />
         )}
       </div>
@@ -163,6 +181,13 @@ export default function ContentHero({
           <div className={styles.overlayGradient} />
           <div className={styles.overlayBlur} />
           <div className={styles.spotlightEffect} />
+          {showBottomOverlay && (
+            <div
+              className={`${styles.bottomOverlay} ${
+                !showBottomOverlay ? styles.hidden : ''
+              }`}
+            />
+          )}
         </>
       )}
 
@@ -171,10 +196,10 @@ export default function ContentHero({
         <div
           className={`${styles.container} ${isFadingOut ? styles.fadeOut : ''}`}
         >
-          {!videoId && (
+          {!videoId && !isLoading && (
             <div className={styles.posterWrapper}>
               <Image
-                src={content.imageUrl}
+                src={content.imageUrl || fallbackPoster}
                 alt={content.title}
                 fill
                 className={styles.posterImage}
@@ -185,15 +210,6 @@ export default function ContentHero({
             <h1 className={styles.title}>{content.title}</h1>
 
             <div className={styles.infoRow}>
-              {/* {content.imdbRate && (
-                <div className={styles.infoBox}>
-                  <Icon name='star' strokeColor='secondary' />
-                  <p className={styles.infoValue}>
-                    {content.imdbRate.toFixed(1)}
-                  </p>
-                  <p className={styles.infoLabel}>IMDB</p>
-                </div>
-              )} */}
               {typeof content.imdbRate === 'number' && content.imdbRate > 0 && (
                 <Badge
                   iconName='starFilled'
@@ -215,7 +231,7 @@ export default function ContentHero({
                   size='size-lg'
                 />
               )}
-              {runtime && (
+              {typeof runtime === 'number' && runtime > 0 && (
                 <Badge
                   text={runtime}
                   iconName='clock'
@@ -299,10 +315,11 @@ export default function ContentHero({
       )}
 
       {/* Close Focus Mode & Volume Control */}
-      {trailerFocusMode && player && (
+      {trailerFocusMode && playerRef.current && (
         <VideoControls
-          player={player}
-          onClose={() => setTrailerFocusMode(false)}
+          player={playerRef.current}
+          isPlayingInitial={isPlaying}
+          onClose={handleExitingFocusMode}
         />
       )}
     </section>

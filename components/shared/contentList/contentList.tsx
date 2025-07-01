@@ -1,4 +1,6 @@
-// components/shared/ContentList.tsx
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Card from '../../cards/card/card';
 import Pagination from '@/components/ui/pagination/pagination';
 import styles from './contentList.module.css';
@@ -6,33 +8,33 @@ import { Content } from '@/constants/types/movie';
 import Badge from '../../ui/badge/badge';
 import { Icon } from '../../ui/icon/icon';
 
-type Filters = {
-  genres: string[];
-  year: string;
-  rate: string;
-  lang: string;
-  sortBy?: string;
-};
-
 type Props = {
-  filters: Filters;
-  page: number;
-  fetchData: (
-    filters: Filters,
-    page: number
-  ) => Promise<{
-    content: Content[];
-    totalPages: number;
-    currentPage: number;
-  }>;
+  content: Content[];
+  totalPages: number;
+  currentPage: number;
 };
 
-export default async function ContentList({ filters, page, fetchData }: Props) {
-  const { content, totalPages, currentPage } = await fetchData(filters, page);
+export default function ContentList({
+  content,
+  totalPages,
+  currentPage,
+}: Props) {
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const [fullscreenCard, setFullscreenCard] = useState<Content | null>(null);
+  const router = useRouter();
+
+  const handleCardClick = (item: Content, href: string) => {
+    setActiveId(item.id);
+    setFullscreenCard(item);
+    setTimeout(() => {
+      router.push(href);
+    }, 150); // allow time for animation
+  };
 
   if (!content || content.length === 0) {
     return <div className={styles.contentList}>No content found.</div>;
   }
+
   return (
     <>
       <div className={styles.contentList}>
@@ -57,6 +59,14 @@ export default async function ContentList({ filters, page, fetchData }: Props) {
             description={item.overview}
             href={`/${item.slug}`}
             layout='overlay'
+            onClick={() => handleCardClick(item, `/${item.slug}`)}
+            className={
+              activeId === null
+                ? ''
+                : item.id === activeId
+                ? styles.activeCard
+                : styles.inactiveCard
+            }
           >
             <div className={styles.contentDetails}>
               <div className={styles.date}>

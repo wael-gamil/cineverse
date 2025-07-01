@@ -6,12 +6,11 @@ import styles from './seasonsSection.module.css';
 import { Icon, IconName } from '../../../ui/icon/icon';
 import Button from '../../../ui/button/button';
 import Card from '../../../cards/card/card';
-import { Season, Episode, Series } from '@/constants/types/movie';
+import { Season } from '@/constants/types/movie';
 import { useRouter } from 'next/navigation';
-import SkeletonCard from '@/components/cards/card/skeletonCard';
 import { seriesStore } from '@/utils/seriesStore';
 import { useStore } from '@tanstack/react-store';
-import { useEpisodeQuery } from '@/hooks/useEpisodeQuery';
+import EpisodesSection from './episodeSection';
 
 type SeasonsSectionProps = {
   data: Season[];
@@ -22,22 +21,16 @@ export default function SeasonsSection({
   data,
   seriesId,
 }: SeasonsSectionProps) {
-  const seriesData: Series = useStore(seriesStore);
+  const seriesData = useStore(seriesStore).series;
   const [selectedSeason, setSelectedSeason] = useState<number>(
     data?.[0]?.seasonNumber ?? 1
   );
-  const [expanded, setExpanded] = useState(true);
   const seasonTabsRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const currentSeason = useMemo(
     () => data.find(season => season.seasonNumber === selectedSeason),
     [data, selectedSeason]
-  );
-  const { data: episodes = [] as Episode[], isLoading } = useEpisodeQuery(
-    seriesId!,
-    selectedSeason,
-    !!currentSeason
   );
   const scrollSeasonTabs = (direction: 'left' | 'right') => {
     if (seasonTabsRef.current) {
@@ -68,9 +61,17 @@ export default function SeasonsSection({
                 <Card
                   key={season.id}
                   title={season.title}
-                  subtitle={`${season.numberOfEpisodes} episodes • ${
-                    season.releaseDate.split('-')[0]
-                  }`}
+                  subtitle={
+                    season.numberOfEpisodes > 0
+                      ? season.releaseDate
+                        ? `${season.numberOfEpisodes} episodes • ${
+                            season.releaseDate.split('-')[0]
+                          }`
+                        : `${season.numberOfEpisodes} episodes`
+                      : season.releaseDate
+                      ? `${season.releaseDate.split('-')[0]}`
+                      : undefined
+                  }
                   badges={[
                     {
                       iconName: 'star' as IconName,
@@ -79,11 +80,7 @@ export default function SeasonsSection({
                       position: 'top-left',
                     },
                   ]}
-                  imageUrl={
-                    season.posterPath ||
-                    seriesData?.posterPath ||
-                    '/images/placeholder.jpg'
-                  }
+                  imageUrl={season.posterPath || seriesData?.posterPath}
                   additionalButton={{
                     iconName: 'ExternalLink',
                     onClick: () => {
@@ -107,58 +104,12 @@ export default function SeasonsSection({
             <Icon name='arrow-right' strokeColor='white' />
           </Button>
         </div>
-        <div className={styles.episodesSection}>
-          <div className={styles.episodesHeader}>
-            <div className={styles.episodesHeading}>
-              <h3>Episodes</h3>
-            </div>
-            <Button color='neutral' onClick={() => setExpanded(!expanded)}>
-              <Icon
-                name={expanded ? 'chevron-up' : 'chevron-down'}
-                strokeColor='white'
-              />
-              {expanded ? 'Hide' : 'Show'} Episodes
-            </Button>
-          </div>
-          {expanded && (
-            <div className={styles.episodesGrid}>
-              {!isLoading
-                ? episodes.map(episode => (
-                    <Card
-                      key={episode.id}
-                      title={episode.title}
-                      subtitle={episode.releaseDate}
-                      description={episode.overview}
-                      href={`${pathname}/seasons/${selectedSeason}/episodes/${episode.episodeNumber}`}
-                      imageUrl={
-                        episode.posterPath ||
-                        currentSeason?.posterPath ||
-                        '/placeholder.svg'
-                      }
-                      badges={[
-                        {
-                          iconName: 'film' as IconName,
-                          color: 'primary',
-                          text: 'episode',
-                          number: episode.episodeNumber,
-                          position: 'top-left',
-                        },
-                        {
-                          iconName: 'clock' as IconName,
-                          number: episode.runTime,
-                          position: 'top-right',
-                        },
-                      ]}
-                      imageHeight='image-md'
-                      layout='below'
-                    />
-                  ))
-                : Array.from({ length: 6 }).map((_, i) => (
-                    <SkeletonCard key={i} />
-                  ))}
-            </div>
-          )}
-        </div>
+        <EpisodesSection
+          seasonNumber={selectedSeason}
+          seriesId={seriesId!}
+          fallbackPoster={currentSeason?.posterPath || seriesData?.posterPath}
+          seasonsData={data}
+        />
       </div>
     </section>
   );

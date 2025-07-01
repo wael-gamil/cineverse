@@ -5,7 +5,7 @@ import Card from '../../cards/card/card';
 import Button from '../button/button';
 import Pagination from '../pagination/pagination';
 import { Icon } from '../icon/icon';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Badge from '../badge/badge';
 
@@ -22,34 +22,28 @@ export default function SearchResult({
   totalPages,
 }: Props) {
   const router = useRouter();
-  const filterOptions: { name: string; value: FilterType }[] = [
-    { name: 'All', value: '' },
-    { name: 'Movies', value: 'MOVIE' },
-    { name: 'TV Shows', value: 'SERIES' },
-  ];
-  const [activeFilter, setActiveFilter] = useState<FilterType>('');
+  const resultRef = useRef<HTMLDivElement>(null);
+  const [fullscreenCard, setFullscreenCard] = useState<Content | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
 
-  const filtered = contents.filter(item => {
-    const matchesQuery = item.title.toLowerCase().includes(query.toLowerCase());
-    const matchesFilter = activeFilter === '' || item.type === activeFilter;
-    return matchesQuery && matchesFilter;
-  });
+  // Scroll to top of content when page changes
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 0); // let React finish painting
 
+    return () => clearTimeout(timeout);
+  }, [currentPage]);
+  const handleCardClick = (item: Content, href: string) => {
+    setActiveId(item.id);
+    setFullscreenCard(item);
+    setTimeout(() => {
+      router.push(href);
+    }, 400); // allow time for animation
+  };
   return (
-    <div className={styles.results}>
-      <div className={styles.filters}>
-        {filterOptions.map(({ name, value }) => (
-          <Button
-            key={value}
-            onClick={() => setActiveFilter(value)}
-            variant={activeFilter === value ? 'solid' : 'outline'}
-            color={activeFilter === value ? 'primary' : 'neutral'}
-          >
-            {name}
-          </Button>
-        ))}
-      </div>
-      {filtered.length === 0 ? (
+    <div ref={resultRef} className={styles.results}>
+      {contents.length === 0 ? (
         <div className={styles.noResults}>
           <div className={styles.iconContainer}>
             <div className={styles.iconCircle}>
@@ -64,22 +58,37 @@ export default function SearchResult({
               <span>?</span>
             </div>
           </div>
-          <h3 className={styles.title}>No results found</h3>
-          <p className={styles.subtitle}>
-            We couldn't find any movies or TV shows matching "{query}". Try
-            searching with different keywords or check your spelling.
-          </p>
-          <div className={styles.actions}>
-            <Button onClick={() => router.push(`/search`)}>Clear Search</Button>
-            <Button onClick={() => setActiveFilter('')} color='neutral'>
-              Browse All
-            </Button>
-          </div>
+          {query === '' ? (
+            <>
+              <h3 className={styles.title}>Start your search</h3>
+              <p className={styles.subtitle}>
+                Enter a movie or TV show name to see results.
+              </p>
+            </>
+          ) : (
+            <>
+              <h3 className={styles.title}>No results found</h3>
+              <p className={styles.subtitle}>
+                We couldn't find any movies or TV shows matching "{query}". Try
+                searching with different keywords or check your spelling.
+              </p>
+              <div className={styles.actions}>
+                <Button onClick={() => router.push(`/search`)}>
+                  Clear Search
+                </Button>
+                {/* {activeFilter !== '' && (
+                  <Button onClick={() => setActiveFilter('')} color='neutral'>
+                    Browse All
+                  </Button>
+                )} */}
+              </div>
+            </>
+          )}
         </div>
       ) : (
         <>
           <div className={styles.grid}>
-            {filtered.map(item => (
+            {contents.map(item => (
               <Card
                 title={item.title}
                 key={item.id}
@@ -99,7 +108,15 @@ export default function SearchResult({
                 imageUrl={item.posterUrl || '/images/placeholder.jpg'}
                 description={item.overview}
                 href={`/${item.slug}`}
+                onClick={() => handleCardClick(item, `/${item.slug}`)}
                 layout='overlay'
+                className={
+                  activeId === null
+                    ? ''
+                    : item.id === activeId
+                    ? styles.activeCard
+                    : styles.inactiveCard
+                }
               >
                 <div className={styles.contentDetails}>
                   <div className={styles.date}>
@@ -121,8 +138,10 @@ export default function SearchResult({
               </Card>
             ))}
           </div>
-
-          <Pagination currentPage={currentPage} totalPages={totalPages} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages > 30 ? 30 : totalPages}
+          />
         </>
       )}
     </div>

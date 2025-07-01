@@ -8,6 +8,7 @@ export type Filters = {
   rate?: string;
   lang?: string;
   sortBy?: string;
+  order?: string;
 };
 
 export type Content = {
@@ -54,7 +55,7 @@ export type Trailer = {
 };
 export type Provider = {
   name: string;
-  logoUrl: string;
+  logo: string;
 };
 export type Review = {
   id: number;

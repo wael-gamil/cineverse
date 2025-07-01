@@ -5,14 +5,26 @@ import { Icon } from '../icon/icon';
 import PanelWrapper from '../panelWrapper/panelWrapper';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { FilterOpt } from '@/constants/types/movie';
 
 type SortProps = {
   initialSortBy: string;
+  initialOrder: string;
+  sortOptions: FilterOpt;
+  orderOptions: FilterOpt;
 };
-export default function Sort({ initialSortBy }: SortProps) {
+export default function Sort({
+  initialSortBy,
+  initialOrder,
+  sortOptions,
+  orderOptions,
+}: SortProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [sortBy, setSortBy] = useState(initialSortBy || '');
+  const [order, setOrder] = useState(initialOrder || '');
+
+  const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
 
   useEffect(() => {
     setSortBy(initialSortBy || '');
@@ -20,23 +32,17 @@ export default function Sort({ initialSortBy }: SortProps) {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    // Update sortBy in URL
-    if (sortBy) {
-      params.set('sortBy', sortBy);
-    } else {
-      params.delete('sortBy');
-    }
+
+    if (sortBy) params.set('sortBy', sortBy);
+    else params.delete('sortBy');
+
+    if (order) params.set('order', order);
+    else params.delete('order');
 
     router.push(`?${params.toString()}`, { scroll: false });
-  }, [sortBy, router, searchParams]);
+    setTimeout(() => closePanel(), 200);
+  }, [sortBy, order]);
 
-  // Sort options
-  const sortOptions = [
-    { label: 'Most Recent', value: 'mostRecent' },
-    { label: 'Top Rated', value: 'topRated' },
-    { label: 'Popular', value: 'popular' },
-    { label: 'Oldest', value: 'oldest' },
-  ];
   return (
     <PanelWrapper
       label='Sort by'
@@ -47,25 +53,51 @@ export default function Sort({ initialSortBy }: SortProps) {
           strokeColor='primary'
         />
       )}
-      badge={sortOptions.find(o => o.value === sortBy)?.label}
+      badge={sortOptions.options.find(opt => opt.value === sortBy)?.label}
       position='right'
-      solidPanel
-      padding='sm'
+      padding='lg'
+      setClose={setClosePanel}
     >
-      <div className={styles.options}>
-        {sortOptions.map(option => (
-          <Button
-            key={option.value}
-            type='button'
-            variant={sortBy === option.value ? 'solid' : 'ghost'}
-            color={sortBy === option.value ? 'primary' : 'neutral'}
-            onClick={() => setSortBy(option.value)}
-            width='100%'
-            align='left'
-          >
-            {option.label}
-          </Button>
-        ))}
+      <div className={styles.grid}>
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Field</h3>
+          <div className={styles.options}>
+            {sortOptions.options.map(option => (
+              <Button
+                key={option.value}
+                type='button'
+                variant={sortBy === option.value ? 'solid' : 'ghost'}
+                color={sortBy === option.value ? 'primary' : 'neutral'}
+                onClick={() =>
+                  option.value === sortBy
+                    ? setSortBy('')
+                    : setSortBy(option.value)
+                }
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Order</h3>
+          <div className={styles.options}>
+            {orderOptions.options.map(option => (
+              <Button
+                key={option.value}
+                type='button'
+                variant={order === option.value ? 'solid' : 'ghost'}
+                color={order === option.value ? 'primary' : 'neutral'}
+                onClick={() =>
+                  option.value === order ? setOrder('') : setOrder(option.value)
+                }
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
       </div>
     </PanelWrapper>
   );

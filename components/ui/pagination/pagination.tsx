@@ -19,6 +19,10 @@ export default function Pagination({ currentPage, totalPages }: Props) {
     const params = new URLSearchParams(searchParams);
     params.set('page', displayPage.toString());
     router.push(`${pathname}?${params.toString()}`);
+    window.scrollTo({
+      top: 0,
+      behavior: 'auto',
+    });
   };
 
   const renderPageNumbers = () => {

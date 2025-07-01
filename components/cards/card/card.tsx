@@ -34,6 +34,7 @@ type CardProps = {
     onClick: () => void;
   };
   highlight?: boolean;
+  className?: string;
 };
 
 export default function Card({
@@ -49,21 +50,23 @@ export default function Card({
   children,
   additionalButton,
   highlight,
+  className = '',
 }: CardProps) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [hasError, setHasError] = useState(false);
-
   const handleClick = () => {
     if (onClick) onClick();
     else if (href) router.push(href);
   };
 
-  const imageToUse = hasError ? fallbackImage : imageUrl;
+  const imageToUse = hasError || imageUrl === null ? fallbackImage : imageUrl;
 
   return (
     <div
-      className={`${styles.cardWrapper} ${highlight ? styles.highlight : ''}`}
+      className={`${styles.cardWrapper} ${
+        highlight ? styles.highlight : ''
+      } ${className}`}
       onClick={handleClick}
     >
       <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>

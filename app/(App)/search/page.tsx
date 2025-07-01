@@ -3,6 +3,8 @@ import { getSearchResults } from '@/lib/api';
 import SearchInput from '@/components/ui/search/searchInput';
 import SearchResult from '@/components/ui/search/searchResult';
 import ExitButton from '@/components/ui/search/exitButton';
+import SearchFilter from '@/components/ui/search/searchFilter';
+import { FilterType } from '@/constants/types/movie';
 
 type AwaitedSearchParams = {
   q?: string;
@@ -18,9 +20,11 @@ export default async function Search({
   const awaitedSearchParams = await searchParams;
   const query = awaitedSearchParams.q || '';
   const page = parseInt(awaitedSearchParams.page || '1', 10) - 1;
+  const type = (awaitedSearchParams.type as FilterType) || '';
 
   const { contents, totalPages, currentPage } = await getSearchResults(
     query,
+    type,
     page
   );
 
@@ -30,15 +34,11 @@ export default async function Search({
         <div className={styles.headerTop}>
           <div className={styles.headerLeft}>
             <h2 className={styles.title}>Search Results</h2>
-            <p className={styles.subtitle}>
-              {query ? `Searching for "${query}"` : 'Start typing to search...'}
-            </p>
           </div>
           <ExitButton />
         </div>
-        <div className={styles.inputWrapper}>
-          <SearchInput initialQuery={query} />
-        </div>
+        <SearchInput initialQuery={query} />
+        <SearchFilter />
       </div>
 
       <SearchResult
