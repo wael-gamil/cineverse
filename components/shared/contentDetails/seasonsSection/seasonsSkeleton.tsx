@@ -1,5 +1,3 @@
-'use client';
-
 import styles from './seasonsSection.module.css';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import Button from '@/components/ui/button/button';
