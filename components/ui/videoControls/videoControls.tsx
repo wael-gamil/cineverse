@@ -3,13 +3,33 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from '../icon/icon';
 import styles from './videoControls.module.css';
+import Button from '../button/button';
 
 interface VideoControlsProps {
   player: any;
+  isPlayingInitial: boolean;
   onClose: () => void;
 }
 
-export default function VideoControls({ player, onClose }: VideoControlsProps) {
+export default function VideoControls({
+  player,
+  isPlayingInitial,
+  onClose,
+}: VideoControlsProps) {
+  const [isPlaying, setIsPlaying] = useState(isPlayingInitial);
+  useEffect(() => {
+    if (isPlayingInitial) {
+      player.playVideo();
+      setTimeout(() => {
+        setIsPlaying(true);
+      }, 300);
+    } else {
+      setTimeout(() => {
+        player.pauseVideo();
+      }, 100);
+      setIsPlaying(false);
+    }
+  }, [isPlayingInitial]);
   const [muted, setMuted] = useState(true);
   const [volume, setVolume] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -21,7 +41,6 @@ export default function VideoControls({ player, onClose }: VideoControlsProps) {
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setFullscreen] = useState(false);
   const hideTimeout = useRef<number | undefined>(undefined);
-
   useEffect(() => {
     if (!player || typeof player.getVolume !== 'function') return;
 
@@ -50,9 +69,15 @@ export default function VideoControls({ player, onClose }: VideoControlsProps) {
 
   useEffect(() => {
     const mouseHandler = () => resetHide();
+
     document.addEventListener('mousemove', mouseHandler);
-    return () => document.removeEventListener('mousemove', mouseHandler);
-  }, []);
+    resetHide();
+
+    return () => {
+      document.removeEventListener('mousemove', mouseHandler);
+      window.clearTimeout(hideTimeout.current);
+    };
+  }, [isPlaying]);
 
   const toggleMute = () => {
     if (muted) {
@@ -97,70 +122,120 @@ export default function VideoControls({ player, onClose }: VideoControlsProps) {
     setFullscreen(!isFullscreen);
     resetHide();
   };
-
+  const togglePlay = () => {
+    if (!player) return;
+    if (isPlaying) {
+      setTimeout(() => {
+        player.pauseVideo();
+      }, 100);
+      setIsPlaying(!isPlaying);
+    } else {
+      player.playVideo();
+      setTimeout(() => {
+        setIsPlaying(!isPlaying);
+      }, 300);
+    }
+    resetHide();
+  };
   return (
-    <div className={`${styles.controls} ${showControls ? '' : styles.hidden}`}>
-      <input
-        type='range'
-        min='0'
-        max={croppedDuration}
-        value={progress}
-        onChange={onSeek}
-        className={styles.progress}
-        style={{
-          background: `linear-gradient(to right, var(--color-primary) ${fillPercent}%, var(--color-muted) ${fillPercent}%)`,
-        }}
-      />
+    <>
+      {/* {!isPlaying && <div className={styles.pauseOverlay}></div>} */}
+      <div
+        className={`${styles.controls} ${
+          isPlaying ? (showControls ? '' : styles.hidden) : ''
+        }${!isPlaying ? styles.playing : ''}`}
+      >
+        <input
+          type='range'
+          min='0'
+          max={croppedDuration}
+          value={progress}
+          onChange={onSeek}
+          className={styles.progress}
+          style={{
+            background: `linear-gradient(to right, var(--color-primary) ${fillPercent}%, var(--color-muted) ${fillPercent}%)`,
+          }}
+        />
 
-      <div className={styles.controlsRow}>
-        <div className={styles.time}>
-          {formatTime(Math.min(progress, croppedDuration))} /
-          {formatTime(croppedDuration)}
-        </div>
-        <div className={styles.rightSection}>
-          <div className={styles.volumeWrapper}>
-            <button onClick={toggleMute} className={styles.controlBtn}>
-              <Icon
-                name={
-                  muted || volume === 0
-                    ? 'mute'
-                    : volume < 40
-                    ? 'speaker-mini'
-                    : 'speaker'
-                }
-                strokeColor='white'
-              />
-            </button>
-            <div className={styles.volumePopup}>
-              <input
-                type='range'
-                min='0'
-                max='100'
-                value={volume}
-                onChange={onVolume}
-                className={styles.volumeBar}
-                style={{
-                  background: `linear-gradient(to right, var(--color-primary) ${
-                    (volume / 100) * 100
-                  }%, var(--color-muted) ${(volume / 100) * 100}%)`,
-                }}
-              />
+        <div className={styles.controlsRow}>
+          <div className={styles.controlsRow}>
+            <Button
+              onClick={togglePlay}
+              variant='ghost'
+              color='neutral'
+              padding='sm'
+            >
+              <Icon name={isPlaying ? 'pause' : 'play'} strokeColor='white' />
+            </Button>
+            <div className={styles.time}>
+              {formatTime(Math.min(progress, croppedDuration))} /
+              {formatTime(croppedDuration)}
             </div>
           </div>
+          {!isPlaying && (
+            <div className={styles.pauseMessage}>
+              <p>Paused. Take a moment, then press play when you're ready.</p>
+            </div>
+          )}
+          <div className={styles.rightSection}>
+            <div className={styles.volumeWrapper}>
+              <Button
+                onClick={toggleMute}
+                variant='ghost'
+                color='neutral'
+                padding='sm'
+              >
+                <Icon
+                  name={
+                    muted || volume === 0
+                      ? 'mute'
+                      : volume < 40
+                      ? 'speaker-mini'
+                      : 'speaker'
+                  }
+                  strokeColor='white'
+                />
+              </Button>
+              <div className={styles.volumePopup}>
+                <input
+                  type='range'
+                  min='0'
+                  max='100'
+                  value={volume}
+                  onChange={onVolume}
+                  className={styles.volumeBar}
+                  style={{
+                    background: `linear-gradient(to right, var(--color-primary) ${
+                      (volume / 100) * 100
+                    }%, var(--color-muted) ${(volume / 100) * 100}%)`,
+                  }}
+                />
+              </div>
+            </div>
+            <Button
+              onClick={toggleFullscreen}
+              variant='ghost'
+              color='neutral'
+              padding='sm'
+            >
+              <Icon
+                name={isFullscreen ? 'contract' : 'expand'}
+                strokeColor='white'
+              />
+            </Button>
 
-          <button onClick={toggleFullscreen} className={styles.controlBtn}>
-            <Icon
-              name={isFullscreen ? 'contract' : 'expand'}
-              strokeColor='white'
-            />
-          </button>
-
-          <button onClick={onClose} className={styles.closeBtn}>
-            ✕
-          </button>
+            <Button
+              onClick={onClose}
+              variant='ghost'
+              color='danger'
+              padding='sm'
+            >
+              ✕
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

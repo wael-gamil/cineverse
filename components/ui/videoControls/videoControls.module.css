@@ -7,13 +7,32 @@
   padding: var(--space-sm) var(--space-lg);
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   gap: var(--space-xs);
   z-index: 10000;
   color: var(--color-white);
   font-family: inherit;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-normal), height var(--transition-fast);
+}
+.pauseOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  backdrop-filter: blur(5px) brightness(0.8);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
+.pauseMessage {
+  background-color: var(--color-white-20);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+}
+.playing {
+  height: 15%;
+  backdrop-filter: blur(100px);
+}
 .hidden {
   opacity: 0;
   pointer-events: none;
@@ -24,7 +43,6 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
-  margin-top: var(--space-xs);
 }
 
 .time {
@@ -35,19 +53,6 @@
 .rightSection {
   display: flex;
   gap: var(--space-lg);
-}
-.controlBtn {
-  background: none;
-  border: none;
-  color: var(--color-white);
-  cursor: pointer;
-  padding: var(--space-xs);
-  border-radius: var(--radius-md);
-  transition: background var(--transition-fast);
-}
-
-.controlBtn:hover {
-  background: var(--color-white-20);
 }
 
 .volumeWrapper {
@@ -68,19 +73,6 @@
   max-width: 100px;
 }
 
-.closeBtn {
-  font-size: var(--font-size-lg);
-  background: var(--color-white-20);
-  border: none;
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.closeBtn:hover {
-  background: var(--color-danger-60);
-}
 .progress,
 .volumeBar {
   width: 100%;
