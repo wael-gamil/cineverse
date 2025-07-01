@@ -21,3 +21,18 @@
   flex-wrap: wrap;
   gap: var(--space-sm);
 }
+
+.activeCard {
+  z-index: 10;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 0 40px rgba(0, 123, 255, 0.6), 0 0 100px rgba(0, 123, 255, 0.3);
+  transform: scale(1.1) !important;
+}
+
+.inactiveCard {
+  opacity: 0.3;
+  filter: blur(1px);
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
