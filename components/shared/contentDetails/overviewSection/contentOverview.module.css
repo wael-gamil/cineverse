@@ -1,52 +1,66 @@
 /* === Wrapper === */
 .overview {
-  /* display: grid;
-  grid-template-columns: 1fr; */
   display: flex;
   flex-direction: column;
   padding: var(--space-md) var(--space-xxl);
   gap: var(--space-md);
 }
 
-@media (min-width: 1024px) {
-  .overview {
-    grid-template-columns: 2fr 1fr;
-  }
-}
-/* === Shared === */
 .heading {
   font-size: var(--font-size-xl);
   font-weight: 900;
 }
 
+/* === Container Split === */
 .container {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
   background-color: var(--color-surface-60);
-  padding: var(--space-xl) var(--space-xl);
+  padding: var(--space-xl);
   border-radius: var(--radius-lg);
 }
-.outer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: var(--space-md);
+
+@media (min-width: 1100px) {
+  .container {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 }
 
-/* === Left Section === */
+/* === Left Section (Description) === */
 .description {
   font-size: var(--font-size-lg);
-  line-height: 1.5;
-  max-width: 50rem;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
+
 .description p {
   color: var(--color-muted);
+  box-sizing: border-box;
+  padding-right: var(--space-md);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: auto;
+  text-overflow: ellipsis;
+  max-height: calc(1.5em * 7);
+  -webkit-line-clamp: 7;
+  line-clamp: 7;
 }
+.description .title {
+  font-weight: 700;
+}
+
+/* === Grid Right === */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--space-lg);
+  align-items: center;
+  flex: 3;
 }
 
 /* === Stat Card === */
@@ -54,55 +68,86 @@
   display: flex;
   gap: var(--space-md);
   align-items: center;
+  background-color: var(--color-surface-60);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
 }
+
+.card:hover {
+  background-color: var(--color-surface-20);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
 .iconWrapper {
-  background-color: var(--color-white-20);
-  padding: var(--space-sm);
-  border-radius: var(--radius-lg);
+  background-color: var(--color-white-10);
+  padding: var(--space-xs);
+  border-radius: var(--radius-md);
   flex-shrink: 0;
 }
+
 .titleBlock {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
+
 .label {
-  font-size: var(--font-size-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--color-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .value {
+  width: 100%;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--white);
   display: flex;
-  gap: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
+
+/* === Genre Badges === */
 .genreBadge {
-  background-color: var(--color-white-20) !important;
+  background-color: transparent !important;
+  border: 1px solid var(--color-white-20);
+  color: var(--white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
 }
-/* === Rating Block === */
+
+/* === Optional rating section === */
 .ratingBlock {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .ratingWrapper {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
 }
+
 .imdbScore {
   font-size: var(--font-size-xl);
   font-weight: 900;
 }
 
+/* === Divider (Optional future use) === */
 .divider {
   width: 100%;
   height: 1px;
   background-color: var(--color-white-20);
 }
 
-/* === Stat Row === */
+/* === Stats Row (if reused) === */
 .statRow {
   display: flex;
   align-items: center;
@@ -118,4 +163,20 @@
 .statValue {
   font-weight: 600;
   color: var(--white);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--color-white-10); /* optional subtle bg */
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.imageWrapper:hover {
+  transform: scale(1.1);
 }

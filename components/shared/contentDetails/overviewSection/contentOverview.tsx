@@ -1,24 +1,24 @@
+'use client';
 import styles from './contentOverview.module.css';
 
 import { NormalizedContent } from '@/constants/types/movie';
 import { Icon } from '../../../ui/icon/icon';
+import Image from 'next/image';
 import Badge from '../../../ui/badge/badge';
+import { useFilterOptionsQuery } from '@/hooks/useFilterOptionsQuery';
+import { useProvidersQuery } from '@/hooks/useProvidersQuery';
+import { useStatsQuery } from '@/hooks/useStatsQuery';
 
 type ContentOverviewProps = {
   content: NormalizedContent;
-  totalReviews?: number;
-  watchlistCount?: number;
   genres?: string[];
-  platformRate?: number;
 };
 
 export default function ContentOverview({
   content,
-  totalReviews,
-  watchlistCount,
   genres,
-  platformRate,
 }: ContentOverviewProps) {
+  const { data } = useStatsQuery(content.id);
   const runtime =
     content.runtime && !isNaN(Number(content.runtime))
       ? (() => {
@@ -31,19 +31,29 @@ export default function ContentOverview({
         })()
       : content.runtime;
   const genreList = content.genres || genres;
+
+  const { data: filterOptions } = useFilterOptionsQuery();
+  const languageData = filterOptions?.find(item => item.key === 'lang');
+  const fullLangLabel = languageData?.options?.find(
+    opt => opt.value === content.language
+  )?.label;
+  const { data: providers } =
+    content.type === 'movie' || content.type === 'series'
+      ? useProvidersQuery(content.id)
+      : { data: undefined };
   return (
     <section className={styles.overview}>
       {/* LEFT SECTION */}
       <h2 className={styles.heading}>
-        {/* {content.type === 'movie' ? 'Movie Overview' : content.type === 'serie' 'Series Overview'} */}
         {content.type.charAt(0).toUpperCase() + content.type.slice(1)} Overview
       </h2>
       <div className={styles.container}>
-        <div className={styles.description}>
-          <h3 className={styles.title}>Description</h3>
-          <p>{content.description}</p>
-        </div>
-
+        {content.description !== '' && (
+          <div className={styles.description}>
+            <h3 className={styles.title}>Description</h3>
+            <p>{content.description}</p>
+          </div>
+        )}
         <div className={styles.grid}>
           <div className={styles.card}>
             <div className={styles.iconWrapper}>
@@ -51,7 +61,9 @@ export default function ContentOverview({
             </div>
             <div className={styles.titleBlock}>
               <span className={styles.label}>Type</span>
-              <span className={styles.value}>{content.type}</span>
+              <span className={styles.value}>
+                {content.type.charAt(0).toUpperCase() + content.type.slice(1)}
+              </span>
             </div>
           </div>
 
@@ -65,7 +77,7 @@ export default function ContentOverview({
             </div>
           </div>
 
-          {content.runtime && (
+          {typeof content.runtime === 'number' && content.runtime > 0 && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
                 <Icon name='clock' strokeColor='white' />
@@ -84,7 +96,9 @@ export default function ContentOverview({
               </div>
               <div className={styles.titleBlock}>
                 <span className={styles.label}>Language</span>
-                <span className={styles.value}>{content.language}</span>
+                <span className={styles.value}>
+                  {fullLangLabel ? fullLangLabel : content.language}
+                </span>
               </div>
             </div>
           )}
@@ -124,18 +138,7 @@ export default function ContentOverview({
               </div>
             </div>
           )}
-          {/* <div className={styles.ratingBlock}>
-              <div className={styles.ratingWrapper}>
-                <Icon name='star' strokeColor='secondary' />
-                <span className={styles.imdbScore}>
-                  {content.imdbRate ? content.imdbRate.toFixed(1) : 'N/A'}
-                </span>
-              </div>
-              <span className={styles.label}>IMDb Rating</span>
-            </div>
-
-            <div className={styles.divider} /> */}
-          {typeof totalReviews === 'number' && totalReviews > 0 && (
+          {typeof data?.totalReviews === 'number' && data?.totalReviews > 0 && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
                 <Icon name='user' strokeColor='white' />
@@ -143,24 +146,25 @@ export default function ContentOverview({
               <div className={styles.titleBlock}>
                 <span className={styles.label}>Total Reviews</span>
                 <span className={styles.value}>
-                  {totalReviews.toLocaleString()}
+                  {data?.totalReviews.toLocaleString()}
                 </span>
               </div>
             </div>
           )}
-          {typeof watchlistCount === 'number' && watchlistCount > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='bookmark' strokeColor='white' />
+          {typeof data?.watchlistCount === 'number' &&
+            data?.watchlistCount > 0 && (
+              <div className={styles.card}>
+                <div className={styles.iconWrapper}>
+                  <Icon name='bookmark' strokeColor='white' />
+                </div>
+                <div className={styles.titleBlock}>
+                  <span className={styles.label}>Watchlist Count</span>
+                  <span className={styles.value}>
+                    {data?.watchlistCount.toLocaleString()}
+                  </span>
+                </div>
               </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Watchlist Count</span>
-                <span className={styles.value}>
-                  {watchlistCount.toLocaleString()}
-                </span>
-              </div>
-            </div>
-          )}
+            )}
           {genreList && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
@@ -180,14 +184,14 @@ export default function ContentOverview({
               </div>
             </div>
           )}
-          {typeof platformRate === 'number' && platformRate > 0 && (
+          {typeof data?.platformRate === 'number' && data?.platformRate > 0 && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
                 <Icon name='star' strokeColor='secondary' />
               </div>
               <div className={styles.titleBlock}>
                 <span className={styles.label}>Cineverse Score</span>
-                <span className={styles.value}>{platformRate * 10}%</span>
+                <span className={styles.value}>{data?.platformRate * 10}%</span>
               </div>
             </div>
           )}
@@ -203,111 +207,27 @@ export default function ContentOverview({
               </div>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* RIGHT SECTION
-      <div className={styles.outer}>
-        <h2 className={styles.heading}>
-          {{content.type === 'movie' ? 'Movie Overview' : content.type === 'serie' 'Series Overview'} 
-          {content.type.charAt(0).toUpperCase() + content.type.slice(1)} Stats
-        </h2>
-        <div className={styles.container}>
-          <div className={styles.ratingBlock}>
-            <div className={styles.ratingWrapper}>
-              <Icon name='star' strokeColor='secondary' />
-              <span className={styles.imdbScore}>
-                {content.imdbRate ? content.imdbRate.toFixed(1) : 'N/A'}
-              </span>
-            </div>
-            <span className={styles.label}>IMDb Rating</span>
-          </div>
-
-          <div className={styles.divider} />
-          {typeof totalReviews === 'number' && totalReviews > 0 && (
+          {providers && providers.length > 0 && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
-                <Icon name='user' strokeColor='white' width={16} height={16} />
+                <Icon name='badge' strokeColor='white' />
               </div>
               <div className={styles.titleBlock}>
-                <span className={styles.label}>Total Reviews</span>
+                <span className={styles.label}>Providers</span>
                 <span className={styles.value}>
-                  {totalReviews.toLocaleString()}
+                  {providers.map((provider, index) => {
+                    return (
+                      <div className={styles.imageWrapper} key={index}>
+                        <Image src={provider.logo} alt={provider.name} fill />
+                      </div>
+                    );
+                  })}
                 </span>
-              </div>
-            </div>
-          )}
-          {typeof watchlistCount === 'number' && watchlistCount > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon
-                  name='bookmark'
-                  strokeColor='white'
-                  width={16}
-                  height={16}
-                />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Watchlist Count</span>
-                <span className={styles.value}>
-                  {watchlistCount.toLocaleString()}
-                </span>
-              </div>
-            </div>
-          )}
-          {genreList && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='badge' strokeColor='white' width={16} height={16} />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Genres</span>
-                <span className={styles.value}>
-                  {genreList.map((genre, index) => (
-                    <Badge
-                      key={index}
-                      text={genre}
-                      backgroundColor='bg-white'
-                    />
-                  ))}
-                </span>
-              </div>
-            </div>
-          )}
-          {typeof platformRate === 'number' && platformRate > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon
-                  name='star'
-                  strokeColor='secondary'
-                  width={16}
-                  height={16}
-                />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Cineverse Score</span>
-                <span className={styles.value}>{platformRate * 10}%</span>
-              </div>
-            </div>
-          )}
-          {content.status && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon
-                  name='status'
-                  strokeColor='white'
-                  width={16}
-                  height={16}
-                />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Status</span>
-                <span className={styles.value}>{content.status}</span>
               </div>
             </div>
           )}
         </div>
-      </div> */}
+      </div>
     </section>
   );
 }
