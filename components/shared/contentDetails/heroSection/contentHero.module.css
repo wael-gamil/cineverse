@@ -36,9 +36,14 @@
 }
 .backdropImage {
   object-fit: cover;
-  transform: scale(1);
+  /* transform: scale(1); */
+  transition: opacity 0.4s ease;
 }
 
+.backdropHidden {
+  opacity: 0;
+  pointer-events: none;
+}
 .overlayDark {
   background: linear-gradient(
     to right,
@@ -58,7 +63,28 @@
   backdrop-filter: blur(2px);
   z-index: 2;
 }
-
+.bottomOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 12%;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.1) 85%,
+    transparent 100%
+  );
+  backdrop-filter: blur(12px);
+  z-index: 2;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+.bottomOverlay.hidden {
+  opacity: 0;
+}
 .spotlightEffect {
   bottom: 0;
   left: 0;
