@@ -8,35 +8,55 @@ import ContentHero from '@/components/shared/contentDetails/heroSection/contentH
 import ContentOverview from '@/components/shared/contentDetails/overviewSection/contentOverview';
 import ContentSectionWrapper from '@/components/shared/contentDetails/contentSectionWrapper';
 import { notFound } from 'next/navigation';
-import { normalizeContent } from '@/constants/types/movie';
+import { Movie, normalizeContent, Series } from '@/constants/types/movie';
+import type { Season } from '@/constants/types/movie';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 type SeasonProps = {
   params: Promise<{ seasonNumber: number; slug: string }>;
 };
 export default async function Season({ params }: SeasonProps) {
   const { seasonNumber, slug } = await params;
-  const contentDetails = await getContentDetails(slug);
-  if (
-    contentDetails.type !== 'series' ||
-    contentDetails.numberOfSeasons < seasonNumber
-  ) {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['content', slug],
+    queryFn: () => getContentDetails(slug),
+  });
+  const details = queryClient.getQueryData(['content', slug]) as Movie | Series;
+  if (details.type !== 'series' || details.numberOfSeasons < seasonNumber) {
     notFound();
   }
-  const seasonDetails = await getSeasonDetails(contentDetails.id, seasonNumber);
-  const stats = await getContentStats(seasonDetails.id);
+  await queryClient.prefetchQuery({
+    queryKey: ['season', details.id, seasonNumber],
+    queryFn: () => getSeasonDetails(details.id, seasonNumber),
+  });
+  const seasonDetails = queryClient.getQueryData([
+    'season',
+    details.id,
+    seasonNumber,
+  ]) as Season;
+  const dehydratedState = dehydrate(queryClient);
   return (
-    <>
+    <HydrationBoundary state={dehydratedState}>
       <ContentHero
         content={normalizeContent(seasonDetails)}
-        backgroundUrl={contentDetails.backdropPath}
-        genres={contentDetails.genres}
+        backgroundUrl={details.backdropPath}
+        fallbackPoster={details.posterPath}
+        genres={details.genres}
       />
       <ContentOverview
         content={normalizeContent(seasonDetails)}
-        totalReviews={stats.totalReviews}
-        watchlistCount={stats.watchlistCount}
-        genres={contentDetails.genres}
+        genres={details.genres}
       />
-      <ContentSectionWrapper section='reviews' id={contentDetails.id} />
-    </>
+
+      <ContentSectionWrapper
+        section='episodes'
+        id={details.id}
+        seasonNumber={seasonNumber}
+        fallbackPoster={seasonDetails.posterPath || details.posterPath}
+        seasonsData={[seasonDetails]}
+      />
+      <ContentSectionWrapper section='reviews' id={details.id} />
+    </HydrationBoundary>
   );
 }
