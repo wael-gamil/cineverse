@@ -51,6 +51,7 @@ export const getContents = async (
       rate: filters.rate,
       lang: filters.lang,
       sortBy: filters.sortBy,
+      order: filters.order,
     };
 
     Object.entries(filterMap).forEach(([key, value]) => {
@@ -95,16 +96,14 @@ export const getContents = async (
 export const getFilterOptions = async (): Promise<FilterOpt[]> => {
   try {
     const rawData = await fetcher(`contents/filter/options`);
-    const filteredData = rawData.filter(
-      (data: { key: string }) => data.key !== 'type' && data.key !== 'sortBy'
-    );
-    return filteredData;
+    return rawData;
   } catch (error) {
     throw error;
   }
 };
 export const getSearchResults = async (
   query: string,
+  type: 'MOVIE' | 'SERIES' | '',
   page = 0
 ): Promise<{
   contents: Content[];
@@ -112,7 +111,9 @@ export const getSearchResults = async (
   currentPage: number;
 }> => {
   try {
-    const url = `contents/search?q${query && `=${query}`}&page=${page}`;
+    const url = `contents/search?q${
+      query && `=${query}`
+    }&page=${page}&type=${type}`;
     const rawData = await fetcher(url);
     const contents: Content[] = rawData.content.map((movie: any) => ({
       id: movie.id,
