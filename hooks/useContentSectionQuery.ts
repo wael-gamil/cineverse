@@ -2,11 +2,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { Credits, Review, Season } from '@/constants/types/movie';
 
-type SectionType = 'credits' | 'seasons' | 'reviews';
+type SectionType = 'credits' | 'seasons' | 'reviews' | 'episodes';
 
-export function useContentSectionQuery(section: SectionType, id: number, enabled: boolean) {
+export function useContentSectionQuery(
+  section: SectionType,
+  id: number,
+  enabled: boolean,
+  seasonNumber?: number
+) {
   return useQuery({
-    queryKey: ['content-section', section, id],
+    queryKey: ['content-section', section, id, seasonNumber],
     queryFn: async () => {
       let url = '';
       switch (section) {
@@ -18,6 +23,10 @@ export function useContentSectionQuery(section: SectionType, id: number, enabled
           break;
         case 'seasons':
           url = `/api/proxy/seasons?id=${id}`;
+          break;
+        case 'episodes':
+          if (!seasonNumber) throw new Error('Missing season number');
+          url = `/api/proxy/episodes?id=${id}&seasonNumber=${seasonNumber}`;
           break;
         default:
           throw new Error('Unknown section');
