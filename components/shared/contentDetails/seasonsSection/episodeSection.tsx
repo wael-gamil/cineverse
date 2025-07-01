@@ -1,0 +1,107 @@
+'use client';
+import styles from './seasonsSection.module.css';
+import { Episode, Season } from '@/constants/types/movie';
+import Card from '@/components/cards/card/card';
+import SkeletonCard from '@/components/cards/card/skeletonCard';
+import Icon, { IconName } from '@/components/ui/icon/icon';
+import { useStore } from '@tanstack/react-store';
+import { useEpisodeQuery } from '@/hooks/useEpisodeQuery';
+import { seriesStore } from '@/utils/seriesStore';
+import { useMemo, useState } from 'react';
+import Button from '@/components/ui/button/button';
+import { usePathname } from 'next/navigation';
+
+type EpisodesSectionProps = {
+  seasonNumber: number;
+  seriesId: number;
+  fallbackPoster?: string;
+  seasonsData: Season[];
+  episodesData?: Episode[];
+};
+
+export default function EpisodesSection({
+  seasonNumber,
+  seriesId,
+  fallbackPoster,
+  seasonsData,
+  episodesData,
+}: EpisodesSectionProps) {
+  const pathname = usePathname();
+  const [expanded, setExpanded] = useState(true);
+  const seriesData = useStore(seriesStore).series;
+
+  const currentSeason = useMemo(
+    () => seasonsData.find(season => season.seasonNumber === seasonNumber),
+    [seasonsData, seasonNumber]
+  );
+
+  const shouldFetch = !episodesData;
+  const { data: fetchedEpisodes = [], isLoading } = useEpisodeQuery(
+    seriesId,
+    seasonNumber,
+    !!currentSeason && shouldFetch
+  );
+
+  const episodes = episodesData ?? fetchedEpisodes;
+
+  return (
+    <div
+      className={` ${episodesData ? styles.section : styles.episodesSection} `}
+    >
+      <div className={styles.episodesHeader}>
+        <div className={styles.episodesHeading}>
+          <h3>Episodes - Season {seasonNumber}</h3>
+        </div>
+        <Button color='neutral' onClick={() => setExpanded(!expanded)}>
+          <Icon
+            name={expanded ? 'chevron-up' : 'chevron-down'}
+            strokeColor='white'
+          />
+          {expanded ? 'Hide' : 'Show'} Episodes
+        </Button>
+      </div>
+
+      {expanded && (
+        <div className={styles.episodesGrid}>
+          {episodes.length > 0 ? (
+            episodes.map(episode => (
+              <Card
+                key={episode.id}
+                title={episode.title}
+                subtitle={episode.releaseDate}
+                description={episode.overview}
+                href={`${pathname}/episodes/${episode.episodeNumber}`}
+                imageUrl={
+                  episode.posterPath ||
+                  currentSeason?.posterPath ||
+                  fallbackPoster ||
+                  seriesData?.posterPath
+                }
+                badges={[
+                  {
+                    iconName: 'film' as IconName,
+                    color: 'primary',
+                    text: 'episode',
+                    number: episode.episodeNumber,
+                    position: 'top-left',
+                  },
+                  {
+                    iconName: 'clock' as IconName,
+                    number: episode.runTime,
+                    position: 'top-right',
+                  },
+                ]}
+                imageHeight='image-md'
+                layout='below'
+              />
+            ))
+          ) : isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+          ) : (
+            <p>No episodes available.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
