@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
         pathname: '/t/p/w500/**',
       },
     ],
+    //todo:remove it in production
+    unoptimized: true,
   },
 };
 
