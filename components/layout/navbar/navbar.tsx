@@ -21,7 +21,8 @@ export default function Navbar() {
     '/reviews',
     '/search',
     '/watchlist',
-    '/',
+    // '/',
+    '/crew',
   ];
   const showSpacer = allowedPathsWithSpacer.some(
     path => pathname === path || pathname.startsWith(`${path}/`)
@@ -46,7 +47,7 @@ export default function Navbar() {
 
     const handleLeave = (e: MouseEvent) => {
       const target = e.currentTarget as HTMLElement;
-      target.style.setProperty('--x', `50%`); // Reset to center
+      target.style.setProperty('--x', `50%`); 
     };
 
     const addListeners = (selector: string) => {
