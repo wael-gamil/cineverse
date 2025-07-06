@@ -1,4 +1,3 @@
-// components/ui/badge/Badge.tsx
 import styles from './badge.module.css';
 import { Icon, IconName } from '../icon/icon';
 
@@ -7,14 +6,14 @@ export type BadgeProps = {
   text?: string;
   number?: number;
   iconColor?: 'primary' | 'secondary' | 'muted' | 'white';
-  color?: 'color-primary' | 'color-secondary' | 'color-muted' | 'color-white'; // optional for text badges
+  color?: 'color-primary' | 'color-secondary' | 'color-muted' | 'color-white';
   numberColor?:
     | 'color-primary'
     | 'color-secondary'
     | 'color-muted'
-    | 'color-white'; // optional for number badges
-  backgroundColor?: 'bg-primary' | 'bg-secondary' | 'bg-muted' | 'bg-white'; // optional for background badges
-  position?: 'top-left' | 'top-right'; // optional for absolutely positioned badges
+    | 'color-white'; 
+  backgroundColor?: 'bg-primary' | 'bg-secondary' | 'bg-muted' | 'bg-white'; 
+  position?: 'top-left' | 'top-right'; 
   borderRadius?: 'border-md' | 'border-full';
   size?: 'size-sm' | 'size-md' | 'size-lg';
   className?: string;

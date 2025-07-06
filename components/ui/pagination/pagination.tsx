@@ -30,21 +30,16 @@ export default function Pagination({ currentPage, totalPages }: Props) {
 
     const current = currentPage + 1;
 
-    // Always show first page
     pages.push(1);
 
-    // Ellipsis after first if needed
     if (current > 3) pages.push('...');
 
-    // Pages around current
     for (let i = current - 1; i <= current + 1; i++) {
       if (i > 1 && i < totalPages) pages.push(i);
     }
 
-    // Ellipsis before last if needed
     if (current < totalPages - 2) pages.push('...');
 
-    // Always show last page
     if (totalPages > 1) pages.push(totalPages);
 
     return pages.map((page, idx) => {

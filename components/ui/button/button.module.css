@@ -72,8 +72,6 @@
 }
 /* === Disabled === */
 .disabled {
-  background-color: var(--color-bg);
-  border: 2px solid var(--color-bg);
   box-shadow: none;
   pointer-events: none;
   padding: 0;

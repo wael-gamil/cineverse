@@ -7,22 +7,13 @@
 }
 
 /* Grid for cards */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
-  gap: var(--space-md);
-  justify-items: flex-start;
-}
 
-.grid > * {
-  max-width: 275px;
-  min-width: 275px;
-}
 .contentDetails {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
+
 .date {
   display: flex;
   align-items: center;

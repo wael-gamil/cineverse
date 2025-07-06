@@ -8,6 +8,7 @@ import { Icon } from '../icon/icon';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Badge from '../badge/badge';
+import CardContainer from '@/components/cards/card/cardContainer';
 
 type Props = {
   contents: Content[];
@@ -26,11 +27,10 @@ export default function SearchResult({
   const [fullscreenCard, setFullscreenCard] = useState<Content | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
 
-  // Scroll to top of content when page changes
   useEffect(() => {
     const timeout = setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 0); // let React finish painting
+    }, 0); 
 
     return () => clearTimeout(timeout);
   }, [currentPage]);
@@ -39,7 +39,7 @@ export default function SearchResult({
     setFullscreenCard(item);
     setTimeout(() => {
       router.push(href);
-    }, 400); // allow time for animation
+    }, 400); 
   };
   return (
     <div ref={resultRef} className={styles.results}>
@@ -87,7 +87,11 @@ export default function SearchResult({
         </div>
       ) : (
         <>
-          <div className={styles.grid}>
+          <CardContainer
+            layout='grid'
+            cardMinWidth={250}
+            cardCount={contents.length}
+          >
             {contents.map(item => (
               <Card
                 title={item.title}
@@ -117,6 +121,8 @@ export default function SearchResult({
                     ? styles.activeCard
                     : styles.inactiveCard
                 }
+                minWidth={250}
+                maxWidth={270}
               >
                 <div className={styles.contentDetails}>
                   <div className={styles.date}>
@@ -137,7 +143,7 @@ export default function SearchResult({
                 </div>
               </Card>
             ))}
-          </div>
+          </CardContainer>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages > 30 ? 30 : totalPages}

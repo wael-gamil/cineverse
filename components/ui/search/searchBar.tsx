@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function SearchBar() {
-  const isCompact = useIsMobile(1200); // returns true on tablets/mobiles
+  const isCompact = useIsMobile(1200); 
 
   const pathname = usePathname();
 
