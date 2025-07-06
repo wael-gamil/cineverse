@@ -21,6 +21,6 @@ export function useEpisodeQuery(
       return (await res.json()) as Episode[];
     },
     enabled,
-    staleTime: 1000 * 60 * 10, // cache for 10 minutes
+    staleTime: 1000 * 60 * 10, 
   });
 }

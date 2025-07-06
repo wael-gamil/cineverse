@@ -3,7 +3,7 @@ import { useEffect, useState, RefObject } from 'react';
 export function useIsInViewOnce<T extends HTMLElement = HTMLElement>(
   ref: RefObject<T | null>,
   rootMargin = '0px',
-  threshold = 0.5 // Require 50% visibility
+  threshold = 0.5 
 ): boolean {
   const [isVisible, setIsVisible] = useState(false);
 

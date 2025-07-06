@@ -21,7 +21,7 @@ export function useResetPageOnParamChange(paramKeys: string[]) {
     });
 
     if (hasChanged) {
-      currentParams.delete('page'); // reset page
+      currentParams.delete('page'); 
       router.push(`${pathname}?${currentParams.toString()}`);
     }
 
