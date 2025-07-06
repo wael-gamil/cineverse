@@ -1,0 +1,213 @@
+'use client';
+import styles from './contentHeroSimple.module.css';
+import Image from 'next/image';
+import Badge from '@/components/ui/badge/badge';
+import { Icon, IconName } from '@/components/ui/icon/icon';
+import { useEffect, useRef, useState } from 'react';
+
+export type InfoCard = {
+  iconName: IconName;
+  title: string;
+  description?: string;
+  subtitle?: string;
+  badges?: string[];
+};
+
+export type ContentHeroSimpleProps = {
+  title: string;
+  image: string;
+  badges?: string[];
+  infoCards?: InfoCard[];
+  socialLinks?: {
+    facebookUrl?: string;
+    instagramUrl?: string;
+    twitterUrl?: string;
+    tiktokUrl?: string;
+    youtubeUrl?: string;
+    websiteUrl?: string;
+  };
+  alsoKnownAs?: string[];
+  bio?: string;
+};
+
+export default function ContentHeroSimple({
+  title,
+  image,
+  badges = [],
+  infoCards = [],
+  socialLinks = {},
+  alsoKnownAs = [],
+  bio,
+}: ContentHeroSimpleProps) {
+  const [showFullBio, setShowFullBio] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const bioRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    const el = bioRef.current;
+    if (el) {
+      setIsOverflowing(el.scrollHeight > el.clientHeight);
+    }
+  }, [bio]);
+  console.log(socialLinks);
+  return (
+    <section className={styles.hero}>
+      <div className={styles.rightSection}>
+        <div className={styles.posterWrapper}>
+          <Image src={image} alt={title} fill className={styles.posterImage} />
+        </div>
+        {(socialLinks.facebookUrl ||
+          socialLinks.instagramUrl ||
+          socialLinks.twitterUrl ||
+          socialLinks.tiktokUrl ||
+          socialLinks.youtubeUrl ||
+          socialLinks.websiteUrl) && (
+          <div className={styles.socialIconsContainer}>
+            <div className={styles.socialIcons}>
+              {socialLinks.facebookUrl && (
+                <a
+                  href={socialLinks.facebookUrl}
+                  target='_blank'
+                  aria-label='Facebook'
+                >
+                  <Icon
+                    name='facebook'
+                    strokeColor='white'
+                    width={24}
+                    height={24}
+                  />
+                </a>
+              )}
+              {socialLinks.instagramUrl && (
+                <a
+                  href={socialLinks.instagramUrl}
+                  target='_blank'
+                  aria-label='Instagram'
+                >
+                  <Icon
+                    name='instagram'
+                    strokeColor='white'
+                    width={24}
+                    height={24}
+                  />
+                </a>
+              )}
+              {socialLinks.twitterUrl && (
+                <a
+                  href={socialLinks.twitterUrl}
+                  target='_blank'
+                  aria-label='Twitter'
+                >
+                  <Icon
+                    name='twitter'
+                    strokeColor='white'
+                    width={24}
+                    height={24}
+                  />
+                </a>
+              )}
+              {socialLinks.tiktokUrl && (
+                <a
+                  href={socialLinks.tiktokUrl}
+                  target='_blank'
+                  aria-label='TikTok'
+                >
+                  <Icon
+                    name='tiktok'
+                    strokeColor='white'
+                    width={24}
+                    height={24}
+                  />
+                </a>
+              )}
+              {socialLinks.youtubeUrl && (
+                <a
+                  href={socialLinks.youtubeUrl}
+                  target='_blank'
+                  aria-label='YouTube'
+                >
+                  <Icon
+                    name='youtube'
+                    strokeColor='white'
+                    width={24}
+                    height={24}
+                  />
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className={styles.content}>
+        <div className={styles.contentHeader}>
+          <h1 className={styles.title}>{title}</h1>
+          <div className={styles.badges}>
+            {badges.map(badge => (
+              <Badge key={badge} text={badge} backgroundColor='bg-muted' />
+            ))}
+          </div>
+        </div>
+        {bio && (
+          <div className={styles.bioWrapper}>
+            <div className={styles.bioSection}>
+              <h2 className={styles.bioHeading}>Biography</h2>
+              <p
+                ref={bioRef}
+                className={`${styles.bioText} ${
+                  showFullBio ? styles.expanded : ''
+                }`}
+              >
+                {bio}
+              </p>
+              {isOverflowing && (
+                <button
+                  className={styles.readMoreBtn}
+                  onClick={() => setShowFullBio(prev => !prev)}
+                >
+                  {showFullBio ? 'Show Less' : 'Read More'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        <div className={styles.cards}>
+          {infoCards.map((card, idx) => (
+            <div className={styles.card} key={idx}>
+              <div className={styles.iconWrapper}>
+                <Icon name={card.iconName} strokeColor='white' />
+              </div>
+              <div className={styles.cardText}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.cardTitle}>{card.title}</div>
+                </div>
+                {card.description && (
+                  <div className={styles.cardDesc}>{card.description}</div>
+                )}
+                {card.badges && (
+                  <div className={styles.cardBadges}>
+                    {card.badges.map((b, i) => (
+                      <Badge key={i} text={b} size='size-sm' />
+                    ))}
+                  </div>
+                )}
+                {card.subtitle && (
+                  <div className={styles.cardSub}>{card.subtitle}</div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {alsoKnownAs.length > 0 && (
+          <div className={styles.akaSection}>
+            <span className={styles.akaTitle}>Also Known As</span>
+            <div className={styles.akaBadges}>
+              {alsoKnownAs.map((aka, i) => (
+                <Badge key={i} text={aka} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

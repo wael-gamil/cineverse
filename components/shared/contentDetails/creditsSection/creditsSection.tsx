@@ -1,12 +1,14 @@
 import { Credits } from '@/constants/types/movie';
 import styles from './creditsSection.module.css';
 import Card from '../../../cards/card/card';
+import CardContainer from '@/components/cards/card/cardContainer';
 
 type CreditsSectionProps = {
   data: Credits;
 };
 
 export default function CreditsSection({ data }: CreditsSectionProps) {
+  console.log(data);
   return (
     <section className={styles.section}>
       {/* Section Header */}
@@ -15,15 +17,18 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
       </div>
 
       {/* Cast Grid */}
-      <div className={styles.creditsGrid}>
+      <CardContainer layout='grid' cardMinWidth={220}>
         {/* Director Card */}
         {data.director && (
           <Card
             title={data.director.name}
             description='Director'
             imageUrl={data.director.path}
-            imageHeight='image-md'
+            imageHeight='image-lg'
             layout='below'
+            href={`/crew/${data.director.id}`}
+            minWidth={220}
+            maxWidth={250}
           />
         )}
 
@@ -37,11 +42,14 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
               title={actor.name}
               description={actor.characterName}
               imageUrl={actor.path}
-              imageHeight='image-md'
+              imageHeight='image-lg'
               layout='below'
+              href={`/crew/${actor.id}`}
+              minWidth={220}
+              maxWidth={250}
             />
           ))}
-      </div>
+      </CardContainer>
     </section>
   );
 }

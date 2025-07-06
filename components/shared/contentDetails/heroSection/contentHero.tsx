@@ -57,7 +57,6 @@ export default function ContentHero({
   const sectionRef = useRef<HTMLElement | null>(null);
   const isHeroVisible = useIsInView(sectionRef, '0px', 0.3);
   const [showBottomOverlay, setShowBottomOverlay] = useState(false);
-  // Toggle mute/unmute
   const toggleMute = () => {
     const player = playerRef.current;
     if (!player) return;
@@ -93,7 +92,7 @@ export default function ContentHero({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
-        e.preventDefault(); // prevent page scroll
+        e.preventDefault(); 
         togglePlayPause();
       }
     };
@@ -106,7 +105,6 @@ export default function ContentHero({
     if (!playerRef.current) return;
 
     const state = playerRef.current.getPlayerState();
-    // Ensure YT is available and fallback to numeric values if not
     const PLAYER_STATE =
       typeof window !== 'undefined' &&
       (window as any).YT &&

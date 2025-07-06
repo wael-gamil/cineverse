@@ -2,6 +2,7 @@ import styles from './seasonsSection.module.css';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
+import CardContainer from '@/components/cards/card/cardContainer';
 
 export default function SeasonsSkeleton() {
   return (
@@ -11,40 +12,52 @@ export default function SeasonsSkeleton() {
       </div>
 
       <div className={styles.container}>
-        <div className={styles.seasonTabs}>
-          <Button variant='outline' color='neutral'>
+        {/* Slider Row */}
+        <div className={styles.sliderRow}>
+          <Button variant='outline' color='neutral' disabled>
             <Icon name='arrow-left' strokeColor='white' />
           </Button>
 
-          <div className={styles.seasonCardsWrapper}>
-            <div className={styles.seasonCards}>
-              {Array.from({ length: 6 }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
-            </div>
-          </div>
+          <CardContainer layout='scroll' cardMinWidth={250} cardGap={16}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard
+                key={i}
+                imageHeight='image-lg'
+                layout='overlay'
+                maxWidth={300}
+                minWidth={250}
+              />
+            ))}
+          </CardContainer>
 
-          <Button variant='outline' color='neutral'>
+          <Button variant='outline' color='neutral' disabled>
             <Icon name='arrow-right' strokeColor='white' />
           </Button>
         </div>
 
+        {/* Episodes Section */}
         <div className={styles.episodesSection}>
           <div className={styles.episodesHeader}>
             <div className={styles.episodesHeading}>
               <h3>Episodes</h3>
             </div>
-            <Button variant='ghost' color='neutral'>
+            <Button variant='ghost' color='neutral' disabled>
               <Icon name='chevron-up' strokeColor='white' />
               Hide Episodes
             </Button>
           </div>
 
-          <div className={styles.episodesGrid}>
+          <CardContainer layout='grid' cardMinWidth={270} cardGap={16}>
             {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} />
+              <SkeletonCard
+                key={i}
+                imageHeight='image-md'
+                layout='below'
+                maxWidth={300}
+                minWidth={270}
+              />
             ))}
-          </div>
+          </CardContainer>
         </div>
       </div>
     </section>

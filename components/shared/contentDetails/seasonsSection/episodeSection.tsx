@@ -10,6 +10,8 @@ import { seriesStore } from '@/utils/seriesStore';
 import { useMemo, useState } from 'react';
 import Button from '@/components/ui/button/button';
 import { usePathname } from 'next/navigation';
+import CardContainer from '@/components/cards/card/cardContainer';
+import EmptyCard from '@/components/cards/card/emptyCard';
 
 type EpisodesSectionProps = {
   seasonNumber: number;
@@ -62,7 +64,7 @@ export default function EpisodesSection({
       </div>
 
       {expanded && (
-        <div className={styles.episodesGrid}>
+        <CardContainer layout='grid' cardMinWidth={270}>
           {episodes.length > 0 ? (
             episodes.map(episode => (
               <Card
@@ -95,14 +97,24 @@ export default function EpisodesSection({
                 ]}
                 imageHeight='image-md'
                 layout='below'
+                minWidth={270}
+                maxWidth={300}
               />
             ))
           ) : isLoading ? (
-            Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+            Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard
+                key={i}
+                imageHeight='image-md'
+                layout='below'
+                maxWidth={300}
+                minWidth={270}
+              />
+            ))
           ) : (
-            <p>No episodes available.</p>
+            <EmptyCard />
           )}
-        </div>
+        </CardContainer>
       )}
     </div>
   );
