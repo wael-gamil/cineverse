@@ -1,0 +1,24 @@
+.container {
+  width: 100%;
+}
+
+.scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  padding: var(--space-lg);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.grid {
+  display: grid;
+  padding: var(--space-lg);
+  justify-content: flex-start;
+}
