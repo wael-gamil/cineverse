@@ -1,0 +1,76 @@
+.wrapper {
+  position: relative;
+  height: 100vh;
+}
+
+.externalLink {
+  position: absolute;
+  top: 6rem;
+  right: 1rem;
+  z-index: 1000;
+}
+
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+}
+
+.arrowLeft {
+  left: 1rem;
+}
+
+.arrowRight {
+  right: 1rem;
+}
+
+.dotIndicator {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.dot {
+  width: 16px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.3s, width 0.3s;
+  cursor: pointer;
+}
+
+.active {
+  width: 24px;
+  background-color: #3b82f6; /* Tailwind's blue-500 */
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  animation: bounce 1.5s infinite;
+  z-index: 10;
+  cursor: default;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
