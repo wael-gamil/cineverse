@@ -1,4 +1,3 @@
-// content/[type]/page.tsx
 import ContentListWrapper from '@/components/shared/contentList/contentListWrapper';
 import { notFound } from 'next/navigation';
 import Filter from '@/components/ui/filter/filter';
@@ -22,7 +21,6 @@ export default async function ContentPage({
   const { type } = await params;
   if (!validTypes.includes(type)) return notFound();
 
-  // Convert to backend expected values
   const backendType = type === 'movies' ? 'MOVIE' : 'SERIES';
 
   const awaitedSearchParams = await searchParams;

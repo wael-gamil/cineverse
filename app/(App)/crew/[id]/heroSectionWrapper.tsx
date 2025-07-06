@@ -13,9 +13,6 @@ export default function heroSectionWrapper({
   person,
 }: heroSectionWrapperProps) {
   const { data: socialLinks } = useSocialQuery(person.id);
-  // Combine birthday and deathday into a single info card
-
-  // Helper to calculate age
   function calculateAge(
     birthDateStr?: string,
     deathDateStr?: string
@@ -36,13 +33,11 @@ export default function heroSectionWrapper({
     person.deathday ?? undefined
   );
 
-  // Ensure image is always a string
   const imageSrc =
     typeof person.path === 'string'
       ? person.path
       : (AvatarFallback as { src: string }).src ?? '';
 
-  // Build infoCards array conditionally
   const infoCards = [];
 
   if (age !== undefined || person.birthday) {
