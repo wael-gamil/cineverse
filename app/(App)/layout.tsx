@@ -4,7 +4,7 @@ import '@/styles/global.css';
 import '@/styles/reset.css';
 import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer/footer';
-import { Providers } from '@/lib/providers';
+import  Providers  from '@/lib/providers';
 
 export const metadata: Metadata = {
   title: 'CineVerse',
@@ -58,7 +58,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         <Providers>{children}</Providers>
-        {/* <Footer /> */}
+        <Footer />
       </body>
     </html>
   );
