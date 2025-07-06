@@ -19,8 +19,8 @@
 }
 
 .creditsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 200px);
+  display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   gap: var(--space-md);
 }

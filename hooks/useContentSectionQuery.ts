@@ -1,6 +1,4 @@
-// hooks/useContentSectionQuery.ts
 import { useQuery } from '@tanstack/react-query';
-import { Credits, Review, Season } from '@/constants/types/movie';
 
 type SectionType = 'credits' | 'seasons' | 'reviews' | 'episodes';
 
@@ -37,6 +35,6 @@ export function useContentSectionQuery(
       return await res.json();
     },
     enabled,
-    staleTime: 1000 * 60 * 10, // cache for 10 minutes
+    staleTime: 1000 * 60 * 10, 
   });
 }

@@ -35,7 +35,6 @@ export default function Filter({
     'sortBy',
     'order',
   ]);
-  // Debounce year input
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedYear(selected.year?.[0] || '');
@@ -43,7 +42,6 @@ export default function Filter({
     return () => clearTimeout(timeout);
   }, [selected.year]);
 
-  // Debounce rating input
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedRating(Number(selected.rate?.[0] || 0));
@@ -51,7 +49,6 @@ export default function Filter({
     return () => clearTimeout(timeout);
   }, [selected.rate]);
 
-  // Update URL params when filters change
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     const genreValues = selected.genres || [];

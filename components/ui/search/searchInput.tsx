@@ -22,7 +22,6 @@ export default function SearchInput({ initialQuery = '' }: Props) {
   }, []);
 
   useEffect(() => {
-    // Debounce logic
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
     debounceTimeout.current = setTimeout(() => {

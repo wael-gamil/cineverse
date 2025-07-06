@@ -19,8 +19,8 @@ type SectionType = 'credits' | 'seasons' | 'reviews' | 'episodes';
 
 type ContentSectionWrapperProps = {
   section: SectionType;
-  id: number; // this is seriesId
-  seasonNumber?: number; // new optional prop
+  id: number;
+  seasonNumber?: number; 
   fallbackPoster?: string;
   seasonsData?: Season[];
 };

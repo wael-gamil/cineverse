@@ -33,7 +33,7 @@ export default function SearchFilter({
     } else {
       params.set('type', value);
     }
-    params.delete('page'); // reset pagination
+    params.delete('page');
     router.push(`${pathname}?${params.toString()}`);
   };
 

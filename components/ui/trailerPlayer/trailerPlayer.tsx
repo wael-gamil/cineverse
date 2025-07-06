@@ -1,4 +1,3 @@
-// components/shared/TrailerPlayer.tsx
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import styles from './trailerPlayer.module.css';

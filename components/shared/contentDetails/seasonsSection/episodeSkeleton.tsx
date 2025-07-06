@@ -1,3 +1,4 @@
+import CardContainer from '@/components/cards/card/cardContainer';
 import styles from './seasonsSection.module.css';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import Button from '@/components/ui/button/button';
@@ -16,11 +17,17 @@ export default function EpisodeSkeleton() {
         </Button>
       </div>
 
-      <div className={styles.episodesGrid}>
+      <CardContainer layout='grid' cardMinWidth={270} cardGap={16}>
         {Array.from({ length: 6 }).map((_, i) => (
-          <SkeletonCard key={i} />
+          <SkeletonCard
+            key={i}
+            imageHeight='image-md'
+            layout='below'
+            maxWidth={300}
+            minWidth={270}
+          />
         ))}
-      </div>
+      </CardContainer>
     </section>
   );
 }

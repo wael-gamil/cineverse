@@ -12,6 +12,7 @@ import {
   Provider,
   Stats,
   Credits,
+  ExtendedPerson,
 } from '@/constants/types/movie';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
@@ -30,7 +31,6 @@ const fetcher = async function fetcher(
     },
   });
   if (!response.ok) {
-    // throw new Error('Network response was not ok');
     return null;
   }
 
@@ -40,10 +40,10 @@ const fetcher = async function fetcher(
 export const getContents = async (
   type: ContentType,
   filters: Filters,
-  page = 0
+  page = 0,
+  size = 24
 ): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
   try {
-    // Construct query parameters
     const query = new URLSearchParams();
     const filterMap: Record<string, string | undefined> = {
       genres: filters.genres?.join(','),
@@ -52,14 +52,15 @@ export const getContents = async (
       lang: filters.lang,
       sortBy: filters.sortBy,
       order: filters.order,
+      status: filters.status,
     };
 
     Object.entries(filterMap).forEach(([key, value]) => {
       if (value) query.set(key, value);
     });
 
-    const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=24`;
-
+    const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=${size}`;
+    console.log(url);
     const rawData = await fetcher(url);
     if (!rawData) {
       return {
@@ -238,5 +239,55 @@ export const getContentCredits = async (id: number): Promise<Credits> => {
     return rawData as Credits;
   } catch (error) {
     throw error;
+  }
+};
+export const getExtendedPersonDetails = async (
+  id: number
+): Promise<ExtendedPerson> => {
+  try {
+    const rawData = await fetcher(`artists/${id}`);
+    return rawData as ExtendedPerson;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getPersonContents = async (
+  id: number,
+  page = 0,
+  size = 24,
+  type?: 'MOVIE' | 'SERIES'
+): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('page', String(page));
+    query.set('size', String(size));
+    if (type) query.set('type', type);
+
+    const url = `artists/${id}/contents?${query.toString()}`;
+    const rawData = await fetcher(url);
+
+    const content: Content[] = rawData.content.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      overview: item.overview,
+      releaseDate: item.releaseDate,
+      imdbRate: item.imdbRate,
+      genres: item.genres,
+      posterUrl: item.posterPath,
+      slug: item.slug,
+    }));
+
+    return {
+      content,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching person content:', error);
+    return {
+      content: [],
+      totalPages: 0,
+      currentPage: 0,
+    };
   }
 };

@@ -23,34 +23,31 @@
   gap: var(--space-lg);
 }
 
-.seasonTabs {
+.sliderRow {
   display: flex;
   align-items: center;
   gap: var(--space-md);
   width: 100%;
   overflow: hidden;
 }
-.seasonCardsWrapper {
-  flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  padding: var(--space-lg);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.seasonCardsWrapper::-webkit-scrollbar {
-  display: none;
-}
-.seasonCards {
+
+.contentDetails {
   display: flex;
+  flex-direction: column;
   gap: var(--space-md);
-  min-width: max-content;
 }
-.seasonCards > * {
-  max-width: 200px;
-  min-width: 200px;
+.date {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  gap: var(--space-sm);
 }
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
 .episodesSection {
   width: 90%;
   margin: auto;
@@ -77,11 +74,4 @@
 .episodesHeader p {
   font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.6);
-}
-
-.episodesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 300px);
-  justify-content: flex-start;
-  gap: var(--space-md);
 }

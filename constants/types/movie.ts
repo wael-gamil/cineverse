@@ -9,6 +9,7 @@ export type Filters = {
   lang?: string;
   sortBy?: string;
   order?: string;
+  status?: string;
 };
 
 export type Content = {
@@ -49,6 +50,21 @@ export type CastMember = Person & {
 export type Credits = {
   director: Director;
   casts: CastMember[];
+};
+export type SocialLinks = {
+  facebookUrl?: string;
+  instagramUrl?: string;
+  twitterUrl?: string;
+  tiktokUrl?: string;
+  youtubeUrl?: string;
+};
+export type ExtendedPerson = Person & {
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  placeOfBirth: string;
+  knownForDepartment: string;
+  alsoKnownAs: string[];
 };
 export type Trailer = {
   trailer: string;
@@ -161,7 +177,6 @@ export function normalizeContent(
   data: Movie | Series | Season | Episode
 ): NormalizedContent {
   if ('runtime' in data) {
-    // Movie
     return {
       type: 'movie',
       id: data.id,
@@ -180,7 +195,6 @@ export function normalizeContent(
   }
 
   if ('numberOfSeasons' in data) {
-    // Series
     return {
       type: 'series',
       id: data.id,
@@ -201,7 +215,6 @@ export function normalizeContent(
   }
 
   if ('seasonNumber' in data) {
-    // Season
     return {
       type: 'season',
       id: data.id,
@@ -209,13 +222,12 @@ export function normalizeContent(
       description: data.overview,
       releaseDate: data.releaseDate,
       imageUrl: data.posterPath,
-      backgroundUrl: '', // Optional
+      backgroundUrl: '', 
       imdbRate: data.imdbRate,
       numberOfEpisodes: data.numberOfEpisodes,
     };
   }
 
-  // Episode
   return {
     type: 'episode',
     id: data.id,
@@ -223,7 +235,7 @@ export function normalizeContent(
     description: data.overview,
     releaseDate: data.releaseDate,
     imageUrl: data.posterPath,
-    backgroundUrl: '', // Optional
+    backgroundUrl: '',
     imdbRate: data.imdbRate,
     runtime: data.runTime,
   };

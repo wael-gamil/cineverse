@@ -10,7 +10,7 @@ import Button from '../../ui/button/button';
 import Badge from '../../ui/badge/badge';
 import fallbackImage from '@/public/avatar_fallback.png';
 
-type Badge = {
+type BadgeType = {
   iconName?: IconName;
   text?: string;
   number?: number;
@@ -18,16 +18,18 @@ type Badge = {
   position?: 'top-left' | 'top-right';
 };
 
-type CardProps = {
+type LayoutType = 'overlay' | 'below' | 'wide';
+
+export type CardProps = {
   imageUrl?: string | StaticImageData;
   imageHeight?: 'image-lg' | 'image-md';
   title: string;
   subtitle?: string;
   description?: string;
-  badges?: Badge[];
+  badges?: BadgeType[];
   onClick?: () => void;
   href?: string;
-  layout?: 'overlay' | 'below';
+  layout?: LayoutType;
   children?: React.ReactNode;
   additionalButton?: {
     iconName?: IconName;
@@ -35,6 +37,8 @@ type CardProps = {
   };
   highlight?: boolean;
   className?: string;
+  minWidth?: number;
+  maxWidth?: number;
 };
 
 export default function Card({
@@ -51,44 +55,64 @@ export default function Card({
   additionalButton,
   highlight,
   className = '',
+  minWidth,
+  maxWidth,
 }: CardProps) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [hasError, setHasError] = useState(false);
+
+  const imageToUse = hasError || imageUrl === null ? fallbackImage : imageUrl;
+
+  const computedStyle = {
+    minWidth: typeof minWidth === 'number' ? `${minWidth}px` : undefined,
+    maxWidth: typeof maxWidth === 'number' ? `${maxWidth}px` : undefined,
+  };
+
   const handleClick = () => {
     if (onClick) onClick();
     else if (href) router.push(href);
   };
 
-  const imageToUse = hasError || imageUrl === null ? fallbackImage : imageUrl;
+  const renderBadges = () =>
+    badges.map((badge, i) => (
+      <Badge
+        key={i}
+        iconName={badge.iconName}
+        text={badge.text}
+        number={badge.number}
+        iconColor={badge.color || 'white'}
+        backgroundColor='bg-muted'
+        borderRadius='border-full'
+        position={badge.position}
+        className={styles.badge}
+      />
+    ));
 
-  return (
-    <div
-      className={`${styles.cardWrapper} ${
-        highlight ? styles.highlight : ''
-      } ${className}`}
-      onClick={handleClick}
-    >
-      <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
-        <Image
-          src={imageToUse}
-          alt={title}
-          fill
-          onError={() => setHasError(true)}
-          className={styles.posterImage}
-          sizes='(max-width: 768px) 100vw, 400px'
-        />
-        {layout === 'overlay' && !isMobile && (
+  const renderImage = () => (
+    <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
+      <Image
+        src={imageToUse}
+        alt={title}
+        fill
+        onError={() => setHasError(true)}
+        className={styles.posterImage}
+        sizes='(max-width: 768px) 100vw, 400px'
+      />
+      {renderBadges()}
+    </div>
+  );
+
+  const renderOverlayLayout = () => (
+    <>
+      {renderImage()}
+      {!isMobile && (
+        <>
+          <div className={styles.gradientOverlay} />
           <div className={styles.bottomTitle}>
             <h3>{title}</h3>
             {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           </div>
-        )}
-        {layout === 'overlay' && !isMobile && (
-          <div className={styles.gradientOverlay} />
-        )}
-
-        {layout === 'overlay' && !isMobile && (
           <div className={styles.hoverOverlay}>
             <div className={styles.infoButtonWrapper}>
               <Button
@@ -113,32 +137,61 @@ export default function Card({
               {children}
             </div>
           </div>
-        )}
-
-        {badges.map((badge, i) => (
-          <Badge
-            key={i}
-            iconName={badge.iconName}
-            text={badge.text}
-            number={badge.number}
-            iconColor={badge.color || 'white'}
-            backgroundColor='bg-muted'
-            borderRadius='border-full'
-            position={badge.position}
-            className={styles.badge}
-          />
-        ))}
-      </div>
-
-      {(layout === 'below' || isMobile) && (
-        <div className={styles.belowDetails}>
-          <h3 className={styles.contentTitle}>{title}</h3>
-          {description && (
-            <p className={styles.contentBelowOverview}>{description}</p>
-          )}
-          {children}
-        </div>
+        </>
       )}
+    </>
+  );
+
+  const renderBelowLayout = () => (
+    <>
+      {renderImage()}
+      <div className={styles.belowDetails}>
+        <h3 className={styles.contentTitle}>{title}</h3>
+
+        {subtitle && <p className={styles.contentBelowOverview}>{subtitle}</p>}
+        {children}
+      </div>
+    </>
+  );
+
+  const renderWideLayout = () => (
+    <div className={styles.wideLayout}>
+      <div className={styles.wideImage}>
+        <Image
+          src={imageToUse}
+          alt={title}
+          fill
+          onError={() => setHasError(true)}
+          className={styles.posterImage}
+          sizes='(max-width: 768px) 100vw, 400px'
+        />
+      </div>
+      <div className={styles.wideDetails}>
+        <h3 className={styles.contentTitle}>{title}</h3>
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+        {description && (
+          <p className={styles.contentBelowOverview}>{description}</p>
+        )}
+        {children}
+      </div>
+    </div>
+  );
+
+  const getLayout = () => {
+    if (layout === 'wide') return renderWideLayout();
+    if (layout === 'below' || isMobile) return renderBelowLayout();
+    return renderOverlayLayout();
+  };
+
+  return (
+    <div
+      className={`${styles.cardWrapper} ${
+        highlight ? styles.highlight : ''
+      } ${className}`}
+      style={computedStyle}
+      onClick={handleClick}
+    >
+      {getLayout()}
     </div>
   );
 }

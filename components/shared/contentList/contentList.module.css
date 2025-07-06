@@ -1,6 +1,6 @@
 .contentList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 275px);
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-md);
   justify-content: space-between;
 }

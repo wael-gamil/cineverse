@@ -7,7 +7,6 @@ export async function GET(req: Request) {
     const url = `${BASE_URL}contents/${id}/trailer`;
     const res = await fetch(url);
     if (!res.ok) {
-      // Log or forward the status
       return new Response(`Failed to fetch trailer from upstream`, {
         status: res.status,
       });

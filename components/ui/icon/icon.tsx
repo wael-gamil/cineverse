@@ -7,7 +7,7 @@ export type IconName =
   | 'burger'
   | 'close'
   | 'play'
-  | 'pause' // <-- Added pause here
+  | 'pause' 
   | 'star'
   | 'plus'
   | 'message-square'
@@ -46,7 +46,18 @@ export type IconName =
   | 'thumbUp'
   | 'thumbDown'
   | 'MessageSquare'
-  | 'ExternalLink';
+  | 'ExternalLink'
+  | 'facebook'
+  | 'instagram'
+  | 'twitter'
+  | 'tiktok'
+  | 'youtube'
+  | 'location'
+  | 'skull'
+  | 'dragon'
+  | 'family'
+  | 'magnifier'
+  | 'dice';
 type IconProps = {
   name: IconName;
   className?: string;
@@ -514,6 +525,184 @@ export const Icon = ({
           {/* Arrow */}
           <polyline points='15 3 21 3 21 9'></polyline>
           <line x1='10' y1='14' x2='21' y2='3'></line>
+        </svg>
+      );
+    case 'facebook':
+      return (
+        <svg {...svgProps} viewBox='0 0 24 24' fill='none'>
+          <rect
+            x='2'
+            y='2'
+            width='20'
+            height='20'
+            rx='4'
+            stroke='currentColor'
+            strokeWidth='2'
+          />
+          <path
+            d='M16 8h-2a2 2 0 0 0-2 2v2h4l-.5 3H12v7H9v-7H7v-3h2v-2.5A3.5 3.5 0 0 1 12.5 6H16v2z'
+            fill='currentColor'
+          />
+        </svg>
+      );
+    case 'instagram':
+      return (
+        <svg {...svgProps} viewBox='0 0 24 24' fill='none'>
+          <rect
+            x='2'
+            y='2'
+            width='20'
+            height='20'
+            rx='6'
+            stroke='currentColor'
+            strokeWidth='2'
+          />
+          <circle cx='12' cy='12' r='5' stroke='currentColor' strokeWidth='2' />
+          <circle cx='17' cy='7' r='1.2' fill='currentColor' />
+        </svg>
+      );
+
+    case 'twitter':
+      return (
+        <svg {...svgProps} viewBox='0 0 24 24' fill='none'>
+          <path
+            d='M23 3a10.9 10.9 0 0 1-3.14 1.53A4.48 4.48 0 0 0 22.4 1.64a9.09 9.09 0 0 1-2.88 1.1
+           A4.48 4.48 0 0 0 12 6.09v1A12.94 12.94 0 0 1 3 4.1s-4 9 5 13
+           a13 13 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z'
+            fill='currentColor'
+          />
+        </svg>
+      );
+    case 'tiktok':
+      return (
+        <svg {...svgProps} viewBox='0 0 24 24' fill='none'>
+          <path
+            d='M16 3h-2.5v10.5a3.5 3.5 0 1 1-3.5-3.5'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
+          <path
+            d='M13.5 3a4 4 0 0 0 4 4'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
+        </svg>
+      );
+    case 'youtube':
+      return (
+        <svg {...svgProps} viewBox='0 0 24 24' fill='none'>
+          <path
+            d='M21.8 8.001c-.2-1.47-1.16-2.4-2.54-2.58C16.72 5 12 5 12 5s-4.72 0-7.26.42c-1.38.18-2.34 1.11-2.54 2.58C2 9.61 2 12 2 12s0 2.39.2 3.999c.2 1.47 1.16 2.4 2.54 2.58C7.28 19 12 19 12 19s4.72 0 7.26-.42c1.38-.18 2.34-1.11 2.54-2.58.2-1.61.2-3.999.2-3.999s0-2.39-.2-3.999Z'
+            stroke='currentColor'
+            strokeWidth='1.5'
+            strokeLinejoin='round'
+          />
+          <path d='M10 9.75v4.5l3.75-2.25L10 9.75Z' fill='currentColor' />
+        </svg>
+      );
+    case 'location':
+      return (
+        <svg {...svgProps}>
+          <circle cx='12' cy='10' r='3' />
+          <path d='M12 2c4.418 0 8 3.134 8 7 0 5.25-8 13-8 13S4 14.25 4 9c0-3.866 3.582-7 8-7z' />
+        </svg>
+      );
+    case 'skull':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+        >
+          <path d='M16 20v1a2 2 0 0 1-4 0v-1m4 0a2 2 0 0 0 4-2v-2a9 9 0 1 0-16 0v2a2 2 0 0 0 4 2m4 0v1a2 2 0 0 1-4 0v-1' />
+          <circle cx='9' cy='10' r='1' />
+          <circle cx='15' cy='10' r='1' />
+        </svg>
+      );
+    case 'dragon':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          <path d='M4 12s1-4 6-6c3-1 4-1 6-2s4 1 4 3-2 3-3 4c1 0 3 1 3 3s-2 3-4 2c0 1-1 3-3 3s-3-2-3-3c-1 1-3 2-4 0s0-4 1-5z' />
+          <path d='M9 9c0-1 1-2 2-2' />
+          <circle cx='15' cy='10' r='0.5' fill='currentColor' />
+        </svg>
+      );
+    case 'family':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          {/* Left Parent */}
+          <circle cx='5' cy='6' r='2' />
+          <path d='M3.5 20v-4a2 2 0 012-2h0a2 2 0 012 2v4' />
+
+          {/* Right Parent */}
+          <circle cx='19' cy='6' r='2' />
+          <path d='M17.5 20v-4a2 2 0 012-2h0a2 2 0 012 2v4' />
+
+          {/* Child */}
+          <circle cx='12' cy='10' r='1.5' />
+          <path d='M11 20v-3a1.5 1.5 0 013 0v3' />
+        </svg>
+      );
+
+    case 'magnifier':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          {/* Magnifying glass lens */}
+          <circle cx='11' cy='11' r='6' />
+          {/* Handle */}
+          <line x1='15' y1='15' x2='21' y2='21' />
+          {/* Hand holding it (curved thumb/finger) */}
+          <path d='M21 21c-0.5 -1 -2 -1.5 -2.5 -0.5' />
+          {/* Optional abstract head or shoulder to hint a person */}
+          <circle cx='17.5' cy='22' r='0.7' /> {/* Like a hand or finger tip */}
+        </svg>
+      );
+    case 'dice':
+      return (
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          <rect x='3' y='3' width='18' height='18' rx='2' ry='2' />
+          <circle cx='8' cy='8' r='1.5' fill='currentColor' />
+          <circle cx='16' cy='8' r='1.5' fill='currentColor' />
+          <circle cx='8' cy='16' r='1.5' fill='currentColor' />
+          <circle cx='16' cy='16' r='1.5' fill='currentColor' />
         </svg>
       );
     default:

@@ -11,6 +11,6 @@ export function useProvidersQuery(id: number, enabled?: boolean) {
       return (await res.json()) as Provider[];
     },
     enabled,
-    staleTime: 1000 * 60 * 10, // cache for 10 minutes
+    staleTime: 1000 * 60 * 10,
   });
 }

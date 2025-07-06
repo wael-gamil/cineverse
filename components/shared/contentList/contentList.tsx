@@ -7,6 +7,8 @@ import styles from './contentList.module.css';
 import { Content } from '@/constants/types/movie';
 import Badge from '../../ui/badge/badge';
 import { Icon } from '../../ui/icon/icon';
+import CardContainer from '@/components/cards/card/cardContainer';
+import EmptyCard from '@/components/cards/card/emptyCard';
 
 type Props = {
   content: Content[];
@@ -28,16 +30,20 @@ export default function ContentList({
     setFullscreenCard(item);
     setTimeout(() => {
       router.push(href);
-    }, 150); // allow time for animation
+    }, 150);
   };
 
   if (!content || content.length === 0) {
-    return <div className={styles.contentList}>No content found.</div>;
+    return <EmptyCard />;
   }
 
   return (
     <>
-      <div className={styles.contentList}>
+      <CardContainer
+        layout='grid'
+        cardMinWidth={250}
+        cardCount={content.length}
+      >
         {content.map(item => (
           <Card
             title={item.title}
@@ -67,6 +73,8 @@ export default function ContentList({
                 ? styles.activeCard
                 : styles.inactiveCard
             }
+            minWidth={250}
+            maxWidth={300}
           >
             <div className={styles.contentDetails}>
               <div className={styles.date}>
@@ -87,7 +95,7 @@ export default function ContentList({
             </div>
           </Card>
         ))}
-      </div>
+      </CardContainer>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
   );
