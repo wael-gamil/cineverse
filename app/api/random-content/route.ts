@@ -6,7 +6,6 @@ export async function GET() {
   try {
     const type = Math.random() < 0.5 ? 'MOVIE' : 'SERIES';
 
-    // Step 1: Fetch the first page to get totalPages
     const firstPage = await getContents(type, {}, 0, 24);
 
     if (
@@ -17,10 +16,9 @@ export async function GET() {
       return NextResponse.json({ error: 'No content found' }, { status: 404 });
     }
 
-    // Step 2: Pick a random page
     const randomPage = Math.floor(
       Math.random() * Math.min(firstPage.totalPages, 50)
-    ); // avoid huge page numbers
+    ); 
 
     const randomPageData =
       randomPage === 0
@@ -31,7 +29,6 @@ export async function GET() {
       return NextResponse.json({ error: 'Empty random page' }, { status: 404 });
     }
 
-    // Step 3: Pick a random item from that page
     const randomIndex = Math.floor(
       Math.random() * randomPageData.content.length
     );

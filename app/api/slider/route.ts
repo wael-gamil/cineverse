@@ -33,7 +33,6 @@ type SortMapValue = {
 };
 
 const sortMap: Record<SectionKey, SortMapValue> = {
-  // Popular Global
   'top-rated': {
     sortBy: 'topRated',
     year: '2000',
@@ -54,7 +53,6 @@ const sortMap: Record<SectionKey, SortMapValue> = {
     lang: 'en',
   },
 
-  // Arab-specific picks
   'top-arab': {
     sortBy: 'topRated',
     year: '2000',
@@ -79,7 +77,6 @@ const sortMap: Record<SectionKey, SortMapValue> = {
     },
   },
 
-  // Genre-focused sections
   'top-horror': {
     sortBy: 'topRated',
     year: '2000',
@@ -99,7 +96,6 @@ const sortMap: Record<SectionKey, SortMapValue> = {
     },
   },
 
-  // Optional future ideas
   'family-picks': {
     sortBy: 'topRated',
     year: '2000',

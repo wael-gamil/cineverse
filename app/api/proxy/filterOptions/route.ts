@@ -5,7 +5,6 @@ export async function GET() {
     const url = `${BASE_URL}contents/filter/options`;
     const res = await fetch(url);
     if (!res.ok) {
-      // Log or forward the status
       return new Response(`Failed to fetch filter options from upstream`, {
         status: res.status,
       });

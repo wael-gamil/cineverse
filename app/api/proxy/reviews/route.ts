@@ -10,7 +10,6 @@ export async function GET(req: Request) {
     const url = `${BASE_URL}contents/${id}/reviews`;
     const res = await fetch(url);
     if (!res.ok) {
-      // Log or forward the status
       return new Response(`Failed to fetch reviews from upstream ${url}`, {
         status: res.status,
       });
