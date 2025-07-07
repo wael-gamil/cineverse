@@ -4,11 +4,11 @@ import Image, { StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './card.module.css';
-import useIsMobile from '@/hooks/useIsMobile';
 import { Icon, IconName } from '../../ui/icon/icon';
 import Button from '../../ui/button/button';
 import Badge from '../../ui/badge/badge';
 import fallbackImage from '@/public/avatar_fallback.png';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type BadgeType = {
   iconName?: IconName;
@@ -59,14 +59,24 @@ export default function Card({
   maxWidth,
 }: CardProps) {
   const router = useRouter();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
   const [hasError, setHasError] = useState(false);
-
+  const isMobile = useResponsiveLayout();
   const imageToUse = hasError || imageUrl === null ? fallbackImage : imageUrl;
 
   const computedStyle = {
-    minWidth: typeof minWidth === 'number' ? `${minWidth}px` : undefined,
-    maxWidth: typeof maxWidth === 'number' ? `${maxWidth}px` : undefined,
+    minWidth:
+      typeof minWidth === 'number'
+        ? isMobile
+          ? `250px`
+          : `${minWidth}px`
+        : undefined,
+    maxWidth:
+      typeof maxWidth === 'number'
+        ? isMobile
+          ? `250px`
+          : `${maxWidth}px`
+        : undefined,
   };
 
   const handleClick = () => {
@@ -100,45 +110,58 @@ export default function Card({
         sizes='(max-width: 768px) 100vw, 400px'
       />
       {renderBadges()}
+      <div className={styles.infoButtonWrapper}>
+        <Button
+          borderRadius='fullRadius'
+          variant='ghost'
+          color='neutral'
+          ariaLabel='show more info'
+          padding='none'
+          onClick={additionalButton?.onClick}
+        >
+          <Icon
+            name={additionalButton?.iconName || 'info'}
+            strokeColor='white'
+          />
+        </Button>
+      </div>
     </div>
   );
 
   const renderOverlayLayout = () => (
     <>
       {renderImage()}
-      {!isMobile && (
-        <>
-          <div className={styles.gradientOverlay} />
-          <div className={styles.bottomTitle}>
-            <h3>{title}</h3>
-            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+      <>
+        <div className={styles.gradientOverlay} />
+        <div className={styles.bottomTitle}>
+          <h3>{title}</h3>
+          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+        </div>
+        <div className={styles.hoverOverlay}>
+          <div className={styles.infoButtonWrapper}>
+            <Button
+              borderRadius='fullRadius'
+              variant='ghost'
+              color='neutral'
+              ariaLabel='show more info'
+              padding='none'
+              onClick={additionalButton?.onClick}
+            >
+              <Icon
+                name={additionalButton?.iconName || 'info'}
+                strokeColor='white'
+              />
+            </Button>
           </div>
-          <div className={styles.hoverOverlay}>
-            <div className={styles.infoButtonWrapper}>
-              <Button
-                borderRadius='fullRadius'
-                variant='ghost'
-                color='neutral'
-                ariaLabel='show more info'
-                padding='none'
-                onClick={additionalButton?.onClick}
-              >
-                <Icon
-                  name={additionalButton?.iconName || 'info'}
-                  strokeColor='white'
-                />
-              </Button>
-            </div>
-            <div className={styles.contentDetails}>
-              <h3 className={styles.contentTitle}>{title}</h3>
-              {description && (
-                <p className={styles.contentOverview}>{description}</p>
-              )}
-              {children}
-            </div>
+          <div className={styles.contentDetails}>
+            <h3 className={styles.contentTitle}>{title}</h3>
+            {description && (
+              <p className={styles.contentOverview}>{description}</p>
+            )}
+            {children}
           </div>
-        </>
-      )}
+        </div>
+      </>
     </>
   );
 
@@ -149,7 +172,8 @@ export default function Card({
         <h3 className={styles.contentTitle}>{title}</h3>
 
         {subtitle && <p className={styles.contentBelowOverview}>{subtitle}</p>}
-        {children}
+        {description && <p className={styles.contentOverview}>{description}</p>}
+        {/* {children} */}
       </div>
     </>
   );
@@ -178,8 +202,8 @@ export default function Card({
   );
 
   const getLayout = () => {
-    if (layout === 'wide') return renderWideLayout();
     if (layout === 'below' || isMobile) return renderBelowLayout();
+    if (layout === 'wide') return renderWideLayout();
     return renderOverlayLayout();
   };
 

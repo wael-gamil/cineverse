@@ -8,6 +8,7 @@ import Badge from '../../../ui/badge/badge';
 import { useFilterOptionsQuery } from '@/hooks/useFilterOptionsQuery';
 import { useProvidersQuery } from '@/hooks/useProvidersQuery';
 import { useStatsQuery } from '@/hooks/useStatsQuery';
+import { useEffect, useRef, useState } from 'react';
 
 type ContentOverviewProps = {
   content: NormalizedContent;
@@ -41,6 +42,16 @@ export default function ContentOverview({
     content.type === 'movie' || content.type === 'series'
       ? useProvidersQuery(content.id)
       : { data: undefined };
+
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    const el = descriptionRef.current;
+    if (el) {
+      setIsOverflowing(el.scrollHeight > el.clientHeight);
+    }
+  }, [content.description]);
   return (
     <section className={styles.overview}>
       {/* LEFT SECTION */}
@@ -48,10 +59,27 @@ export default function ContentOverview({
         {content.type.charAt(0).toUpperCase() + content.type.slice(1)} Overview
       </h2>
       <div className={styles.container}>
-        {content.description !== '' && (
-          <div className={styles.description}>
-            <h3 className={styles.title}>Description</h3>
-            <p>{content.description}</p>
+        {content.description && (
+          <div className={styles.descriptionWrapper}>
+            <div className={styles.descriptionSection}>
+              <h2 className={styles.descriptionHeading}>Description</h2>
+              <p
+                ref={descriptionRef}
+                className={`${styles.descriptionText} ${
+                  showFullDescription ? styles.expanded : ''
+                }`}
+              >
+                {content.description}
+              </p>
+              {isOverflowing && (
+                <button
+                  className={styles.readMoreBtn}
+                  onClick={() => setShowFullDescription(prev => !prev)}
+                >
+                  {showFullDescription ? 'Show Less' : 'Read More'}
+                </button>
+              )}
+            </div>
           </div>
         )}
         <div className={styles.grid}>

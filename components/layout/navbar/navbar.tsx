@@ -1,18 +1,16 @@
 'use client';
 import styles from './navbar.module.css';
 import { Icon } from '@/components/ui/icon/icon';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import NavLinks from '../../ui/navLinks/navLinks';
 import SearchBar from '../../ui/search/searchBar';
 import Button from '../../ui/button/button';
-import useIsMobile from '@/hooks/useIsMobile';
 import { usePathname } from 'next/navigation';
+import PanelWrapper from '@/components/ui/panelWrapper/panelWrapper';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const [isShrunk, setIsShrunk] = useState(false);
-  const isMobile = useIsMobile(930);
 
   const pathname = usePathname();
 
@@ -27,9 +25,6 @@ export default function Navbar() {
   const showSpacer = allowedPathsWithSpacer.some(
     path => pathname === path || pathname.startsWith(`${path}/`)
   );
-
-  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
-  const closeMenu = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
     const handleScroll = () => setIsShrunk(window.scrollY > 0);
@@ -92,48 +87,38 @@ export default function Navbar() {
           </h1>
         </Link>
 
-        {/* Navigation Links (Desktop: always visible, Mobile: in menu) */}
-        {!isMobile ? (
+        <div className={styles.navbarDesktop}>
           <NavLinks />
-        ) : (
-          isOpen && (
-            <div className={styles.navbarMobileMenu}>
-              <NavLinks isMobile closeMenu={closeMenu} />
-              <Button align='left' borderRadius='fullRadius' padding='none'>
-                <Icon name='user' strokeColor='white' />
-              </Button>
-            </div>
-          )
-        )}
+        </div>
 
-        {/* Actions Section (Search and User Icon, only on Desktop) */}
-        <div className={styles.navbarActions}>
+        <div className={styles.navbarDesktop}>
           <SearchBar />
-          {!isMobile ? (
-            <Button borderRadius='fullRadius' padding='none'>
+          <Button borderRadius='fullRadius' padding='none'>
+            <Icon name='user' strokeColor='white' />
+          </Button>
+        </div>
+        <div className={styles.navbarMobile}>
+          <SearchBar />
+          <PanelWrapper
+            icon={isOpen => (
+              <Icon
+                name={isOpen ? 'close' : 'burger'}
+                width={16}
+                strokeColor='white'
+              />
+            )}
+            position='right'
+            padding='lg'
+            solidPanel={true}
+            varient='ghost'
+            buttonRadius='full'
+            buttonPadding='sm'
+          >
+            <NavLinks isMobile />
+            <Button align='left' borderRadius='fullRadius' padding='none'>
               <Icon name='user' strokeColor='white' />
             </Button>
-          ) : (
-            <div
-              className={`${styles.navbarBurger} ${isOpen ? styles.open : ''}`}
-            >
-              <Button
-                variant='ghost'
-                color='neutral'
-                ariaLabel='Toggle Menu'
-                onClick={toggleMenu}
-                borderRadius='fullRadius'
-                padding='none'
-              >
-                <div className={styles.iconWrapper}>
-                  <Icon
-                    name={isOpen ? 'close' : 'burger'}
-                    strokeColor='white'
-                  />
-                </div>
-              </Button>
-            </div>
-          )}
+          </PanelWrapper>
         </div>
       </nav>
       {/* Spacer to preserve layout when navbar shrinks */}

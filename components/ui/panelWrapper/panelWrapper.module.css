@@ -3,6 +3,9 @@
   flex-direction: column;
   justify-content: center;
 }
+.relative {
+  position: relative;
+}
 .iconWrapper {
   display: inline-block;
   transition: transform 0.3s ease;

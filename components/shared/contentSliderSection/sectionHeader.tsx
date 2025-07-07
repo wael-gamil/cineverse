@@ -1,5 +1,7 @@
+'use client';
 import React from 'react';
 import styles from './sectionHeader.module.css';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type Props = {
   title: string;
@@ -16,8 +18,13 @@ export default function SectionHeader({
   variant = 'block',
   filterTabs,
 }: Props) {
+  const isMobile = useResponsiveLayout();
   return (
-    <div className={`${styles.header} ${styles[variant]}`}>
+    <div
+      className={`${styles.header} ${
+        variant === 'strip' && isMobile ? styles.block : styles[variant]
+      }`}
+    >
       <div className={styles.left}>
         {icon && <div className={styles.icon}>{icon}</div>}
         <div className={styles.text}>

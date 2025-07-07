@@ -30,7 +30,7 @@ export default function SearchResult({
   useEffect(() => {
     const timeout = setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 0); 
+    }, 0);
 
     return () => clearTimeout(timeout);
   }, [currentPage]);
@@ -39,7 +39,7 @@ export default function SearchResult({
     setFullscreenCard(item);
     setTimeout(() => {
       router.push(href);
-    }, 400); 
+    }, 400);
   };
   return (
     <div ref={resultRef} className={styles.results}>
@@ -89,7 +89,7 @@ export default function SearchResult({
         <>
           <CardContainer
             layout='grid'
-            cardMinWidth={250}
+            cardMinWidth={240}
             cardCount={contents.length}
           >
             {contents.map(item => (
@@ -121,8 +121,8 @@ export default function SearchResult({
                     ? styles.activeCard
                     : styles.inactiveCard
                 }
-                minWidth={250}
-                maxWidth={270}
+                minWidth={240}
+                maxWidth={500}
               >
                 <div className={styles.contentDetails}>
                   <div className={styles.date}>

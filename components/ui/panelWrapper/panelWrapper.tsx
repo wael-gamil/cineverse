@@ -4,7 +4,7 @@ import styles from './panelWrapper.module.css';
 import Button from '../button/button';
 import Badge from '../badge/badge';
 type PanelWrapperProps = {
-  label: string;
+  label?: string;
   icon?: React.ReactNode | ((isOpen: boolean) => React.ReactNode);
   badge?: string | number;
   children: React.ReactNode;
@@ -14,6 +14,10 @@ type PanelWrapperProps = {
   width?: 'full' | '';
   solidPanel?: boolean;
   padding?: 'lg' | 'md' | 'sm';
+  buttonRadius?: 'full' | 'md';
+  varient?: 'ghost' | 'solid';
+  buttonPadding?: 'sm' | 'md';
+  relativePanel?: boolean;
 };
 
 export default function PanelWrapper({
@@ -27,6 +31,10 @@ export default function PanelWrapper({
   width = '',
   solidPanel = false,
   padding = 'md',
+  buttonRadius = 'md',
+  varient = 'solid',
+  buttonPadding = 'md',
+  relativePanel = false,
 }: PanelWrapperProps) {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -56,13 +64,18 @@ export default function PanelWrapper({
     }
   }, [setClose]);
   return (
-    <div className={styles.wrapper} ref={panelRef}>
+    <div
+      className={`${styles.wrapper} ${relativePanel ? styles.relative : ''}`}
+      ref={panelRef}
+    >
       <Button
-        variant='solid'
+        variant={varient}
         color='neutral'
         onClick={() => setIsOpen(prev => !prev)}
         aria-label={ariaLabel || `Toggle ${label}`}
         align={position}
+        borderRadius={buttonRadius === 'full' ? 'fullRadius' : 'smallRadius'}
+        padding={buttonPadding}
       >
         <span
           className={`${styles.iconWrapper} ${isOpen ? styles.rotate : ''}`}

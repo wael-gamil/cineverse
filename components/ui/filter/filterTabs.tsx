@@ -3,28 +3,27 @@
 import Button from '../button/button';
 import styles from './filterTabs.module.css';
 
-type FilterOption = 'ALL' | 'MOVIE' | 'SERIES';
-
-type FilterTabsProps = {
-  active?: FilterOption;
-  onChange?: (value: FilterOption) => void;
+type FilterTabsProps<T extends string> = {
+  options: { label: string; value: T }[];
+  active?: T;
+  onChange?: (value: T) => void;
   showAll?: boolean;
+  allLabel?: string;
 };
 
-export default function FilterTabs({
-  active = 'MOVIE',
+export default function FilterTabs<T extends string>({
+  options,
+  active,
   onChange,
-  showAll = true,
-}: FilterTabsProps) {
-  const options: { label: string; value: FilterOption }[] = [
-    ...(showAll ? [{ label: 'All', value: 'ALL' as FilterOption }] : []),
-    { label: 'Movies', value: 'MOVIE' },
-    { label: 'Series', value: 'SERIES' },
-  ];
-
+  showAll = false,
+  allLabel = 'All',
+}: FilterTabsProps<T>) {
+  const fullOptions = showAll
+    ? [{ label: allLabel, value: 'ALL' as T }, ...options]
+    : options;
   return (
     <div className={styles.filterTabs}>
-      {options.map(option => (
+      {fullOptions.map(option => (
         <Button
           key={option.value}
           onClick={() => {

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Badge from '@/components/ui/badge/badge';
 import { Icon, IconName } from '@/components/ui/icon/icon';
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 export type InfoCard = {
   iconName: IconName;
@@ -64,7 +65,7 @@ export default function ContentHeroSimple({
           <div className={styles.socialIconsContainer}>
             <div className={styles.socialIcons}>
               {socialLinks.facebookUrl && (
-                <a
+                <Link
                   href={socialLinks.facebookUrl}
                   target='_blank'
                   aria-label='Facebook'
@@ -75,10 +76,10 @@ export default function ContentHeroSimple({
                     width={24}
                     height={24}
                   />
-                </a>
+                </Link>
               )}
               {socialLinks.instagramUrl && (
-                <a
+                <Link
                   href={socialLinks.instagramUrl}
                   target='_blank'
                   aria-label='Instagram'
@@ -89,10 +90,10 @@ export default function ContentHeroSimple({
                     width={24}
                     height={24}
                   />
-                </a>
+                </Link>
               )}
               {socialLinks.twitterUrl && (
-                <a
+                <Link
                   href={socialLinks.twitterUrl}
                   target='_blank'
                   aria-label='Twitter'
@@ -103,10 +104,10 @@ export default function ContentHeroSimple({
                     width={24}
                     height={24}
                   />
-                </a>
+                </Link>
               )}
               {socialLinks.tiktokUrl && (
-                <a
+                <Link
                   href={socialLinks.tiktokUrl}
                   target='_blank'
                   aria-label='TikTok'
@@ -117,10 +118,10 @@ export default function ContentHeroSimple({
                     width={24}
                     height={24}
                   />
-                </a>
+                </Link>
               )}
               {socialLinks.youtubeUrl && (
-                <a
+                <Link
                   href={socialLinks.youtubeUrl}
                   target='_blank'
                   aria-label='YouTube'
@@ -131,7 +132,7 @@ export default function ContentHeroSimple({
                     width={24}
                     height={24}
                   />
-                </a>
+                </Link>
               )}
             </div>
           </div>

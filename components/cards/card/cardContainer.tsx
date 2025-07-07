@@ -52,7 +52,6 @@ export default function CardContainer({
                 cardCount && cardCount <= 6
                   ? `repeat(${cardCount}, ${cardMinWidth}px)`
                   : `repeat(auto-fit, minmax(${cardMinWidth}px, 1fr))`,
-              justifyContent: 'flex-start',
             }
           : {}),
       }}

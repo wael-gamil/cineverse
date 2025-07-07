@@ -12,32 +12,28 @@ export default function MysterySection() {
 
   return (
     <section className={styles.wrapper}>
-      <div className={styles.content}>
-        <div className={styles.text}>
-          <div className={styles.header}>
-            <h2 className={styles.title}>
-              <Icon name='dice' strokeColor='white' width={32} height={32} />
-              <span>Mystery Pick</span>
-            </h2>
-            <p className={styles.subtitle}>
-              Flip the card to reveal a surprise movie or series.
-            </p>
-          </div>
-          <Button onClick={() => refetch()} disabled={isFetching} padding='lg'>
-            {isFetching ? 'Drawing...' : 'Draw Another Mystery'}
-          </Button>
+      <div className={styles.text}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>
+            <Icon name='dice' strokeColor='white' width={32} height={32} />
+            <span>Mystery Pick</span>
+          </h2>
+          <p className={styles.subtitle}>
+            Flip the card to reveal a surprise movie or series.
+          </p>
         </div>
-
-        <div className={styles.card}>
-          {isLoading || isFetching ? (
-            <p className={styles.status}>Loading mystery...</p>
-          ) : error || !data ? (
-            <p className={styles.status}>Unable to load mystery card.</p>
-          ) : (
-            <MysteryCard item={data} />
-          )}
-        </div>
+        <Button onClick={() => refetch()} disabled={isFetching} padding='lg'>
+          {isFetching ? 'Drawing...' : 'Draw Another Mystery'}
+        </Button>
       </div>
+
+      {isLoading || isFetching ? (
+        <p className={styles.status}>Loading mystery...</p>
+      ) : error || !data ? (
+        <p className={styles.status}>Unable to load mystery card.</p>
+      ) : (
+        <MysteryCard item={data} />
+      )}
     </section>
   );
 }

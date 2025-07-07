@@ -219,6 +219,7 @@
   overflow: hidden;
   position: relative;
   transition: max-height 0.3s ease;
+  color: var(--color-muted);
 }
 
 .bioText::after {
@@ -256,10 +257,10 @@
 
 /* Responsive fix */
 @media (max-width: 768px) {
-  .bioText {
-    text-align: center;
+  .hero {
+    flex-direction: column;
   }
-  .readMoreBtn {
-    text-align: center;
+  .card {
+    max-width: none;
   }
 }

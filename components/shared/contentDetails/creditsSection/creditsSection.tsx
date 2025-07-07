@@ -28,7 +28,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
             layout='below'
             href={`/crew/${data.director.id}`}
             minWidth={220}
-            maxWidth={250}
+            maxWidth={350}
           />
         )}
 
@@ -46,7 +46,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
               layout='below'
               href={`/crew/${actor.id}`}
               minWidth={220}
-              maxWidth={250}
+              maxWidth={350}
             />
           ))}
       </CardContainer>
