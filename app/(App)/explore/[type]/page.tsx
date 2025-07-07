@@ -7,6 +7,8 @@ import styles from '../page.module.css';
 import { FilterOpt } from '@/constants/types/movie';
 import { Suspense } from 'react';
 import SkeletonContentList from '@/components/shared/contentList/skeletonContentList';
+import SectionHeader from '@/components/shared/contentSliderSection/sectionHeader';
+import OrderTabs from '@/components/ui/orderTabs/orderTabs';
 
 const validTypes = ['movies', 'tv-series'] as const;
 
@@ -30,7 +32,7 @@ export default async function ContentPage({
   const rate = awaitedSearchParams['rate'] || '';
   const lang = awaitedSearchParams['lang'] || '';
   const sortBy = awaitedSearchParams['sortBy'] || '';
-  const order = awaitedSearchParams['order'] || '';
+  const order = awaitedSearchParams['order'] || 'DESC';
   const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
 
   const filtersSelected = {
@@ -66,12 +68,16 @@ export default async function ContentPage({
   return (
     <section className={styles.content}>
       <div className={styles.controls}>
-        <Filter sections={filterOpt} initialSelected={filtersSelected} />
-        <Sort
-          sortOptions={sortOpt}
-          orderOptions={rawFilterOpt.find(opt => opt.key === 'order')!}
-          initialSortBy={sortBy}
-          initialOrder={order}
+        <SectionHeader
+          title={type == 'movies' ? 'Movies' : 'Tv Series'}
+          variant={'lined'}
+          filterTabs={
+            <>
+              <Filter sections={filterOpt} initialSelected={filtersSelected} />
+              <Sort sortOptions={sortOpt} initialSortBy={sortBy} />
+              <OrderTabs initialOrder={order as 'ASC' | 'DESC'} />
+            </>
+          }
         />
       </div>
       <Suspense
