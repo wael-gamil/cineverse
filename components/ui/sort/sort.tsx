@@ -9,20 +9,12 @@ import { FilterOpt } from '@/constants/types/movie';
 
 type SortProps = {
   initialSortBy: string;
-  initialOrder: string;
   sortOptions: FilterOpt;
-  orderOptions: FilterOpt;
 };
-export default function Sort({
-  initialSortBy,
-  initialOrder,
-  sortOptions,
-  orderOptions,
-}: SortProps) {
+export default function Sort({ initialSortBy, sortOptions }: SortProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [sortBy, setSortBy] = useState(initialSortBy || '');
-  const [order, setOrder] = useState(initialOrder || '');
 
   const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
 
@@ -36,12 +28,9 @@ export default function Sort({
     if (sortBy) params.set('sortBy', sortBy);
     else params.delete('sortBy');
 
-    if (order) params.set('order', order);
-    else params.delete('order');
-
     router.push(`?${params.toString()}`, { scroll: false });
     setTimeout(() => closePanel(), 200);
-  }, [sortBy, order]);
+  }, [sortBy]);
 
   return (
     <PanelWrapper
@@ -56,48 +45,26 @@ export default function Sort({
       badge={sortOptions.options.find(opt => opt.value === sortBy)?.label}
       position='right'
       padding='lg'
+      solidPanel
       setClose={setClosePanel}
+      relativePanel
     >
-      <div className={styles.grid}>
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Field</h3>
-          <div className={styles.options}>
-            {sortOptions.options.map(option => (
-              <Button
-                key={option.value}
-                type='button'
-                variant={sortBy === option.value ? 'solid' : 'ghost'}
-                color={sortBy === option.value ? 'primary' : 'neutral'}
-                onClick={() =>
-                  option.value === sortBy
-                    ? setSortBy('')
-                    : setSortBy(option.value)
-                }
-              >
-                {option.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Order</h3>
-          <div className={styles.options}>
-            {orderOptions.options.map(option => (
-              <Button
-                key={option.value}
-                type='button'
-                variant={order === option.value ? 'solid' : 'ghost'}
-                color={order === option.value ? 'primary' : 'neutral'}
-                onClick={() =>
-                  option.value === order ? setOrder('') : setOrder(option.value)
-                }
-              >
-                {option.label}
-              </Button>
-            ))}
-          </div>
-        </div>
+      <div className={styles.options}>
+        {sortOptions.options.map(option => (
+          <Button
+            key={option.value}
+            type='button'
+            align='left'
+            width='100%'
+            variant={sortBy === option.value ? 'solid' : 'ghost'}
+            color={sortBy === option.value ? 'primary' : 'neutral'}
+            onClick={() =>
+              option.value === sortBy ? setSortBy('') : setSortBy(option.value)
+            }
+          >
+            {option.label}
+          </Button>
+        ))}
       </div>
     </PanelWrapper>
   );

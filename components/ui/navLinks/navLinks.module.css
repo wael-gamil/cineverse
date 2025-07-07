@@ -5,10 +5,11 @@
   gap: var(--space-md);
   list-style: none;
   flex-direction: row; /* default desktop */
+  white-space: nowrap;
 }
 
 /* Use attribute selector for dynamic flex-direction */
-.navLinks[data-mobile='true'] {
+.mobile {
   flex-direction: column;
   gap: var(--space-lg);
 }

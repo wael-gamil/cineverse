@@ -12,6 +12,7 @@ import { useSliderQuery } from '@/hooks/useSliderQuery';
 import EmptyCard from '@/components/cards/card/emptyCard';
 import SectionHeader from './sectionHeader';
 import CardContainer from '@/components/cards/card/cardContainer';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type FilterType = 'ALL' | 'MOVIE' | 'SERIES';
 
@@ -53,6 +54,7 @@ export default function ContentSliderSection({
   const [visibleStartIndex, setVisibleStartIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
+  const isMobile = useResponsiveLayout();
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -138,6 +140,10 @@ export default function ContentSliderSection({
         variant={header?.variant || 'block'}
         filterTabs={
           <FilterTabs
+            options={[
+              { label: 'Movies', value: 'MOVIE' },
+              { label: 'Series', value: 'SERIES' },
+            ]}
             active={filter}
             onChange={handleFilterChange}
             showAll={showAllFilter}
@@ -157,7 +163,11 @@ export default function ContentSliderSection({
 
         <CardContainer
           layout='scroll'
-          cardMinWidth={cardProps?.minWidth}
+          cardMinWidth={
+            isMobile
+              ? Math.min(cardProps?.minWidth ? cardProps?.minWidth : 250, 250)
+              : cardProps?.minWidth
+          }
           cardGap={16}
           setCardsPerView={setCardsPerView}
         >

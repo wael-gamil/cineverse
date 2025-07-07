@@ -108,40 +108,24 @@
     background-size: 400% 400%;
   }
 }
-.navbarActions {
+
+.navbarDesktop {
   display: flex;
   align-items: center;
   gap: var(--space-md);
 }
-
-.navbarBurger {
-  display: flex;
-}
-
-.iconWrapper {
-  display: flex;
+.navbarMobile {
+  display: none;
+  position: relative;
   align-items: center;
-  justify-content: center;
-  transition: transform var(--transition-normal),
-    opacity var(--transition-normal);
+  gap: var(--space-md);
 }
 
-.navbarBurger.open .iconWrapper {
-  transform: rotate(90deg);
-  opacity: 0.8;
-}
-
-.navbarMobileMenu {
-  position: absolute;
-  top: calc(100% + var(--space-xs));
-  right: var(--space-xxl);
-  left: var(--space-xxl);
-  background-color: var(--color-surface);
-  padding: var(--space-md);
-  box-shadow: var(--shadow-sm);
-  border-radius: var(--radius-md);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
+@media (max-width: 940px) {
+  .navbarDesktop {
+    display: none;
+  }
+  .navbarMobile {
+    display: flex;
+  }
 }

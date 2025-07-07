@@ -258,11 +258,15 @@
 }
 
 @media (max-width: 768px) {
+  .hero{
+    height: 95%;
+  }
   .container {
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
   }
+
   .posterWrapper {
     min-width: 275px;
     max-width: 275px;

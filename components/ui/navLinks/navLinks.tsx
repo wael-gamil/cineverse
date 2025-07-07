@@ -22,7 +22,7 @@ export default function NavLinks({
   const pathname = usePathname();
 
   return (
-    <ul className={styles.navLinks} data-mobile={isMobile ? 'true' : 'false'}>
+    <ul className={`${styles.navLinks} ${isMobile ? styles.mobile : ''}`}>
       {NAV_LINKS.map(({ name, path }) => (
         <li key={name}>
           <Link

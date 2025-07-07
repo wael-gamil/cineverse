@@ -1,7 +1,5 @@
 .wrapper {
   position: relative;
-  width: 100%;
-  max-width: 1024px;
   margin: 0 auto;
   padding: var(--space-xxl);
   border-radius: var(--radius-lg);
@@ -9,6 +7,11 @@
   box-shadow: var(--shadow-blue-glow);
   backdrop-filter: blur(24px);
   overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-xxl);
 }
 
 .wrapper::before {
@@ -41,19 +44,10 @@
   z-index: 1;
 }
 
-.content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-xxl);
-}
-
 .text {
-  flex: 1 1 320px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 .header {
   display: flex;
@@ -97,32 +91,28 @@
   white-space: nowrap;
 }
 
-.card {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 360px;
-  max-height: 360px;
-  min-width: 250px;
-}
-
 .status {
   font-size: var(--font-size-base);
   color: var(--color-muted);
+  min-height: 400px;
+  max-height: 400px;
+  min-width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (max-width: 768px) {
-  .content {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
+@media (max-width: 900px) {
+  .wrapper {
+    justify-content: center;
   }
 
   .title {
     justify-content: center;
   }
 
-  .card {
-    min-height: 280px;
+  .status {
+    min-height: 550px;
+    max-height: 550px;
   }
 }

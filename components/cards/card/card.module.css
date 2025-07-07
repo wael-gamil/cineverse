@@ -250,6 +250,7 @@
   }
 
   .infoButtonWrapper {
-    display: none;
+    display: flex;
+    opacity: 1;
   }
 }

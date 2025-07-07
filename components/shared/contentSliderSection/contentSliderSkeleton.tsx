@@ -39,7 +39,15 @@ export default function ContentSliderSkeleton({
         subtitle={header?.subtitle}
         icon={header?.icon}
         variant={header?.variant || 'block'}
-        filterTabs={<FilterTabs showAll={false} />}
+        filterTabs={
+          <FilterTabs
+            options={[
+              { label: 'Movies', value: 'MOVIE' },
+              { label: 'Series', value: 'SERIES' },
+            ]}
+            showAll={false}
+          />
+        }
       />
 
       <div className={styles.sliderRow}>

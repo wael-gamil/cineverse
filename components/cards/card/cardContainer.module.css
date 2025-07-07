@@ -20,5 +20,4 @@
 .grid {
   display: grid;
   padding: var(--space-lg);
-  justify-content: flex-start;
 }

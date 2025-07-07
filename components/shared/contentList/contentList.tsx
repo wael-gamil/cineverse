@@ -41,7 +41,8 @@ export default function ContentList({
     <>
       <CardContainer
         layout='grid'
-        cardMinWidth={250}
+        cardGap={26}
+        cardMinWidth={240}
         cardCount={content.length}
       >
         {content.map(item => (
@@ -73,8 +74,8 @@ export default function ContentList({
                 ? styles.activeCard
                 : styles.inactiveCard
             }
-            minWidth={250}
-            maxWidth={300}
+            minWidth={240}
+            maxWidth={500}
           >
             <div className={styles.contentDetails}>
               <div className={styles.date}>

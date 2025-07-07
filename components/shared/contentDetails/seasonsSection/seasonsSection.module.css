@@ -75,3 +75,14 @@
   font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.6);
 }
+
+@media (max-width: 768px) {
+  .episodesHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  .episodesHeader > button {
+    align-self: flex-start;
+  }
+}

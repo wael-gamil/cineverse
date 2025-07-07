@@ -25,3 +25,20 @@
   opacity: 0.8;
   user-select: none;
 }
+
+.searchBarDesktop {
+  display: flex;
+}
+.searchBarMobile {
+  display: none;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .searchBarDesktop {
+    display: none;
+  }
+  .searchBarMobile {
+    display: flex;
+  }
+}

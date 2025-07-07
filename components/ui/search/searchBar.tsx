@@ -3,13 +3,10 @@
 import styles from './searchBar.module.css';
 import { Icon } from '@/components/ui/icon/icon';
 import Button from '../button/button';
-import useIsMobile from '@/hooks/useIsMobile';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function SearchBar() {
-  const isCompact = useIsMobile(1200); 
-
   const pathname = usePathname();
 
   const handleStoreLastPath = () => {
@@ -22,7 +19,7 @@ export default function SearchBar() {
       onClick={handleStoreLastPath}
       className={styles.searchBar}
     >
-      {isCompact ? (
+      <div className={styles.searchBarMobile}>
         <Button
           variant='ghost'
           color='neutral'
@@ -32,12 +29,13 @@ export default function SearchBar() {
         >
           <Icon name='search' strokeColor='white' />
         </Button>
-      ) : (
+      </div>
+      <div className={styles.searchBarDesktop}>
         <div className={styles.inputWrapper} role='button' tabIndex={0}>
           <Icon name='search' strokeColor='white' />
           <span className={styles.inputLabel}>Search movies, TV shows...</span>
         </div>
-      )}
+      </div>
     </Link>
   );
 }
