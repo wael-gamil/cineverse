@@ -42,7 +42,7 @@ export default function Navbar() {
 
     const handleLeave = (e: MouseEvent) => {
       const target = e.currentTarget as HTMLElement;
-      target.style.setProperty('--x', `50%`); 
+      target.style.setProperty('--x', `50%`);
     };
 
     const addListeners = (selector: string) => {
@@ -76,7 +76,7 @@ export default function Navbar() {
         className={`${styles.navbar} ${isShrunk ? styles.navbarShrunk : ''}`}
       >
         {/* Logo Section */}
-        <Link href={'/explore/movies'} className={styles.navbarLogo}>
+        <Link href={'/'} className={styles.navbarLogo}>
           <div className={styles.iconWrapper}>
             <div className={styles.iconBackground}></div>
             <Icon name='film' strokeColor='primary' />

@@ -1,6 +1,7 @@
 .wrapper {
   position: relative;
   margin: 0 auto;
+  max-width: 1000px;
   padding: var(--space-xxl);
   border-radius: var(--radius-lg);
   background: radial-gradient(circle at top left, #1f2937, #0f172a);
