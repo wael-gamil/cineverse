@@ -17,6 +17,18 @@
   display: none;
 }
 
+.gridScroll {
+  display: grid;
+  padding: var(--space-lg);
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.gridScroll::-webkit-scrollbar {
+  display: none;
+}
+
 .grid {
   display: grid;
   padding: var(--space-lg);

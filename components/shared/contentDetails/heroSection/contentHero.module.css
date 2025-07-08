@@ -1,10 +1,6 @@
 /* === Hero Section === */
 .hero {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-  border-bottom-left-radius: var(--radius-lg);
-  border-bottom-right-radius: var(--radius-lg);
+  background-color: var(--color-surface-60);
 }
 
 /* === Background Layers === */
@@ -17,18 +13,17 @@
   position: absolute;
   inset: 0;
 }
-
+.videoWrapper {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  width: 100%;
+  max-height: 100vh;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
 .background {
   z-index: 0;
-}
-
-.video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.2);
-  pointer-events: none;
-  z-index: 1;
 }
 
 .aboveEverything {
@@ -104,12 +99,20 @@
   height: 100%;
   display: flex;
   align-items: flex-end;
-  padding: var(--space-xxl) var(--space-xxl);
+  padding: var(--space-xxl);
   gap: var(--space-xl);
   animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
   user-select: none;
 }
 
+.mobileContainer {
+  display: none;
+  align-items: flex-end;
+  padding: var(--space-xxl);
+  gap: var(--space-xl);
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+  user-select: none;
+}
 .rightSection {
   display: flex;
   flex-direction: column;
@@ -257,22 +260,21 @@
   animation: fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@media (max-width: 768px) {
-  .hero{
-    height: 95%;
-  }
+@media (max-width: 915px) {
   .container {
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
+    display: none;
   }
-
+  .mobileContainer {
+    display: flex;
+  }
   .posterWrapper {
-    min-width: 275px;
-    max-width: 275px;
-    height: 400px;
+    max-width: 200px;
   }
-  .rightSection {
-    gap: var(--space-md);
+}
+
+@media (max-width: 768px) {
+  .mobileContainer {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

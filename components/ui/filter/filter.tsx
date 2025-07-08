@@ -77,9 +77,6 @@ export default function Filter({
       params.delete('rate');
     }
     router.push(`?${params.toString()}`, { scroll: false });
-    setTimeout(() => {
-      closePanel();
-    }, 200);
   }, [selected.genres, selected.lang, debouncedYear, debouncedRating]);
 
   const activeFilterCount = Object.entries(selected).reduce(

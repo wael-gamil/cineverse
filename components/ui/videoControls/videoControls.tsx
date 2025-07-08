@@ -122,6 +122,17 @@ export default function VideoControls({
     setFullscreen(!isFullscreen);
     resetHide();
   };
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isFullscreen]);
   const togglePlay = () => {
     if (!player) return;
     if (isPlaying) {
@@ -234,6 +245,11 @@ export default function VideoControls({
             </Button>
           </div>
         </div>
+        {!isPlaying && (
+          <div className={styles.mobilePauseMessage}>
+            <p>Paused. Take a moment, then press play when you're ready.</p>
+          </div>
+        )}
       </div>
     </>
   );

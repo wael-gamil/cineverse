@@ -1,4 +1,3 @@
-import styles from './page.module.css';
 import { getExtendedPersonDetails } from '@/lib/api';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/getQueryClient';
@@ -37,7 +36,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
           layout: 'overlay',
           imageHeight: 'image-lg',
           minWidth: 250,
-          maxWidth: 250,
+          maxWidth: 400,
         }}
       />
     </HydrationBoundary>

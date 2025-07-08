@@ -12,6 +12,7 @@ type CardContainerProps = {
   setCardsPerView?: (count: number) => void;
   cardMinWidth?: number;
   cardCount?: number;
+  shouldStretch?: boolean;
 };
 
 export default function CardContainer({
@@ -37,12 +38,11 @@ export default function CardContainer({
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [cardMinWidth, cardGap, setCardsPerView]);
-
   return (
     <div
       ref={containerRef}
       className={`${styles.container} ${
-        layout === 'grid' ? styles.grid : styles.scroll
+        layout === 'grid' ? styles.grid : styles.gridScroll
       }`}
       style={{
         gap: `${cardGap}px`,
@@ -53,7 +53,13 @@ export default function CardContainer({
                   ? `repeat(${cardCount}, ${cardMinWidth}px)`
                   : `repeat(auto-fit, minmax(${cardMinWidth}px, 1fr))`,
             }
-          : {}),
+          : {
+              gridAutoFlow: 'column',
+              gridAutoColumns: `minmax(${cardMinWidth}px, 1fr)`,
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              scrollBehavior: 'smooth',
+            }),
       }}
     >
       {children}
