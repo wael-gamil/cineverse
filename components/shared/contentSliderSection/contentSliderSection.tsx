@@ -55,12 +55,11 @@ export default function ContentSliderSection({
   const [cardsPerView, setCardsPerView] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
   const isMobile = useResponsiveLayout();
-
+  const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
       const container = entries[0].target as HTMLDivElement;
-      const width = cardProps?.minWidth || 270;
-      const cardWidth = width + 16;
+      const cardWidth = minWidth + 16;
       const count = Math.floor(container.offsetWidth / cardWidth);
       setCardsPerView(count);
     });
@@ -163,11 +162,7 @@ export default function ContentSliderSection({
 
         <CardContainer
           layout='scroll'
-          cardMinWidth={
-            isMobile
-              ? Math.min(cardProps?.minWidth ? cardProps?.minWidth : 250, 250)
-              : cardProps?.minWidth
-          }
+          cardMinWidth={minWidth}
           cardGap={16}
           setCardsPerView={setCardsPerView}
         >
@@ -178,7 +173,7 @@ export default function ContentSliderSection({
                 layout={cardProps?.layout}
                 imageHeight={cardProps?.imageHeight}
                 maxWidth={cardProps?.maxWidth}
-                minWidth={cardProps?.minWidth}
+                minWidth={minWidth}
               />
             ))}
 
@@ -204,6 +199,7 @@ export default function ContentSliderSection({
                     position: 'top-left',
                   },
                 ]}
+                checkMobile
                 {...cardProps}
               />
             ))}

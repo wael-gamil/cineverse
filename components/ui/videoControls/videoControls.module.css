@@ -22,12 +22,16 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.pauseMessage {
+.pauseMessage,
+.mobilePauseMessage {
   background-color: var(--color-white-20);
   border-radius: var(--radius-md);
   padding: var(--space-md) var(--space-lg);
   font-size: var(--font-size-md);
   font-weight: 500;
+}
+.mobilePauseMessage {
+  display: none;
 }
 .playing {
   height: 15%;
@@ -98,4 +102,13 @@
 .progress:active::-webkit-slider-thumb,
 .volumeBar::-webkit-slider-thumb {
   opacity: 1;
+}
+
+@media (max-width: 890px) {
+  .pauseMessage {
+    display: none;
+  }
+  .mobilePauseMessage {
+    display: flex;
+  }
 }

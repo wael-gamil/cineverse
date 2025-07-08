@@ -246,7 +246,19 @@ export const getExtendedPersonDetails = async (
 ): Promise<ExtendedPerson> => {
   try {
     const rawData = await fetcher(`artists/${id}`);
-    return rawData as ExtendedPerson;
+    const departmentMap: Record<string, string> = {
+      Acting: 'Actor',
+      Directing: 'Director',
+    };
+
+    const normalizedData: ExtendedPerson = {
+      ...rawData,
+      knownForDepartment:
+        departmentMap[rawData.knownForDepartment] ||
+        rawData.knownForDepartment.toLowerCase(),
+    };
+
+    return normalizedData;
   } catch (error) {
     throw error;
   }

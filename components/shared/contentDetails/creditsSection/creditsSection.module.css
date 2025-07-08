@@ -18,9 +18,10 @@
   font-weight: 900;
 }
 
-.creditsGrid {
+.sliderRow {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  align-items: center;
   gap: var(--space-md);
+  width: 100%;
+  overflow: hidden;
 }

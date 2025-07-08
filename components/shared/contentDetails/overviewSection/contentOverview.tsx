@@ -241,7 +241,7 @@ export default function ContentOverview({
                 <Icon name='badge' strokeColor='white' />
               </div>
               <div className={styles.titleBlock}>
-                <span className={styles.label}>Providers</span>
+                <span className={styles.label}>You can watch on</span>
                 <span className={styles.value}>
                   {providers.map((provider, index) => {
                     return (

@@ -6,6 +6,7 @@ import { useSliderQuery } from '@/hooks/useSliderQuery';
 import ContentSliderSection from './contentSliderSection';
 import ContentSliderSkeleton from './contentSliderSkeleton';
 import { CardProps } from '@/components/cards/card/card';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type FilterType = 'ALL' | 'MOVIE' | 'SERIES';
 type HeaderVariant = 'block' | 'strip' | 'lined' | 'ghost';
@@ -38,7 +39,8 @@ export default function ContentSliderSectionWrapper({
 }: WrapperProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewOnce(ref, '100px', 0.4);
-
+  const isMobile = useResponsiveLayout();
+  const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
   const { data, isLoading } = useSliderQuery(
     fetchUrl,
     title,
@@ -57,7 +59,7 @@ export default function ContentSliderSectionWrapper({
         cardsPerView={6}
         layout={cardProps?.layout}
         imageHeight={cardProps?.imageHeight}
-        minWidth={cardProps?.minWidth}
+        minWidth={minWidth}
         maxWidth={cardProps?.maxWidth}
         header={header}
       />

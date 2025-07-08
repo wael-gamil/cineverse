@@ -39,6 +39,7 @@ export type CardProps = {
   className?: string;
   minWidth?: number;
   maxWidth?: number;
+  checkMobile?: boolean;
 };
 
 export default function Card({
@@ -57,28 +58,28 @@ export default function Card({
   className = '',
   minWidth,
   maxWidth,
+  checkMobile = false,
 }: CardProps) {
   const router = useRouter();
   // const isMobile = useIsMobile();
   const [hasError, setHasError] = useState(false);
   const isMobile = useResponsiveLayout();
   const imageToUse = hasError || imageUrl === null ? fallbackImage : imageUrl;
-
   const computedStyle = {
     minWidth:
       typeof minWidth === 'number'
-        ? isMobile
-          ? `250px`
+        ? isMobile && checkMobile
+          ? `200px`
           : `${minWidth}px`
         : undefined,
     maxWidth:
       typeof maxWidth === 'number'
-        ? isMobile
-          ? `250px`
+        ? isMobile && checkMobile
+          ? `400px`
           : `${maxWidth}px`
         : undefined,
   };
-
+  console.log('title : ', title, '  style: ', computedStyle);
   const handleClick = () => {
     if (onClick) onClick();
     else if (href) router.push(href);
@@ -172,7 +173,9 @@ export default function Card({
         <h3 className={styles.contentTitle}>{title}</h3>
 
         {subtitle && <p className={styles.contentBelowOverview}>{subtitle}</p>}
-        {description && <p className={styles.contentOverview}>{description}</p>}
+        {description && (
+          <p className={styles.contentBelowOverview}>{description}</p>
+        )}
         {/* {children} */}
       </div>
     </>

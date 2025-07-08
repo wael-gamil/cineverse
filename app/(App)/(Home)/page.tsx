@@ -37,8 +37,8 @@ const sectionConfig: Record<
     cardProps: {
       layout: 'overlay',
       imageHeight: 'image-lg',
-      minWidth: 300,
-      maxWidth: 300,
+      minWidth: 270,
+      maxWidth: 400,
     },
   },
   'most-recent': {
@@ -53,7 +53,7 @@ const sectionConfig: Record<
       layout: 'below',
       imageHeight: 'image-md',
       minWidth: 250,
-      maxWidth: 250,
+      maxWidth: 400,
     },
   },
   'up-coming': {
@@ -68,7 +68,7 @@ const sectionConfig: Record<
       layout: 'below',
       imageHeight: 'image-md',
       minWidth: 250,
-      maxWidth: 250,
+      maxWidth: 400,
     },
   },
   'top-arab': {
@@ -82,8 +82,8 @@ const sectionConfig: Record<
     cardProps: {
       layout: 'overlay',
       imageHeight: 'image-lg',
-      minWidth: 300,
-      maxWidth: 300,
+      minWidth: 270,
+      maxWidth: 400,
     },
   },
   'most-recent-arab': {
@@ -98,7 +98,7 @@ const sectionConfig: Record<
       layout: 'below',
       imageHeight: 'image-md',
       minWidth: 250,
-      maxWidth: 250,
+      maxWidth: 400,
     },
   },
   'arab-comedy': {
@@ -112,7 +112,7 @@ const sectionConfig: Record<
       layout: 'below',
       imageHeight: 'image-md',
       minWidth: 250,
-      maxWidth: 250,
+      maxWidth: 400,
     },
   },
   'top-horror': {
@@ -144,7 +144,7 @@ const sectionConfig: Record<
       layout: 'overlay',
       imageHeight: 'image-lg',
       minWidth: 250,
-      maxWidth: 250,
+      maxWidth: 400,
     },
   },
   'family-picks': {
@@ -159,7 +159,7 @@ const sectionConfig: Record<
       layout: 'below',
       imageHeight: 'image-lg',
       minWidth: 300,
-      maxWidth: 300,
+      maxWidth: 400,
     },
   },
   'arab-thrillers': {
@@ -176,7 +176,7 @@ const sectionConfig: Record<
       layout: 'overlay',
       imageHeight: 'image-lg',
       minWidth: 250,
-      maxWidth: 250,
+      maxWidth: 400,
     },
   },
 };
@@ -215,10 +215,7 @@ export default async function Home() {
             animationVariants[index % animationVariants.length];
 
           return (
-            <MotionSection
-              key={key}
-              variantType={variantType}
-            >
+            <MotionSection key={key} variantType={variantType}>
               <ContentSliderSectionWrapper
                 title={config.title}
                 fetchUrl={config.fetchUrl}

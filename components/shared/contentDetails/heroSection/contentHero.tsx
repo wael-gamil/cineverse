@@ -10,12 +10,14 @@ import Badge from '../../../ui/badge/badge';
 import { useTrailerQuery } from '@/hooks/useTrailerQuery';
 import TrailerPlayer from '@/components/ui/trailerPlayer/trailerPlayer';
 import { useIsInView } from '@/hooks/useIsInView';
+import HeroMetadata from './heroMetadata';
 
 type ContentHeroProps = {
   content: NormalizedContent;
   backgroundUrl?: string;
   fallbackPoster?: string;
   genres?: string[];
+  onFocusModeChange?: (isFocus: boolean) => void;
 };
 
 function getYouTubeVideoId(url: string): string {
@@ -28,6 +30,7 @@ export default function ContentHero({
   backgroundUrl = '',
   fallbackPoster = '',
   genres,
+  onFocusModeChange,
 }: ContentHeroProps) {
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
   const { data, isLoading } =
@@ -72,6 +75,7 @@ export default function ContentHero({
   const handleExitingFocusMode = () => {
     setTimeout(() => {
       setTrailerFocusMode(false);
+      onFocusModeChange?.(false);
     }, 200);
     playerRef.current.mute();
     setIsMuted(true);
@@ -85,6 +89,7 @@ export default function ContentHero({
     setIsFadingOut(true);
     setTimeout(() => {
       setTrailerFocusMode(true);
+      onFocusModeChange?.(true);
       setIsFadingOut(false);
     }, 500);
   };
@@ -92,7 +97,7 @@ export default function ContentHero({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
-        e.preventDefault(); 
+        e.preventDefault();
         togglePlayPause();
       }
     };
@@ -142,184 +147,141 @@ export default function ContentHero({
   }, [isHeroVisible, trailerFocusMode]);
   return (
     <section className={styles.hero} ref={sectionRef}>
-      {/* Background Video */}
       <div
-        className={`${styles.background} ${
-          trailerFocusMode ? styles.aboveEverything : ''
-        }`}
-        onClick={togglePlayPause}
+        className={styles.videoWrapper}
+        style={trailerFocusMode ? { minHeight: '100vh' } : {}}
       >
-        {/* YouTube Player injected here */}
-        {videoId ? (
-          <TrailerPlayer
-            videoId={videoId}
-            focusMode={trailerFocusMode}
-            setFocusMode={setTrailerFocusMode}
-            isMuted={isMuted}
-            setIsMuted={setIsMuted}
-            onEnd={handleExitingFocusMode}
-            playerRef={playerRef}
-          />
-        ) : (
-          <Image
-            src={content.backgroundUrl || backgroundUrl}
-            alt={content.title}
-            fill
-            className={`${styles.backdropImage} ${
-              videoId ? styles.backdropHidden : ''
-            }`}
-          />
-        )}
-      </div>
-
-      {/* Overlays */}
-      {(!trailerFocusMode || isFadingOut) && (
-        <>
-          <div className={styles.overlayDark} />
-          <div className={styles.overlayGradient} />
-          <div className={styles.overlayBlur} />
-          <div className={styles.spotlightEffect} />
-          {showBottomOverlay && (
-            <div
-              className={`${styles.bottomOverlay} ${
-                !showBottomOverlay ? styles.hidden : ''
+        {/* Background Video */}
+        <div
+          className={`${styles.background} ${
+            trailerFocusMode ? styles.aboveEverything : ''
+          }`}
+          onClick={togglePlayPause}
+        >
+          {/* YouTube Player injected here */}
+          {videoId ? (
+            <TrailerPlayer
+              videoId={videoId}
+              focusMode={trailerFocusMode}
+              isMuted={isMuted}
+              setIsMuted={setIsMuted}
+              onEnd={handleExitingFocusMode}
+              playerRef={playerRef}
+            />
+          ) : (
+            <Image
+              src={content.backgroundUrl || backgroundUrl}
+              alt={content.title}
+              fill
+              className={`${styles.backdropImage} ${
+                videoId ? styles.backdropHidden : ''
               }`}
             />
           )}
-        </>
-      )}
-
-      {/* Content Metadata */}
-      {(!trailerFocusMode || isFadingOut) && (
-        <div
-          className={`${styles.container} ${isFadingOut ? styles.fadeOut : ''}`}
-        >
-          {!videoId && !isLoading && (
-            <div className={styles.posterWrapper}>
-              <Image
-                src={content.imageUrl || fallbackPoster}
-                alt={content.title}
-                fill
-                className={styles.posterImage}
-              />
-            </div>
-          )}
-          <div className={styles.rightSection}>
-            <h1 className={styles.title}>{content.title}</h1>
-
-            <div className={styles.infoRow}>
-              {typeof content.imdbRate === 'number' && content.imdbRate > 0 && (
-                <Badge
-                  iconName='starFilled'
-                  text='IMDB'
-                  color='color-primary'
-                  number={Number(content.imdbRate.toFixed(1))}
-                  iconColor='secondary'
-                  backgroundColor='bg-muted'
-                  size='size-lg'
-                  className={styles.imdbBadge}
-                />
-              )}
-
-              {content.releaseDate && (
-                <Badge
-                  text={content.releaseDate.split('-')[0]}
-                  iconName='calendar'
-                  backgroundColor='bg-muted'
-                  size='size-lg'
-                />
-              )}
-              {typeof runtime === 'number' && runtime > 0 && (
-                <Badge
-                  text={runtime}
-                  iconName='clock'
-                  backgroundColor='bg-muted'
-                  size='size-lg'
-                  className={styles.runtimeBadge}
-                />
-              )}
-              {content.status && (
-                <div
-                  className={`${styles.status} ${
-                    content.status === 'Continuing'
-                      ? styles.statusGreen
-                      : content.status === 'Ended'
-                      ? styles.statusRed
-                      : ''
-                  }`}
-                >
-                  {content.status}
-                </div>
-              )}
-            </div>
-
-            <div className={styles.genreList}>
-              {genreList?.map(genre => (
-                <Badge
-                  key={genre}
-                  text={genre}
-                  iconName='badge'
-                  color='color-white'
-                  backgroundColor='bg-white'
-                  className={styles.genreBadge}
-                  size='size-lg'
-                  borderRadius='border-full'
-                />
-              ))}
-            </div>
-
-            <p className={styles.description}>{content.description}</p>
-
-            <div className={styles.actions}>
-              {videoId && (
-                <Button color='primary' onClick={handlePlayTrailer}>
-                  <Icon name='play' strokeColor='white' />
-                  Play Trailer
-                </Button>
-              )}
-              <Button color='neutral'>
-                <Icon name='bookmark' strokeColor='white' />
-                Add to Watchlist
-              </Button>
-              <Button
-                color='neutral'
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      url: window.location.href,
-                      title: content.title,
-                      text: content.description,
-                    });
-                  } else {
-                    navigator.clipboard.writeText(window.location.href);
-                    alert('Link copied to clipboard!');
-                  }
-                }}
-              >
-                <Icon name='share' strokeColor='white' />
-              </Button>
-              {videoId && (
-                <Button color='neutral' onClick={toggleMute}>
-                  {isMuted ? (
-                    <Icon name='mute' strokeColor='white' />
-                  ) : (
-                    <Icon name='speaker' strokeColor='white' />
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
         </div>
-      )}
 
-      {/* Close Focus Mode & Volume Control */}
-      {trailerFocusMode && playerRef.current && (
-        <VideoControls
-          player={playerRef.current}
-          isPlayingInitial={isPlaying}
-          onClose={handleExitingFocusMode}
+        {/* Overlays */}
+        {(!trailerFocusMode || isFadingOut) && (
+          <>
+            <div className={styles.overlayDark} />
+            <div className={styles.overlayGradient} />
+            <div className={styles.overlayBlur} />
+            <div className={styles.spotlightEffect} />
+            {showBottomOverlay && (
+              <div
+                className={`${styles.bottomOverlay} ${
+                  !showBottomOverlay ? styles.hidden : ''
+                }`}
+              />
+            )}
+          </>
+        )}
+
+        {/* Content Metadata */}
+        {(!trailerFocusMode || isFadingOut) && (
+          <div
+            className={`${styles.container} ${
+              isFadingOut ? styles.fadeOut : ''
+            }`}
+          >
+            {!videoId && !isLoading && (
+              <div className={styles.posterWrapper}>
+                <Image
+                  src={content.imageUrl || fallbackPoster}
+                  alt={content.title}
+                  fill
+                  className={styles.posterImage}
+                />
+              </div>
+            )}
+            <HeroMetadata
+              content={content}
+              runtime={runtime}
+              fallbackPoster={fallbackPoster}
+              trailerAvailable={!!videoId}
+              isMuted={isMuted}
+              onPlayTrailer={handlePlayTrailer}
+              onToggleMute={toggleMute}
+              onShare={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    url: window.location.href,
+                    title: content.title,
+                    text: content.description,
+                  });
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard!');
+                }
+              }}
+              genres={genres}
+            />
+          </div>
+        )}
+        {/* Close Focus Mode & Volume Control */}
+        {trailerFocusMode && playerRef.current && (
+          <VideoControls
+            player={playerRef.current}
+            isPlayingInitial={isPlaying}
+            onClose={handleExitingFocusMode}
+          />
+        )}
+      </div>
+      {/* Mobile Metadata */}
+      <div className={styles.mobileContainer}>
+        {!videoId && !isLoading && (
+          <div className={styles.posterWrapper}>
+            <Image
+              src={content.imageUrl || fallbackPoster}
+              alt={content.title}
+              fill
+              className={styles.posterImage}
+            />
+          </div>
+        )}
+        <HeroMetadata
+          content={content}
+          runtime={runtime}
+          fallbackPoster={fallbackPoster}
+          trailerAvailable={!!videoId}
+          isMuted={isMuted}
+          onPlayTrailer={handlePlayTrailer}
+          onToggleMute={toggleMute}
+          onShare={() => {
+            if (navigator.share) {
+              navigator.share({
+                url: window.location.href,
+                title: content.title,
+                text: content.description,
+              });
+            } else {
+              navigator.clipboard.writeText(window.location.href);
+              alert('Link copied to clipboard!');
+            }
+          }}
+          genres={genres}
         />
-      )}
+      </div>
     </section>
   );
 }

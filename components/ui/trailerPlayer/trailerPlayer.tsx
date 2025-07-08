@@ -8,7 +8,6 @@ type TrailerPlayerProps = {
   isMuted: boolean;
   setIsMuted: (value: boolean) => void;
   focusMode: boolean;
-  setFocusMode: (value: boolean) => void;
   playerRef?: React.MutableRefObject<any | null>;
 };
 
