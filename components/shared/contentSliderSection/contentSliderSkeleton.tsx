@@ -7,6 +7,7 @@ import { Icon } from '@/components/ui/icon/icon';
 import SectionHeader from './sectionHeader';
 import FilterTabs from '@/components/ui/filter/filterTabs';
 import CardContainer from '@/components/cards/card/cardContainer';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type HeaderVariant = 'block' | 'strip' | 'lined' | 'ghost';
 type Props = {
@@ -32,6 +33,7 @@ export default function ContentSliderSkeleton({
   maxWidth,
   header,
 }: Props) {
+  const isMobile = useResponsiveLayout();
   return (
     <div className={styles.wrapper}>
       <SectionHeader
@@ -50,10 +52,21 @@ export default function ContentSliderSkeleton({
         }
       />
 
-      <div className={styles.sliderRow}>
-        <Button variant='outline' color='neutral' disabled>
-          <Icon name='arrow-left' strokeColor='white' />
-        </Button>
+      <div
+        className={styles.sliderRow}
+        style={
+          isMobile
+            ? imageHeight === 'image-lg'
+              ? { minHeight: '600px', maxHeight: '600px' }
+              : { minHeight: '450px', maxHeight: '450px' }
+            : undefined
+        }
+      >
+        {!isMobile && (
+          <Button variant='outline' color='neutral' disabled>
+            <Icon name='arrow-left' strokeColor='white' />
+          </Button>
+        )}
 
         <CardContainer layout='scroll' cardMinWidth={minWidth} cardGap={16}>
           {Array.from({ length: cardsPerView }).map((_, i) => (
@@ -67,10 +80,23 @@ export default function ContentSliderSkeleton({
           ))}
         </CardContainer>
 
-        <Button variant='outline' color='neutral' disabled>
-          <Icon name='arrow-right' strokeColor='white' />
-        </Button>
+        {!isMobile && (
+          <Button variant='outline' color='neutral' disabled>
+            <Icon name='arrow-right' strokeColor='white' />
+          </Button>
+        )}
       </div>
+
+      {isMobile && (
+        <div className={styles.mobileControls}>
+          <Button variant='outline' color='neutral' disabled>
+            <Icon name='arrow-left' strokeColor='white' />
+          </Button>
+          <Button variant='outline' color='neutral' disabled>
+            <Icon name='arrow-right' strokeColor='white' />
+          </Button>
+        </div>
+      )}
 
       <div className={styles.pageInfo}>Showing 0 – 0 of 0</div>
     </div>

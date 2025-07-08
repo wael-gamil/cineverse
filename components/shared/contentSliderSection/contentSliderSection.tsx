@@ -150,15 +150,26 @@ export default function ContentSliderSection({
         }
       />
 
-      <div className={styles.sliderRow}>
-        <Button
-          onClick={handlePrev}
-          variant='outline'
-          color='neutral'
-          disabled={visibleStartIndex === 0}
-        >
-          <Icon name='arrow-left' strokeColor='white' />
-        </Button>
+      <div
+        className={styles.sliderRow}
+        style={
+          isMobile
+            ? cardProps?.imageHeight === 'image-lg'
+              ? { minHeight: '600px', maxHeight: '600px' }
+              : { minHeight: '450px', maxHeight: '450px' }
+            : undefined
+        }
+      >
+        {!isMobile && (
+          <Button
+            onClick={handlePrev}
+            variant='outline'
+            color='neutral'
+            disabled={visibleStartIndex === 0}
+          >
+            <Icon name='arrow-left' strokeColor='white' />
+          </Button>
+        )}
 
         <CardContainer
           layout='scroll'
@@ -205,19 +216,43 @@ export default function ContentSliderSection({
             ))}
         </CardContainer>
 
-        <Button
-          onClick={handleNext}
-          variant='outline'
-          color='neutral'
-          disabled={
-            visibleStartIndex + cardsPerView >= fetchedContent.length &&
-            page + 1 >= totalPages
-          }
-        >
-          <Icon name='arrow-right' strokeColor='white' />
-        </Button>
+        {!isMobile && (
+          <Button
+            onClick={handleNext}
+            variant='outline'
+            color='neutral'
+            disabled={
+              visibleStartIndex + cardsPerView >= fetchedContent.length &&
+              page + 1 >= totalPages
+            }
+          >
+            <Icon name='arrow-right' strokeColor='white' />
+          </Button>
+        )}
       </div>
-
+      {isMobile && (
+        <div className={styles.mobileControls}>
+          <Button
+            onClick={handlePrev}
+            variant='outline'
+            color='neutral'
+            disabled={visibleStartIndex === 0}
+          >
+            <Icon name='arrow-left' strokeColor='white' />
+          </Button>
+          <Button
+            onClick={handleNext}
+            variant='outline'
+            color='neutral'
+            disabled={
+              visibleStartIndex + cardsPerView >= fetchedContent.length &&
+              page + 1 >= totalPages
+            }
+          >
+            <Icon name='arrow-right' strokeColor='white' />
+          </Button>
+        </div>
+      )}
       <div className={styles.pageInfo}>
         Showing {visibleStartIndex + 1} –{' '}
         {Math.min(visibleStartIndex + cardsPerView, fetchedContent.length)} of{' '}
