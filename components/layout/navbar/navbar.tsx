@@ -116,7 +116,12 @@ export default function Navbar() {
               buttonRadius='full'
               buttonPadding='sm'
             >
-              <div className={styles.userInfo}>
+              <div className={styles.cta}>
+                <Link href='/'>View Profile</Link>
+                <span className={styles.separator}>•</span>
+                <Link href='/'>Logout</Link>
+              </div>
+              {/* <div className={styles.userInfo}>
                 <div className={styles.headerInfo}>
                   <div className={styles.imageWrapper}>
                     <Image
@@ -136,7 +141,7 @@ export default function Navbar() {
                   <span className={styles.separator}>•</span>
                   <Link href='/'>Logout</Link>
                 </div>
-              </div>
+              </div> */}
             </PanelWrapper>
           </div>
           <div className={styles.navbarMobile}>
