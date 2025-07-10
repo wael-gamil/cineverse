@@ -303,3 +303,55 @@ export const getPersonContents = async (
     };
   }
 };
+
+const postData = async (endpoint: string, body: any) => {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Something went wrong');
+  }
+
+  return data;
+};
+
+export const loginUser = async (email: string, password: string) => {
+  return await postData('/auth/login', { email, password });
+};
+
+export const registerUser = async (
+  email: string,
+  password: string,
+  username: string
+) => {
+  return await postData('/auth/register', { email, password, username });
+};
+
+export const requestPasswordReset = async (email: string) => {
+  return await postData('/auth/forgot-password', { email });
+};
+
+export const getCurrentUser = async (token: string) => {
+  const res = await fetch(`${BASE_URL}/auth/me`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Failed to fetch user');
+  }
+
+  return data;
+};

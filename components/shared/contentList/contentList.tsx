@@ -7,8 +7,9 @@ import styles from './contentList.module.css';
 import { Content } from '@/constants/types/movie';
 import Badge from '../../ui/badge/badge';
 import { Icon } from '../../ui/icon/icon';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import EmptyCard from '@/components/cards/card/emptyCard';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type Props = {
   content: Content[];
@@ -22,12 +23,11 @@ export default function ContentList({
   currentPage,
 }: Props) {
   const [activeId, setActiveId] = useState<number | null>(null);
-  const [fullscreenCard, setFullscreenCard] = useState<Content | null>(null);
   const router = useRouter();
+  const isMobile = useResponsiveLayout();
 
   const handleCardClick = (item: Content, href: string) => {
     setActiveId(item.id);
-    setFullscreenCard(item);
     setTimeout(() => {
       router.push(href);
     }, 150);
@@ -39,11 +39,13 @@ export default function ContentList({
 
   return (
     <>
-      <CardContainer
+      <GridContainer
         layout='grid'
         cardGap={26}
-        cardMinWidth={240}
+        cardMinWidth={250}
+        cardMaxWidth={500}
         cardCount={content.length}
+        scrollRows={isMobile ? 1 : undefined}
       >
         {content.map(item => (
           <Card
@@ -74,7 +76,7 @@ export default function ContentList({
                 ? styles.activeCard
                 : styles.inactiveCard
             }
-            minWidth={240}
+            minWidth={250}
             maxWidth={500}
           >
             <div className={styles.contentDetails}>
@@ -96,7 +98,7 @@ export default function ContentList({
             </div>
           </Card>
         ))}
-      </CardContainer>
+      </GridContainer>
       <Pagination currentPage={currentPage} totalPages={totalPages} />
     </>
   );

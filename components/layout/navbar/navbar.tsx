@@ -5,26 +5,33 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import NavLinks from '../../ui/navLinks/navLinks';
 import SearchBar from '../../ui/search/searchBar';
-import Button from '../../ui/button/button';
 import { usePathname } from 'next/navigation';
 import PanelWrapper from '@/components/ui/panelWrapper/panelWrapper';
+import Image from 'next/image';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 export default function Navbar() {
   const [isShrunk, setIsShrunk] = useState(false);
 
   const pathname = usePathname();
-
+  const isMobile = useResponsiveLayout();
   const allowedPathsWithSpacer = [
     '/explore',
     '/reviews',
     '/search',
     '/watchlist',
-    // '/',
     '/crew',
+    ...(isMobile ? ['/', '/dynamic-slug'] : []),
   ];
-  const showSpacer = allowedPathsWithSpacer.some(
-    path => pathname === path || pathname.startsWith(`${path}/`)
-  );
+  const isSingleSlugPage =
+    isMobile &&
+    /^\/[^/]+$/.test(pathname) &&
+    !allowedPathsWithSpacer.includes(pathname);
+
+  const showSpacer =
+    allowedPathsWithSpacer.some(
+      path => pathname === path || pathname.startsWith(`${path}/`)
+    ) || isSingleSlugPage;
 
   useEffect(() => {
     const handleScroll = () => setIsShrunk(window.scrollY > 0);
@@ -75,50 +82,107 @@ export default function Navbar() {
       <nav
         className={`${styles.navbar} ${isShrunk ? styles.navbarShrunk : ''}`}
       >
-        {/* Logo Section */}
-        <Link href={'/'} className={styles.navbarLogo}>
-          <div className={styles.iconWrapper}>
-            <div className={styles.iconBackground}></div>
-            <Icon name='film' strokeColor='primary' />
+        <div className={styles.wrapper}>
+          {/* Logo Section */}
+          <Link href={'/'} className={styles.navbarLogo}>
+            <div className={styles.iconWrapper}>
+              <div className={styles.iconBackground}></div>
+              <Icon name='film' strokeColor='primary' />
+            </div>
+            <h1 className={styles.navbarTitle}>
+              <span className={styles.cine}>CINE</span>
+              <span className={styles.verse}>VERSE</span>
+            </h1>
+          </Link>
+
+          <div className={styles.navbarDesktop}>
+            <NavLinks />
           </div>
-          <h1 className={styles.navbarTitle}>
-            <span className={styles.cine}>CINE</span>
-            <span className={styles.verse}>VERSE</span>
-          </h1>
-        </Link>
 
-        <div className={styles.navbarDesktop}>
-          <NavLinks />
-        </div>
+          <div className={styles.navbarDesktop}>
+            <SearchBar />
+            <PanelWrapper
+              icon={isOpen => (
+                <Icon
+                  name={isOpen ? 'close' : 'user'}
+                  width={24}
+                  strokeColor='primary'
+                />
+              )}
+              position='right'
+              padding='lg'
+              solidPanel={true}
+              varient='solid'
+              buttonRadius='full'
+              buttonPadding='sm'
+            >
+              <div className={styles.userInfo}>
+                <div className={styles.headerInfo}>
+                  <div className={styles.imageWrapper}>
+                    <Image
+                      src='https://image.tmdb.org/t/p/w500/zpIK3GYmqDPumneEDf0aqsqxhV1.jpg'
+                      alt='User profile picture'
+                      fill
+                    />
+                  </div>
+                  <div className={styles.headerText}>
+                    <h3>Wael Gamil</h3>
+                    <p>waelgamil122@gmail.com</p>
+                  </div>
+                </div>
 
-        <div className={styles.navbarDesktop}>
-          <SearchBar />
-          <Button borderRadius='fullRadius' padding='none'>
-            <Icon name='user' strokeColor='white' />
-          </Button>
-        </div>
-        <div className={styles.navbarMobile}>
-          <SearchBar />
-          <PanelWrapper
-            icon={isOpen => (
-              <Icon
-                name={isOpen ? 'close' : 'burger'}
-                width={16}
-                strokeColor='white'
-              />
-            )}
-            position='right'
-            padding='lg'
-            solidPanel={true}
-            varient='ghost'
-            buttonRadius='full'
-            buttonPadding='sm'
-          >
-            <NavLinks isMobile />
-            <Button align='left' borderRadius='fullRadius' padding='none'>
-              <Icon name='user' strokeColor='white' />
-            </Button>
-          </PanelWrapper>
+                <div className={styles.cta}>
+                  <Link href='/'>View Profile</Link>
+                  <span className={styles.separator}>•</span>
+                  <Link href='/'>Logout</Link>
+                </div>
+              </div>
+            </PanelWrapper>
+          </div>
+          <div className={styles.navbarMobile}>
+            <SearchBar />
+            <PanelWrapper
+              icon={isOpen => (
+                <Icon
+                  name={isOpen ? 'close' : 'burger'}
+                  width={16}
+                  strokeColor='white'
+                />
+              )}
+              position='right'
+              padding='lg'
+              solidPanel={true}
+              varient='ghost'
+              buttonRadius='full'
+              buttonPadding='sm'
+              width='full'
+            >
+              <NavLinks isMobile />
+              <div className={styles.divider}></div>
+
+              <div className={styles.userInfo}>
+                <div className={styles.headerInfo}>
+                  <div className={styles.imageWrapper}>
+                    <Image
+                      src='https://image.tmdb.org/t/p/w500/zpIK3GYmqDPumneEDf0aqsqxhV1.jpg'
+                      alt='User profile picture'
+                      fill
+                    />
+                  </div>
+                  <div className={styles.headerText}>
+                    <h3>Wael Gamil</h3>
+                    <p>waelgamil122@gmail.com</p>
+                  </div>
+                </div>
+
+                <div className={styles.cta}>
+                  <Link href='/'>View Profile</Link>
+                  <span className={styles.separator}>•</span>
+                  <Link href='/'>Logout</Link>
+                </div>
+              </div>
+            </PanelWrapper>
+          </div>
         </div>
       </nav>
       {/* Spacer to preserve layout when navbar shrinks */}

@@ -10,7 +10,7 @@ import { seriesStore } from '@/utils/seriesStore';
 import { useMemo, useState } from 'react';
 import Button from '@/components/ui/button/button';
 import { usePathname } from 'next/navigation';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import EmptyCard from '@/components/cards/card/emptyCard';
 
 type EpisodesSectionProps = {
@@ -64,7 +64,7 @@ export default function EpisodesSection({
       </div>
 
       {expanded && (
-        <CardContainer layout='grid' cardMinWidth={270}>
+        <GridContainer layout='grid' cardMinWidth={270} scrollRows={1}>
           {episodes.length > 0 ? (
             episodes.map(episode => (
               <Card
@@ -114,7 +114,7 @@ export default function EpisodesSection({
           ) : (
             <EmptyCard />
           )}
-        </CardContainer>
+        </GridContainer>
       )}
     </div>
   );

@@ -112,6 +112,7 @@
   gap: var(--space-xl);
   animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
   user-select: none;
+  position: relative;
 }
 .rightSection {
   display: flex;
@@ -233,7 +234,11 @@
   flex-wrap: wrap;
   gap: var(--space-md);
 }
-
+.metaHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
 /* === Animation === */
 @keyframes fadeIn {
   from {

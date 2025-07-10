@@ -1,17 +1,16 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useStore } from '@tanstack/react-store';
 
 import styles from './seasonsSection.module.css';
 import { Icon, IconName } from '@/components/ui/icon/icon';
-import Button from '@/components/ui/button/button';
 import Card from '@/components/cards/card/card';
 import { Season } from '@/constants/types/movie';
 import { seriesStore } from '@/utils/seriesStore';
 import EpisodesSection from './episodeSection';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import Badge from '@/components/ui/badge/badge';
 
 type SeasonsSectionProps = {
@@ -27,9 +26,6 @@ export default function SeasonsSection({
   const [selectedSeason, setSelectedSeason] = useState<number>(
     data?.[0]?.seasonNumber ?? 1
   );
-  const [cardsPerView, setCardsPerView] = useState(6);
-  const [visibleStartIndex, setVisibleStartIndex] = useState(0);
-
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,21 +33,6 @@ export default function SeasonsSection({
     () => data.find(season => season.seasonNumber === selectedSeason),
     [data, selectedSeason]
   );
-
-  const visibleSeasons = useMemo(() => {
-    return data.slice(visibleStartIndex, visibleStartIndex + cardsPerView);
-  }, [data, visibleStartIndex, cardsPerView]);
-
-  const handlePrev = () => {
-    setVisibleStartIndex(prev => Math.max(prev - cardsPerView, 0));
-  };
-
-  const handleNext = () => {
-    const nextStart = visibleStartIndex + cardsPerView;
-    if (nextStart < data.length) {
-      setVisibleStartIndex(nextStart);
-    }
-  };
 
   return (
     <section className={styles.section}>
@@ -61,22 +42,8 @@ export default function SeasonsSection({
 
       <div className={styles.container}>
         <div className={styles.sliderRow}>
-          <Button
-            onClick={handlePrev}
-            variant='outline'
-            color='neutral'
-            disabled={visibleStartIndex === 0}
-          >
-            <Icon name='arrow-left' strokeColor='white' />
-          </Button>
-
-          <CardContainer
-            layout='scroll'
-            cardMinWidth={250}
-            cardGap={16}
-            setCardsPerView={setCardsPerView}
-          >
-            {visibleSeasons.map(season => {
+          <GridContainer layout='grid' cardMinWidth={270} scrollRows={1}>
+            {data.map(season => {
               const subtitle =
                 season.numberOfEpisodes > 0
                   ? season.releaseDate
@@ -112,8 +79,8 @@ export default function SeasonsSection({
                     onClick: () =>
                       router.push(`${pathname}/seasons/${season.seasonNumber}`),
                   }}
-                  minWidth={250}
-                  maxWidth={300}
+                  minWidth={270}
+                  maxWidth={400}
                 >
                   <div className={styles.contentDetails}>
                     <div className={styles.date}>
@@ -138,18 +105,8 @@ export default function SeasonsSection({
                 </Card>
               );
             })}
-          </CardContainer>
-
-          <Button
-            onClick={handleNext}
-            variant='outline'
-            color='neutral'
-            disabled={visibleStartIndex + cardsPerView >= data.length}
-          >
-            <Icon name='arrow-right' strokeColor='white' />
-          </Button>
+          </GridContainer>
         </div>
-
         <EpisodesSection
           seasonNumber={selectedSeason}
           seriesId={seriesId!}

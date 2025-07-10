@@ -8,7 +8,8 @@ import { Icon } from '../icon/icon';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Badge from '../badge/badge';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type Props = {
   contents: Content[];
@@ -24,9 +25,8 @@ export default function SearchResult({
 }: Props) {
   const router = useRouter();
   const resultRef = useRef<HTMLDivElement>(null);
-  const [fullscreenCard, setFullscreenCard] = useState<Content | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
-
+  const isMobile = useResponsiveLayout();
   useEffect(() => {
     const timeout = setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,7 +36,6 @@ export default function SearchResult({
   }, [currentPage]);
   const handleCardClick = (item: Content, href: string) => {
     setActiveId(item.id);
-    setFullscreenCard(item);
     setTimeout(() => {
       router.push(href);
     }, 400);
@@ -87,10 +86,13 @@ export default function SearchResult({
         </div>
       ) : (
         <>
-          <CardContainer
+          <GridContainer
             layout='grid'
-            cardMinWidth={240}
+            cardGap={26}
+            cardMinWidth={250}
+            cardMaxWidth={500}
             cardCount={contents.length}
+            scrollRows={isMobile ? 1 : undefined}
           >
             {contents.map(item => (
               <Card
@@ -110,6 +112,7 @@ export default function SearchResult({
                   },
                 ]}
                 imageUrl={item.posterUrl || '/images/placeholder.jpg'}
+                imageHeight='image-lg'
                 description={item.overview}
                 href={`/${item.slug}`}
                 onClick={() => handleCardClick(item, `/${item.slug}`)}
@@ -121,7 +124,7 @@ export default function SearchResult({
                     ? styles.activeCard
                     : styles.inactiveCard
                 }
-                minWidth={240}
+                minWidth={250}
                 maxWidth={500}
               >
                 <div className={styles.contentDetails}>
@@ -143,7 +146,7 @@ export default function SearchResult({
                 </div>
               </Card>
             ))}
-          </CardContainer>
+          </GridContainer>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages > 30 ? 30 : totalPages}

@@ -9,7 +9,6 @@ type PersonPageProps = {
 };
 export default async function PersonPage({ params }: PersonPageProps) {
   const { id } = await params;
-  console.log(id);
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['person', id],
@@ -19,7 +18,6 @@ export default async function PersonPage({ params }: PersonPageProps) {
     'person',
     id,
   ]) as ExtendedPerson;
-
   const dehydratedState = dehydrate(queryClient);
   return (
     <HydrationBoundary state={dehydratedState}>

@@ -4,6 +4,7 @@ import styles from './pagination.module.css';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Icon } from '../icon/icon';
 import Button from '../button/button';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type Props = {
   currentPage: number;
@@ -14,6 +15,7 @@ export default function Pagination({ currentPage, totalPages }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isMobile = useResponsiveLayout();
 
   const onPageChange = (displayPage: number) => {
     const params = new URLSearchParams(searchParams);
@@ -27,18 +29,24 @@ export default function Pagination({ currentPage, totalPages }: Props) {
 
   const renderPageNumbers = () => {
     const pages: (number | string)[] = [];
-
     const current = currentPage + 1;
+    const mobile = isMobile;
 
+    const siblingCount = mobile ? 0 : 1;
+
+    // Always show the first page
     pages.push(1);
 
-    if (current > 3) pages.push('...');
+    const startPage = Math.max(current - siblingCount, 2);
+    const endPage = Math.min(current + siblingCount, totalPages - 1);
 
-    for (let i = current - 1; i <= current + 1; i++) {
-      if (i > 1 && i < totalPages) pages.push(i);
+    if (startPage > 2) pages.push('...');
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
     }
 
-    if (current < totalPages - 2) pages.push('...');
+    if (endPage < totalPages - 1) pages.push('...');
 
     if (totalPages > 1) pages.push(totalPages);
 

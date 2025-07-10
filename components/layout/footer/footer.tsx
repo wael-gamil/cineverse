@@ -3,46 +3,44 @@
 import Link from 'next/link';
 import styles from './footer.module.css';
 import Icon from '@/components/ui/icon/icon';
-import NavLinks from '@/components/ui/navLinks/navLinks';
 
 export default function Footer() {
   return (
     <footer className={styles.footer}>
-      <div className={styles.container}>
-        <div className={styles.grid}>
-          {/* Platform Info */}
-          <div>
-            <div className={styles.logoSection}>
-              <Icon name='film' strokeColor='white' />
-              <span className={styles.logoText}>CineVerse</span>
-            </div>
-            <p className={styles.description}>
-              Explore the universe of film and series—beautifully presented.
-            </p>
+      <div className={styles.wrapper}>
+        {/* Platform Info */}
+        <div className={styles.container}>
+          <div className={styles.logoSection}>
+            <Icon name='film' strokeColor='white' />
+            <span className={styles.logoText}>CineVerse</span>
           </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className={styles.sectionTitle}>Quick Links</h3>
-            <ul className={styles.navLinks}>
-              {[
-                { name: 'Home', path: '/' },
-                { name: 'Movies', path: '/explore/movies' },
-                { name: 'TV Series', path: '/explore/tv-series' },
-              ].map(({ name, path }) => (
-                <li key={name}>
-                  <Link href={path} className={styles.link}>
-                    {name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p className={styles.description}>
+            Explore the universe of film and series—beautifully presented.
+          </p>
         </div>
 
-        <div className={styles.copyright}>
-          &copy; {new Date().getFullYear()} CineVerse
+        {/* Quick Links */}
+        <div className={styles.container}>
+          <h3 className={styles.sectionTitle}>Quick Links</h3>
+          <ul className={styles.navLinks}>
+            {[
+              { name: 'Home', path: '/' },
+              { name: 'Movies', path: '/explore/movies' },
+              { name: 'TV Series', path: '/explore/tv-series' },
+            ].map(({ name, path }) => (
+              <li key={name}>
+                <Link href={path} className={styles.link}>
+                  {name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
+      </div>
+      <div className={styles.divider}></div>
+
+      <div className={styles.copyright}>
+        &copy; {new Date().getFullYear()} CineVerse
       </div>
     </footer>
   );

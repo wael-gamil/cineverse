@@ -238,7 +238,7 @@ export default function ContentOverview({
           {providers && providers.length > 0 && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
-                <Icon name='badge' strokeColor='white' />
+                <Icon name='tv-alt' strokeColor='white' />
               </div>
               <div className={styles.titleBlock}>
                 <span className={styles.label}>You can watch on</span>

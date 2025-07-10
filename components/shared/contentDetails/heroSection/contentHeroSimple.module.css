@@ -3,7 +3,6 @@
   flex-direction: row;
   gap: var(--space-xl);
   align-items: flex-start;
-  padding: var(--space-xl) 0;
 }
 .rightSection {
   display: flex;
@@ -262,5 +261,8 @@
   }
   .card {
     max-width: none;
+  }
+  .rightSection {
+    align-self: center;
   }
 }

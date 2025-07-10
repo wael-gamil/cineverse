@@ -1,10 +1,13 @@
+'use client';
 import styles from './seasonsSection.module.css';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 export default function SeasonsSkeleton() {
+  const isMobile = useResponsiveLayout();
   return (
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
@@ -13,27 +16,18 @@ export default function SeasonsSkeleton() {
 
       <div className={styles.container}>
         {/* Slider Row */}
-        <div className={styles.sliderRow}>
-          <Button variant='outline' color='neutral' disabled>
-            <Icon name='arrow-left' strokeColor='white' />
-          </Button>
 
-          <CardContainer layout='scroll' cardMinWidth={250} cardGap={16}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard
-                key={i}
-                imageHeight='image-lg'
-                layout='overlay'
-                maxWidth={300}
-                minWidth={250}
-              />
-            ))}
-          </CardContainer>
-
-          <Button variant='outline' color='neutral' disabled>
-            <Icon name='arrow-right' strokeColor='white' />
-          </Button>
-        </div>
+        <GridContainer layout='grid' cardMinWidth={270} scrollRows={1}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard
+              key={i}
+              imageHeight='image-lg'
+              layout='overlay'
+              maxWidth={400}
+              minWidth={270}
+            />
+          ))}
+        </GridContainer>
 
         {/* Episodes Section */}
         <div className={styles.episodesSection}>
@@ -47,7 +41,7 @@ export default function SeasonsSkeleton() {
             </Button>
           </div>
 
-          <CardContainer layout='grid' cardMinWidth={270} cardGap={16}>
+          <GridContainer layout='grid' cardMinWidth={270} cardGap={16}>
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard
                 key={i}
@@ -57,7 +51,7 @@ export default function SeasonsSkeleton() {
                 minWidth={270}
               />
             ))}
-          </CardContainer>
+          </GridContainer>
         </div>
       </div>
     </section>

@@ -50,8 +50,8 @@ const sectionConfig: Record<
       icon: <Icon name='clock' strokeColor='white' width={32} height={32} />,
     },
     cardProps: {
-      layout: 'below',
-      imageHeight: 'image-md',
+      layout: 'overlay',
+      imageHeight: 'image-lg',
       minWidth: 250,
       maxWidth: 400,
     },
@@ -65,8 +65,8 @@ const sectionConfig: Record<
       icon: <Icon name='calendar' strokeColor='white' width={32} height={32} />,
     },
     cardProps: {
-      layout: 'below',
-      imageHeight: 'image-md',
+      layout: 'overlay',
+      imageHeight: 'image-lg',
       minWidth: 250,
       maxWidth: 400,
     },
@@ -95,7 +95,7 @@ const sectionConfig: Record<
       icon: <Icon name='clock' strokeColor='primary' width={32} height={32} />,
     },
     cardProps: {
-      layout: 'below',
+      layout: 'overlay',
       imageHeight: 'image-md',
       minWidth: 250,
       maxWidth: 400,
@@ -109,7 +109,7 @@ const sectionConfig: Record<
       subtitle: 'Light-hearted Arab comedies',
     },
     cardProps: {
-      layout: 'below',
+      layout: 'overlay',
       imageHeight: 'image-md',
       minWidth: 250,
       maxWidth: 400,
@@ -156,7 +156,7 @@ const sectionConfig: Record<
       icon: <Icon name='family' strokeColor='white' width={32} height={32} />,
     },
     cardProps: {
-      layout: 'below',
+      layout: 'overlay',
       imageHeight: 'image-lg',
       minWidth: 300,
       maxWidth: 400,
@@ -184,7 +184,7 @@ const sectionConfig: Record<
 export default async function Home() {
   const { content } = await getContents(
     'MOVIE',
-    { sortBy: 'topRated', lang: 'en', genres: ['Action'], year: '2024' },
+    { sortBy: 'mostRecent', lang: 'en', genres: ['Action'] },
     0,
     4
   );

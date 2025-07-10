@@ -36,7 +36,6 @@
   display: none;
   justify-content: center;
   gap: var(--space-md);
-  margin-top: var(--space-md);
 }
 
 @media (max-width: 768px) {

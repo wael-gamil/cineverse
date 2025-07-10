@@ -1,0 +1,174 @@
+/* login.module.css */
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-bg);
+}
+
+.card {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--color-surface);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-primary-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+}
+.heading {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+}
+
+.subheading {
+  color: var(--color-muted);
+}
+
+.error {
+  background-color: var(--color-danger-20);
+  color: var(--color-danger);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.inputGroup a {
+  align-self: flex-end;
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: color var(--transition-normal);
+}
+.inputGroup a:hover {
+  color: var(--color-white);
+}
+.inputGroup button {
+  align-self: flex-end;
+}
+.inputLabel {
+  font-size: var(--font-size-base);
+  color: var(--color-muted);
+}
+.inputWrapper {
+  position: relative;
+}
+.inputWrapper svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  background-color: var(--color-surface-60);
+  border: 1px solid var(--color-primary-20);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-md) var(--space-md) 2.5rem;
+  color: var(--color-white);
+}
+.input:focus {
+  border: 1px solid var(--color-primary-20);
+}
+.inputError {
+  border-color: var(--color-danger);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-base);
+  color: var(--color-muted);
+  cursor: pointer;
+  position: relative;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.customCheckbox {
+  width: 20px;
+  height: 20px;
+  background-color: inherit;
+  border: 2px solid var(--color-primary-20);
+  border-radius: var(--radius-sm);
+  position: relative;
+  transition: all 0.2s ease;
+}
+.checkboxLabel:hover .customCheckbox {
+  border: 2px solid var(--color-primary);
+}
+
+.checkboxInput:checked + .customCheckbox::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--color-white);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkboxInput:checked + .customCheckbox {
+  border-color: var(--color-white);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-primary-20);
+}
+
+.divider span {
+  padding: 0 1rem;
+}
+
+.registerLink {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+.trustBadge {
+  text-align: center;
+  color: var(--color-muted);
+  font-size: var(--font-size-xs);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+}

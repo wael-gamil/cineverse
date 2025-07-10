@@ -80,3 +80,32 @@
     transform: translateY(6px);
   }
 }
+
+.swipeHint {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+  opacity: 0.6;
+  animation: swipeHintFade 3s ease-in-out infinite;
+  z-index: 9999;
+}
+
+@keyframes swipeHintFade {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateX(10px);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateX(-50%) translateX(0);
+  }
+}
