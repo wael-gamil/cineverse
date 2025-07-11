@@ -31,6 +31,15 @@
   background-color: var(--color-surface);
   box-shadow: var(--shadow-sm);
 }
+.solid.danger {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+}
+
+.solid.danger:hover {
+  background-color: var(--color-danger-60);
+  box-shadow: var(--shadow-danger-glow);
+}
 
 /* === Variant: Outline === */
 .outline.primary {
@@ -50,7 +59,15 @@
   border: 2px solid var(--color-white);
   box-shadow: var(--shadow-lg);
 }
+.outline.danger {
+  background-color: transparent;
+  border: 2px solid var(--color-danger);
+}
 
+.outline.danger:hover {
+  border-color: var(--color-danger-60);
+  box-shadow: var(--shadow-danger-glow);
+}
 /* === Variant: Ghost === */
 .ghost.primary,
 .ghost.neutral,

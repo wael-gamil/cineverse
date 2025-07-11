@@ -49,7 +49,6 @@ export default function GridContainer({
 
   const isSingleCard = layout === 'scroll' && cardCount === 1;
 
-  console.log(isSingleCard);
   return (
     <div
       ref={containerRef}

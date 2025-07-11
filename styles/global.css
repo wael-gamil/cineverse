@@ -23,6 +23,7 @@
   --color-primary-20: rgba(31, 142, 241, 0.2);
   --color-bg-20: rgba(11, 15, 26, 0.2);
   --color-danger-20: rgba(231, 76, 60, 0.2);
+  --color-success-20: rgba(46, 204, 113, 0.2);
 
   /* === Typography (responsive with clamp) === */
   --font-size-xs: clamp(0.6rem, 0.1vw + 0.7rem, 0.7rem);

@@ -30,7 +30,7 @@ export default function NavLinks({
             className={`${styles.navbar_item} ${
               pathname === path ? styles.active : ''
             }`}
-            onClick={isMobile ? closeMenu : undefined}
+            onClick={closeMenu}
           >
             {name}
           </Link>

@@ -19,19 +19,26 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 const fetcher = async function fetcher(
   query: string,
-  revalidateSeconds: number = 60
+  revalidateSeconds: number = 60,
+  headers: HeadersInit = { 'Content-Type': 'application/json' }
 ) {
   const response = await fetch(`${BASE_URL}${query}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     next: {
       revalidate: revalidateSeconds,
     },
   });
+
   if (!response.ok) {
-    return null;
+    const text = await response.text();
+    let data;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error('Invalid JSON response from server');
+    }
+    throw new Error(data.message || 'Something went wrong');
   }
 
   return response.json();
@@ -60,7 +67,6 @@ export const getContents = async (
     });
 
     const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=${size}`;
-    console.log(url);
     const rawData = await fetcher(url);
     if (!rawData) {
       return {
@@ -313,8 +319,14 @@ const postData = async (endpoint: string, body: any) => {
     body: JSON.stringify(body),
   });
 
-  const data = await response.json();
+  const text = await response.text();
 
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (err) {
+    throw new Error('Invalid JSON response from server');
+  }
   if (!response.ok) {
     throw new Error(data.message || 'Something went wrong');
   }
@@ -322,8 +334,8 @@ const postData = async (endpoint: string, body: any) => {
   return data;
 };
 
-export const loginUser = async (email: string, password: string) => {
-  return await postData('/auth/login', { email, password });
+export const loginUser = async (username: string, password: string) => {
+  return await postData('auth/login', { username, password });
 };
 
 export const registerUser = async (
@@ -331,15 +343,19 @@ export const registerUser = async (
   password: string,
   username: string
 ) => {
-  return await postData('/auth/register', { email, password, username });
+  return await postData('auth/register', { email, password, username });
 };
-
+export const resendVerificationEmail = async (username: string) => {
+  return await postData('auth/resend-verification', { username });
+};
 export const requestPasswordReset = async (email: string) => {
-  return await postData('/auth/forgot-password', { email });
+  return await postData('auth/forget-password', { email });
 };
-
+export const resetPassword = async (token: string, newPassword: string) => {
+  return await postData('auth/reset-password', { token, newPassword });
+};
 export const getCurrentUser = async (token: string) => {
-  const res = await fetch(`${BASE_URL}/auth/me`, {
+  const res = await fetch(`${BASE_URL}auth/me`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -354,4 +370,7 @@ export const getCurrentUser = async (token: string) => {
   }
 
   return data;
+};
+export const verifyEmail = async (token: string) => {
+  return await fetcher(`auth/verify?token=${token}`);
 };

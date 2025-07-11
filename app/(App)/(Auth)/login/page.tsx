@@ -5,28 +5,59 @@ import Link from 'next/link';
 import { useState } from 'react';
 import Icon from '@/components/ui/icon/icon';
 import { useLoginMutation } from '@/hooks/useAuthMutations';
+import { userStore } from '@/utils/userStore';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const errors = { email: '', password: '', general: '' }; // replace with real errors
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+    general: '',
+  });
+  const router = useRouter();
 
-  const { mutate: login, isPending, error } = useLoginMutation();
+  const { mutate: login, isPending } = useLoginMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Clear existing errors
+    setErrors({ username: '', password: '', general: '' });
+
+    // Simple validation
+    if (!username || !password) {
+      setErrors(prev => ({
+        ...prev,
+        general: 'Please enter both username and password.',
+      }));
+      setIsLoading(false);
+      return;
+    }
+
     login(
-      { email, password },
+      { username, password },
       {
         onSuccess: data => {
-          // set user, redirect, etc.
+          userStore.setState({
+            username: data.user.username,
+            email: data.user.email,
+          });
+
+          alert('Login successful!');
+
+          router.push('/');
         },
         onError: err => {
-          console.error(err);
+          setErrors(prev => ({
+            ...prev,
+            general: err.message || 'Something went wrong',
+          }));
+          setIsLoading(false);
         },
       }
     );
@@ -39,32 +70,34 @@ export default function LoginPage() {
           <h1 className={styles.heading}>Welcome back</h1>
           <p className={styles.subheading}>Sign in to continue to CineVerse</p>
         </div>
+
         {errors.general && <div className={styles.error}>{errors.general}</div>}
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          {/* Email */}
+          {/* Username */}
           <div className={styles.inputGroup}>
-            <label htmlFor='email' className={styles.inputLabel}>
-              Email address
+            <label htmlFor='username' className={styles.inputLabel}>
+              Username
             </label>
             <div className={styles.inputWrapper}>
-              <Icon
-                name='envelope'
-                strokeColor='muted'
-                width={20}
-                height={20}
-              />
+              <Icon name='user' strokeColor='muted' width={20} height={20} />
               <input
-                id='email'
-                type='email'
+                id='username'
+                type='text'
                 className={`${styles.input} ${
-                  errors.email ? styles.inputError : ''
+                  errors.username ? styles.inputError : ''
                 }`}
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder='your@email.com'
+                value={username}
+                onChange={e => {
+                  setUsername(e.target.value);
+                  setErrors(prev => ({ ...prev, username: '', general: '' }));
+                }}
+                placeholder='username'
               />
             </div>
+            {errors.username && (
+              <div className={styles.error}>{errors.username}</div>
+            )}
           </div>
 
           {/* Password */}
@@ -74,6 +107,7 @@ export default function LoginPage() {
             </label>
             <div className={styles.inputWrapper}>
               <Icon name='lock' strokeColor='muted' width={20} height={20} />
+
               <input
                 id='password'
                 type={showPassword ? 'text' : 'password'}
@@ -81,24 +115,31 @@ export default function LoginPage() {
                   errors.password ? styles.inputError : ''
                 }`}
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => {
+                  setPassword(e.target.value);
+                  setErrors(prev => ({ ...prev, password: '', general: '' }));
+                }}
                 placeholder='••••••••'
               />
+              <Button
+                type='button'
+                onClick={() => setShowPassword(prev => !prev)}
+                variant='ghost'
+                color='neutral'
+                padding='none'
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  strokeColor='muted'
+                />
+              </Button>
             </div>
-            <Link href='/forgot-password'>Forgot password?</Link>
+            {errors.password && (
+              <div className={styles.error}>{errors.password}</div>
+            )}
+            <Link href='/forget-password'>Forget password?</Link>
           </div>
-
-          {/* Remember me */}
-          <label className={styles.checkboxLabel}>
-            <input
-              type='checkbox'
-              checked={rememberMe}
-              onChange={e => setRememberMe(e.target.checked)}
-              className={styles.checkboxInput}
-            />
-            <span className={styles.customCheckbox}></span>
-            Remember me
-          </label>
 
           {/* Submit */}
           <Button type='submit' width='100%' disabled={isLoading}>
