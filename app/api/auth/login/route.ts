@@ -3,15 +3,15 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { email, password } = body;
+  const { username, password } = body;
 
-  if (!email || !password) {
+  if (!username || !password) {
     return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
   }
 
   try {
-    const result = await loginUser(email, password);
-    const token = result.token;
+    const result = await loginUser(username, password);
+    const { token, ...userData } = result.data;
 
     if (!token) {
       return NextResponse.json(
@@ -20,8 +20,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // 🍪 Set the JWT as HTTP-only cookie
-    const res = NextResponse.json({ message: 'Login successful' });
+    // 🍪 Set JWT as HTTP-only cookie
+    const res = NextResponse.json({
+      message: 'Login successful',
+      user: {
+        username: userData.username,
+        email: userData.email,
+      },
+    });
 
     res.cookies.set('token', token, {
       httpOnly: true,

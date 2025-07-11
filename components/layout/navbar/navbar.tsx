@@ -9,10 +9,17 @@ import { usePathname } from 'next/navigation';
 import PanelWrapper from '@/components/ui/panelWrapper/panelWrapper';
 import Image from 'next/image';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import { useStore } from '@tanstack/react-store';
+import { userStore } from '@/utils/userStore';
+import { logout } from '@/utils/logout';
+import UserPanel from './userPanel';
+import Button from '@/components/ui/button/button';
 
 export default function Navbar() {
   const [isShrunk, setIsShrunk] = useState(false);
-
+  const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
+  const { email, username } = useStore(userStore);
+  const isLoggedIn = !!email && !!username;
   const pathname = usePathname();
   const isMobile = useResponsiveLayout();
   const allowedPathsWithSpacer = [
@@ -101,48 +108,37 @@ export default function Navbar() {
 
           <div className={styles.navbarDesktop}>
             <SearchBar />
-            <PanelWrapper
-              icon={isOpen => (
-                <Icon
-                  name={isOpen ? 'close' : 'user'}
-                  width={24}
-                  strokeColor='primary'
-                />
-              )}
-              position='right'
-              padding='lg'
-              solidPanel={true}
-              varient='solid'
-              buttonRadius='full'
-              buttonPadding='sm'
-            >
-              <div className={styles.cta}>
-                <Link href='/'>View Profile</Link>
-                <span className={styles.separator}>•</span>
-                <Link href='/'>Logout</Link>
-              </div>
-              {/* <div className={styles.userInfo}>
-                <div className={styles.headerInfo}>
-                  <div className={styles.imageWrapper}>
-                    <Image
-                      src='https://image.tmdb.org/t/p/w500/zpIK3GYmqDPumneEDf0aqsqxhV1.jpg'
-                      alt='User profile picture'
-                      fill
-                    />
-                  </div>
-                  <div className={styles.headerText}>
-                    <h3>Wael Gamil</h3>
-                    <p>waelgamil122@gmail.com</p>
-                  </div>
-                </div>
-
-                <div className={styles.cta}>
-                  <Link href='/'>View Profile</Link>
-                  <span className={styles.separator}>•</span>
-                  <Link href='/'>Logout</Link>
-                </div>
-              </div> */}
-            </PanelWrapper>
+            {isLoggedIn ? (
+              <PanelWrapper
+                icon={isOpen => (
+                  <Icon
+                    name={isOpen ? 'close' : 'user'}
+                    width={24}
+                    strokeColor='primary'
+                  />
+                )}
+                position='right'
+                padding='lg'
+                solidPanel
+                varient='solid'
+                buttonRadius='full'
+                buttonPadding='sm'
+                setClose={setClosePanel}
+              >
+                <UserPanel closePanel={closePanel} />
+              </PanelWrapper>
+            ) : (
+              <Link href='/login'>
+                <Button
+                  variant='solid'
+                  color='neutral'
+                  padding='none'
+                  borderRadius='fullRadius'
+                >
+                  <Icon name={'user'} width={24} strokeColor='white' />
+                </Button>
+              </Link>
+            )}
           </div>
           <div className={styles.navbarMobile}>
             <SearchBar />
@@ -161,31 +157,24 @@ export default function Navbar() {
               buttonRadius='full'
               buttonPadding='sm'
               width='full'
+              setClose={setClosePanel}
             >
-              <NavLinks isMobile />
+              <NavLinks isMobile closeMenu={closePanel} />
               <div className={styles.divider}></div>
-
-              <div className={styles.userInfo}>
-                <div className={styles.headerInfo}>
-                  <div className={styles.imageWrapper}>
-                    <Image
-                      src='https://image.tmdb.org/t/p/w500/zpIK3GYmqDPumneEDf0aqsqxhV1.jpg'
-                      alt='User profile picture'
-                      fill
-                    />
-                  </div>
-                  <div className={styles.headerText}>
-                    <h3>Wael Gamil</h3>
-                    <p>waelgamil122@gmail.com</p>
-                  </div>
-                </div>
-
-                <div className={styles.cta}>
-                  <Link href='/'>View Profile</Link>
-                  <span className={styles.separator}>•</span>
-                  <Link href='/'>Logout</Link>
-                </div>
-              </div>
+              {isLoggedIn ? (
+                <UserPanel closePanel={closePanel} />
+              ) : (
+                <Link href='/login'>
+                  <Button
+                    variant='solid'
+                    color='primary'
+                    width='100%'
+                    onClick={closePanel}
+                  >
+                    Login
+                  </Button>
+                </Link>
+              )}
             </PanelWrapper>
           </div>
         </div>

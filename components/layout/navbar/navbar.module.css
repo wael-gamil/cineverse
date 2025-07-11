@@ -157,24 +157,6 @@
   font-size: var(--font-size-base);
 }
 
-.cta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-size: var(--font-size-base);
-}
-
-.cta a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.cta a:hover {
-  color: var(--color-white);
-}
-
 .separator {
   color: var(--color-white-60);
   font-size: var(--font-size-base);
@@ -186,6 +168,54 @@
   background-color: var(--color-white-20);
 }
 
+/* Container for logged-in user panel */
+.panelContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Profile section layout */
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* Avatar */
+.avatarWrapper {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-shadow: 0 0 0 2px var(--color-white-10);
+  flex-shrink: 0;
+}
+
+/* User name & email */
+.userInfoText h3 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-white);
+  margin: 0;
+}
+
+.userInfoText p {
+  font-size: var(--font-size-sm);
+  color: var(--color-white-60);
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.actions a {
+  text-decoration: none;
+  color: white;
+}
 @media (max-width: 940px) {
   .navbarDesktop {
     display: none;

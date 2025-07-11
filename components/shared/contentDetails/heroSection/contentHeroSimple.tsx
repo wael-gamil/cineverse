@@ -49,7 +49,6 @@ export default function ContentHeroSimple({
       setIsOverflowing(el.scrollHeight > el.clientHeight);
     }
   }, [bio]);
-  console.log(socialLinks);
   return (
     <section className={styles.hero}>
       <div className={styles.rightSection}>

@@ -76,7 +76,6 @@ export default function Card({
           : `${maxWidth}px`
         : undefined,
   };
-  console.log('title : ', title, '  style: ', computedStyle);
   const handleClick = () => {
     if (onClick) onClick();
     else if (href) router.push(href);
