@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FilterOpt } from '@/constants/types/movie';
 import PanelWrapper from '../panelWrapper/panelWrapper';
 import { useResetPageOnParamChange } from '@/hooks/useResetPageOnParamChange';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
 
 type MultiFilterProps = {
   sections: FilterOpt[];
@@ -134,7 +135,7 @@ export default function Filter({
       padding='lg'
       setClose={setClosePanel}
     >
-      <div className={styles.grid}>
+      <GridContainer layout='grid' scrollRows={1}>
         {sections.map(section => {
           const isLongList = section.options.length > 14;
           const optionsToShow = isLongList
@@ -220,7 +221,7 @@ export default function Filter({
             <span>9</span>
           </div>
         </div>
-      </div>
+      </GridContainer>
 
       <div className={styles.divider}></div>
       <Button

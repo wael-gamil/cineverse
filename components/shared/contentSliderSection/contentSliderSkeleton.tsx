@@ -6,7 +6,7 @@ import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import SectionHeader from './sectionHeader';
 import FilterTabs from '@/components/ui/filter/filterTabs';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type HeaderVariant = 'block' | 'strip' | 'lined' | 'ghost';
@@ -68,7 +68,7 @@ export default function ContentSliderSkeleton({
           </Button>
         )}
 
-        <CardContainer layout='scroll' cardMinWidth={minWidth} cardGap={16}>
+        <GridContainer layout='scroll' cardMinWidth={minWidth} cardGap={16}>
           {Array.from({ length: cardsPerView }).map((_, i) => (
             <SkeletonCard
               key={i}
@@ -78,7 +78,7 @@ export default function ContentSliderSkeleton({
               minWidth={minWidth}
             />
           ))}
-        </CardContainer>
+        </GridContainer>
 
         {!isMobile && (
           <Button variant='outline' color='neutral' disabled>

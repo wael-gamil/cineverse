@@ -39,13 +39,13 @@ export default function CommunityFloat() {
           </div>
           <div className={styles.cta}>
             <Button>
-              <Link href='/' className={styles.link}>
+              <Link href='/register' className={styles.link}>
                 <Icon name='user' strokeColor='white' />
                 Sign Up Free
               </Link>
             </Button>
             <Button variant='outline'>
-              <Link href='/' className={styles.link}>
+              <Link href='/login' className={styles.link}>
                 Sign In
               </Link>
             </Button>

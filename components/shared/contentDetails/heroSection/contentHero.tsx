@@ -18,6 +18,8 @@ type ContentHeroProps = {
   fallbackPoster?: string;
   genres?: string[];
   onFocusModeChange?: (isFocus: boolean) => void;
+  showExternalLink?: boolean;
+  slug?: string;
 };
 
 function getYouTubeVideoId(url: string): string {
@@ -31,6 +33,8 @@ export default function ContentHero({
   fallbackPoster = '',
   genres,
   onFocusModeChange,
+  showExternalLink,
+  slug,
 }: ContentHeroProps) {
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
   const { data, isLoading } =
@@ -280,6 +284,8 @@ export default function ContentHero({
             }
           }}
           genres={genres}
+          showExternalLink={showExternalLink}
+          slug={slug}
         />
       </div>
     </section>

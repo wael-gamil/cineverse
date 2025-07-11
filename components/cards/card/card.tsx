@@ -39,7 +39,6 @@ export type CardProps = {
   className?: string;
   minWidth?: number;
   maxWidth?: number;
-  checkMobile?: boolean;
 };
 
 export default function Card({
@@ -58,23 +57,21 @@ export default function Card({
   className = '',
   minWidth,
   maxWidth,
-  checkMobile = false,
 }: CardProps) {
   const router = useRouter();
-  // const isMobile = useIsMobile();
   const [hasError, setHasError] = useState(false);
   const isMobile = useResponsiveLayout();
   const imageToUse = hasError || imageUrl === null ? fallbackImage : imageUrl;
   const computedStyle = {
     minWidth:
       typeof minWidth === 'number'
-        ? isMobile && checkMobile
+        ? isMobile
           ? `200px`
           : `${minWidth}px`
         : undefined,
     maxWidth:
       typeof maxWidth === 'number'
-        ? isMobile && checkMobile
+        ? isMobile
           ? `400px`
           : `${maxWidth}px`
         : undefined,

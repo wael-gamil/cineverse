@@ -8,6 +8,7 @@ import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
 import Link from 'next/link';
 import { useIsInView } from '@/hooks/useIsInView';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type HeroSectionWrapperProps = {
   contents: NormalizedContent[];
@@ -25,11 +26,27 @@ export default function HeroSectionWrapper({
   const wrapperRef = useRef(null);
   const stillInView = useIsInView(wrapperRef, '0px', 0.3);
   const [isTrailerFocusMode, setIsTrailerFocusMode] = useState(false);
-
+  const isMobile = useResponsiveLayout();
+  const touchStartRef = useRef<number | null>(null);
+  const [showHint, setShowHint] = useState(false);
   const handleNext = () => {
     setActiveIndex(prev => (prev + 1) % contents.length);
   };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.touches[0].clientX;
+  };
 
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartRef.current === null) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const delta = touchEnd - touchStartRef.current;
+
+    const swipeThreshold = 50; // Minimum px to trigger swipe
+    if (delta > swipeThreshold) handlePrev(); // swipe right
+    else if (delta < -swipeThreshold) handleNext(); // swipe left
+
+    touchStartRef.current = null;
+  };
   const handlePrev = () => {
     setActiveIndex(prev => (prev - 1 + contents.length) % contents.length);
   };
@@ -75,45 +92,87 @@ export default function HeroSectionWrapper({
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     };
   }, []);
+  useEffect(() => {
+    if (!isMobile) return;
 
+    setShowHint(true); // show on mount
+
+    const hideHint = () => setShowHint(false);
+
+    const timeout = setTimeout(hideHint, 4000); // auto-hide after 4s
+
+    // Also hide if the user interacts (touch or scroll)
+    window.addEventListener('touchstart', hideHint, { once: true });
+    window.addEventListener('scroll', hideHint, { once: true });
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('touchstart', hideHint);
+      window.removeEventListener('scroll', hideHint);
+    };
+  }, [isMobile]);
   return (
-    <div className={styles.wrapper} ref={wrapperRef}>
-      <div className={styles.externalLink}>
-        <Button variant='ghost' padding='sm' borderRadius='fullRadius'>
-          <Link href={`/${rawContent[activeIndex].slug}`} target='_blank'>
-            <Icon name='ExternalLink' strokeColor='white' />
-          </Link>
-        </Button>
-      </div>
-      <div
-        className={`${styles.arrowLeft} ${!showArrows ? styles.hidden : ''}`}
-      >
-        <Button
-          onClick={handlePrev}
-          variant='solid'
-          padding='sm'
-          borderRadius='fullRadius'
-        >
-          <Icon name='arrow-left' strokeColor='white' />
-        </Button>
-      </div>
-      <div
-        className={`${styles.arrowRight} ${!showArrows ? styles.hidden : ''}`}
-      >
-        <Button
-          onClick={handleNext}
-          variant='solid'
-          padding='sm'
-          borderRadius='fullRadius'
-        >
+    <div
+      className={styles.wrapper}
+      ref={wrapperRef}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {!isMobile && (
+        <div className={styles.externalLink}>
+          <Button variant='ghost' padding='sm' borderRadius='fullRadius'>
+            <Link href={`/${rawContent[activeIndex].slug}`} target='_blank'>
+              <Icon name='ExternalLink' strokeColor='white' />
+            </Link>
+          </Button>
+        </div>
+      )}
+
+      {!isMobile && (
+        <>
+          <div
+            className={`${styles.arrowLeft} ${
+              !showArrows ? styles.hidden : ''
+            }`}
+          >
+            <Button
+              onClick={handlePrev}
+              variant='solid'
+              padding='sm'
+              borderRadius='fullRadius'
+            >
+              <Icon name='arrow-left' strokeColor='white' />
+            </Button>
+          </div>
+          <div
+            className={`${styles.arrowRight} ${
+              !showArrows ? styles.hidden : ''
+            }`}
+          >
+            <Button
+              onClick={handleNext}
+              variant='solid'
+              padding='sm'
+              borderRadius='fullRadius'
+            >
+              <Icon name='arrow-right' strokeColor='white' />
+            </Button>
+          </div>
+        </>
+      )}
+      {isMobile && showHint && (
+        <div className={styles.swipeHint}>
           <Icon name='arrow-right' strokeColor='white' />
-        </Button>
-      </div>
+          <span>Swipe</span>
+        </div>
+      )}
 
       <ContentHero
         key={contents[activeIndex].id}
         content={contents[activeIndex]}
         onFocusModeChange={setIsTrailerFocusMode}
+        showExternalLink={isMobile ? isMobile : undefined}
+        slug={rawContent[activeIndex].slug}
       />
 
       <div className={styles.dotIndicator}>

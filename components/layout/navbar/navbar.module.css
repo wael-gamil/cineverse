@@ -1,7 +1,4 @@
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background-color: var(--color-bg-20);
   padding: var(--space-md) var(--space-xxl);
   position: fixed;
@@ -108,7 +105,12 @@
     background-size: 400% 400%;
   }
 }
-
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
 .navbarDesktop {
   display: flex;
   align-items: center;
@@ -116,9 +118,72 @@
 }
 .navbarMobile {
   display: none;
-  position: relative;
   align-items: center;
   gap: var(--space-md);
+}
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-shadow: 0 0 0 2px var(--color-white-10);
+  transition: transform 0.3s ease;
+}
+
+.imageWrapper:hover {
+  transform: scale(1.05);
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.headerText h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.headerText p {
+  color: var(--color-muted);
+  font-size: var(--font-size-base);
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-base);
+}
+
+.cta a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.cta a:hover {
+  color: var(--color-white);
+}
+
+.separator {
+  color: var(--color-white-60);
+  font-size: var(--font-size-base);
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-white-20);
 }
 
 @media (max-width: 940px) {

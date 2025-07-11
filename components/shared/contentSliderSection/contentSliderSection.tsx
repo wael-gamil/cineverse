@@ -11,7 +11,7 @@ import { Content } from '@/constants/types/movie';
 import { useSliderQuery } from '@/hooks/useSliderQuery';
 import EmptyCard from '@/components/cards/card/emptyCard';
 import SectionHeader from './sectionHeader';
-import CardContainer from '@/components/cards/card/cardContainer';
+import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type FilterType = 'ALL' | 'MOVIE' | 'SERIES';
@@ -171,11 +171,14 @@ export default function ContentSliderSection({
           </Button>
         )}
 
-        <CardContainer
+        <GridContainer
           layout='scroll'
           cardMinWidth={minWidth}
+          cardMaxWidth={cardProps?.maxWidth}
+          cardCount={cardsPerView}
           cardGap={16}
           setCardsPerView={setCardsPerView}
+          lastPage={page === totalPages - 1}
         >
           {(isLoading || (isFetching && visibleContent.length === 0)) &&
             Array.from({ length: cardsPerView }).map((_, idx) => (
@@ -210,11 +213,10 @@ export default function ContentSliderSection({
                     position: 'top-left',
                   },
                 ]}
-                checkMobile
                 {...cardProps}
               />
             ))}
-        </CardContainer>
+        </GridContainer>
 
         {!isMobile && (
           <Button

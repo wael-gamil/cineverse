@@ -1,0 +1,26 @@
+.container {
+  display: grid;
+  width: 100%;
+}
+
+.gridscroll::-webkit-scrollbar {
+  display: none;
+}
+
+.gridScroll {
+  padding: var(--space-sm);
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.grid {
+  padding: var(--space-lg);
+}
+
+.centerSingle {
+  justify-content: center;
+}

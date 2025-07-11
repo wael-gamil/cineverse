@@ -7,6 +7,7 @@ import Badge from '@/components/ui/badge/badge';
 import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
   content: NormalizedContent;
@@ -20,6 +21,8 @@ type Props = {
   onShare?: () => void;
   genres?: string[];
   className?: string;
+  showExternalLink?: boolean;
+  slug?: string;
 };
 
 export default function HeroMetadata({
@@ -34,6 +37,8 @@ export default function HeroMetadata({
   onShare,
   genres,
   className = '',
+  showExternalLink,
+  slug,
 }: Props) {
   const genreList = content.genres || genres || [];
 
@@ -50,8 +55,18 @@ export default function HeroMetadata({
         </div>
       )}
 
-      <h1 className={styles.title}>{content.title}</h1>
-
+      <div className={styles.metaHeader}>
+        <h1 className={styles.title}>{content.title}</h1>
+        {showExternalLink && (
+          <div className={styles.externalLink}>
+            <Button variant='ghost' padding='sm' borderRadius='fullRadius'>
+              <Link href={`/${slug}`} target='_blank'>
+                <Icon name='ExternalLink' strokeColor='muted' />
+              </Link>
+            </Button>
+          </div>
+        )}
+      </div>
       <div className={styles.infoRow}>
         {typeof content.imdbRate === 'number' && content.imdbRate > 0 && (
           <Badge
@@ -66,16 +81,17 @@ export default function HeroMetadata({
           />
         )}
 
-        {content.releaseDate && (
-          <Badge
-            text={content.releaseDate.split('-')[0]}
-            iconName='calendar'
-            backgroundColor='bg-muted'
-            size='size-lg'
-          />
-        )}
+        {typeof content.releaseDate === 'string' &&
+          content.releaseDate > '0' && (
+            <Badge
+              text={content.releaseDate.split('-')[0]}
+              iconName='calendar'
+              backgroundColor='bg-muted'
+              size='size-lg'
+            />
+          )}
 
-        {runtime && (
+        {typeof content.runtime === 'number' && content.runtime > 0 && (
           <Badge
             text={runtime}
             iconName='clock'
