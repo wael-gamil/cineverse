@@ -22,7 +22,7 @@ export default function SeasonsSkeleton() {
             <SkeletonCard
               key={i}
               imageHeight='image-lg'
-              layout='overlay'
+              layout={isMobile ? 'below' : 'overlay'}
               maxWidth={400}
               minWidth={270}
             />

@@ -16,7 +16,7 @@ export default function SkeletonContentList() {
         <SkeletonCard
           key={index}
           imageHeight='image-lg'
-          layout='overlay'
+          layout={isMobile ? 'below' : 'overlay'}
           maxWidth={500}
           minWidth={250}
         />

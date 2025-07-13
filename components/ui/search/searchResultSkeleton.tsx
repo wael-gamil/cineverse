@@ -24,7 +24,7 @@ export default function SearchResultSkeleton({ count = 12 }: Props) {
         {Array.from({ length: count }).map((_, idx) => (
           <SkeletonCard
             key={idx}
-            layout='overlay'
+            layout={isMobile ? 'below' : 'overlay'}
             imageHeight='image-lg'
             minWidth={250}
             maxWidth={500}
