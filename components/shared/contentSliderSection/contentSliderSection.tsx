@@ -98,7 +98,6 @@ export default function ContentSliderSection({
       }
     }
   }, [data]);
-  console.log(data);
 
   const handleFilterChange = (value: FilterType) => {
     setFilter(value);

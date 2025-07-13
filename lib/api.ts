@@ -310,11 +310,12 @@ export const getPersonContents = async (
   }
 };
 
-const postData = async (endpoint: string, body: any) => {
+const postData = async (endpoint: string, body: any, headers?: HeadersInit) => {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...(headers || {}),
     },
     body: JSON.stringify(body),
   });
@@ -327,6 +328,7 @@ const postData = async (endpoint: string, body: any) => {
   } catch (err) {
     throw new Error('Invalid JSON response from server');
   }
+
   if (!response.ok) {
     throw new Error(data.message || 'Something went wrong');
   }
@@ -337,7 +339,15 @@ const postData = async (endpoint: string, body: any) => {
 export const loginUser = async (username: string, password: string) => {
   return await postData('auth/login', { username, password });
 };
-
+export const logoutUser = async (token: string) => {
+  return await postData(
+    'auth/logout',
+    {},
+    {
+      Authorization: `Bearer ${token}`,
+    }
+  );
+};
 export const registerUser = async (
   email: string,
   password: string,
