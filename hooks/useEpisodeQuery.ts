@@ -20,7 +20,9 @@ export function useEpisodeQuery(
         );
       return (await res.json()) as Episode[];
     },
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 5000),
     enabled,
-    staleTime: 1000 * 60 * 10, 
+    staleTime: 1000 * 60 * 10,
   });
 }

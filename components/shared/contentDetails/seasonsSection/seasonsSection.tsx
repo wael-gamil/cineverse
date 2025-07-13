@@ -42,7 +42,12 @@ export default function SeasonsSection({
 
       <div className={styles.container}>
         <div className={styles.sliderRow}>
-          <GridContainer layout='grid' cardMinWidth={270} scrollRows={1}>
+          <GridContainer
+            layout='grid'
+            cardMinWidth={270}
+            cardCount={data.length}
+            scrollRows={1}
+          >
             {data.map(season => {
               const subtitle =
                 season.numberOfEpisodes > 0
@@ -66,6 +71,7 @@ export default function SeasonsSection({
                   layout='overlay'
                   highlight={season.seasonNumber === selectedSeason}
                   onClick={() => setSelectedSeason(season.seasonNumber)}
+                  href={`${pathname}/seasons/${season.seasonNumber}`}
                   badges={[
                     {
                       iconName: 'star' as IconName,

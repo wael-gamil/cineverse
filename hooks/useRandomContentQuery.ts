@@ -9,6 +9,8 @@ export function useRandomContentQuery(enabled: boolean = true) {
       if (!res.ok) throw new Error('Failed to fetch random content');
       return await res.json();
     },
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 5000),
     enabled,
     staleTime: 1000 * 60 * 5,
   });

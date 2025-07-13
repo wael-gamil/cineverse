@@ -7,13 +7,12 @@ import NavLinks from '../../ui/navLinks/navLinks';
 import SearchBar from '../../ui/search/searchBar';
 import { usePathname } from 'next/navigation';
 import PanelWrapper from '@/components/ui/panelWrapper/panelWrapper';
-import Image from 'next/image';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 import { useStore } from '@tanstack/react-store';
 import { userStore } from '@/utils/userStore';
-import { logout } from '@/utils/logout';
 import UserPanel from './userPanel';
 import Button from '@/components/ui/button/button';
+import { uiStore } from '@/utils/uiStore';
 
 export default function Navbar() {
   const [isShrunk, setIsShrunk] = useState(false);
@@ -22,6 +21,7 @@ export default function Navbar() {
   const isLoggedIn = !!email && !!username;
   const pathname = usePathname();
   const isMobile = useResponsiveLayout();
+  const { trailerFocusMode } = useStore(uiStore);
   const allowedPathsWithSpacer = [
     '/explore',
     '/reviews',
@@ -36,9 +36,11 @@ export default function Navbar() {
     !allowedPathsWithSpacer.includes(pathname);
 
   const showSpacer =
-    allowedPathsWithSpacer.some(
+    !trailerFocusMode &&
+    (allowedPathsWithSpacer.some(
       path => pathname === path || pathname.startsWith(`${path}/`)
-    ) || isSingleSlugPage;
+    ) ||
+      isSingleSlugPage);
 
   useEffect(() => {
     const handleScroll = () => setIsShrunk(window.scrollY > 0);

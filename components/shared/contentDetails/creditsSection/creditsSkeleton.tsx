@@ -22,7 +22,7 @@ export default function CreditsSkeleton() {
           <SkeletonCard
             key={i}
             imageHeight='image-lg'
-            layout='overlay'
+            layout='below'
             maxWidth={400}
             minWidth={270}
           />

@@ -50,7 +50,6 @@ const sortMap: Record<SectionKey, SortMapValue> = {
   'up-coming': {
     status: 'UPCOMING',
     order: 'asc',
-    lang: 'en',
   },
 
   'top-arab': {

@@ -1,6 +1,6 @@
 .emptyCard {
-  background-color: var(--color-dark-soft);
-  border: 1px solid var(--color-dark-border);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-white-20);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
   display: flex;
@@ -8,8 +8,6 @@
   justify-content: center;
   align-items: center;
   gap: var(--space-md);
-  max-width: 200px;
-  min-height: 320px;
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
 }

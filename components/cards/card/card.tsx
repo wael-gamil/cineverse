@@ -9,6 +9,7 @@ import Button from '../../ui/button/button';
 import Badge from '../../ui/badge/badge';
 import fallbackImage from '@/public/avatar_fallback.png';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import Link from 'next/link';
 
 type BadgeType = {
   iconName?: IconName;
@@ -76,10 +77,15 @@ export default function Card({
           : `${maxWidth}px`
         : undefined,
   };
-  const handleClick = () => {
-    if (onClick) onClick();
-    else if (href) router.push(href);
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Left click only
+    if (e.button === 0) {
+      if (onClick) onClick();
+      else if (href) router.push(href);
+    }
   };
+
+  const Wrapper = href ? Link : 'div';
 
   const renderBadges = () =>
     badges.map((badge, i) => (
@@ -206,7 +212,20 @@ export default function Card({
     return renderOverlayLayout();
   };
 
-  return (
+  return href ? (
+    <Link
+      href={href}
+      draggable
+      target='_self'
+      rel='noopener noreferrer'
+      className={`${styles.cardWrapper} ${
+        highlight ? styles.highlight : ''
+      } ${className}`}
+      style={computedStyle}
+    >
+      {getLayout()}
+    </Link>
+  ) : (
     <div
       className={`${styles.cardWrapper} ${
         highlight ? styles.highlight : ''
