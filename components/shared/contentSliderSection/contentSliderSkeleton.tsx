@@ -57,7 +57,7 @@ export default function ContentSliderSkeleton({
         style={
           isMobile
             ? imageHeight === 'image-lg'
-              ? { minHeight: '600px', maxHeight: '600px' }
+              ? { minHeight: '550px', maxHeight: '550px' }
               : { minHeight: '450px', maxHeight: '450px' }
             : undefined
         }
@@ -72,7 +72,7 @@ export default function ContentSliderSkeleton({
           {Array.from({ length: cardsPerView }).map((_, i) => (
             <SkeletonCard
               key={i}
-              layout={layout}
+              layout={isMobile ? 'below' : layout}
               imageHeight={imageHeight}
               maxWidth={maxWidth}
               minWidth={minWidth}
