@@ -34,7 +34,7 @@ export default function ContentList({
   };
 
   if (!content || content.length === 0) {
-    return <EmptyCard />;
+    return <EmptyCard maxWidth={500} minWidth={250} />;
   }
 
   return (

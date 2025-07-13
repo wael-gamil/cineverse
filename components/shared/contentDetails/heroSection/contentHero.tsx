@@ -4,13 +4,12 @@ import { NormalizedContent } from '@/constants/types/movie';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import VideoControls from '../../../ui/videoControls/videoControls';
-import Button from '../../../ui/button/button';
-import { Icon } from '../../../ui/icon/icon';
-import Badge from '../../../ui/badge/badge';
 import { useTrailerQuery } from '@/hooks/useTrailerQuery';
 import TrailerPlayer from '@/components/ui/trailerPlayer/trailerPlayer';
 import { useIsInView } from '@/hooks/useIsInView';
 import HeroMetadata from './heroMetadata';
+import { uiStore } from '@/utils/uiStore';
+import useMobileVh from '@/hooks/useMobileVh';
 
 type ContentHeroProps = {
   content: NormalizedContent;
@@ -36,6 +35,7 @@ export default function ContentHero({
   showExternalLink,
   slug,
 }: ContentHeroProps) {
+  useMobileVh();
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
   const { data, isLoading } =
     content.type === 'movie' || content.type === 'series'
@@ -45,7 +45,6 @@ export default function ContentHero({
   const videoId = trailerUrl ? getYouTubeVideoId(trailerUrl) : null;
   const [isMuted, setIsMuted] = useState(true);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const genreList = content.genres || genres;
   const runtime: string =
     typeof content.runtime === 'number' && !isNaN(content.runtime)
       ? (() => {
@@ -79,6 +78,7 @@ export default function ContentHero({
   const handleExitingFocusMode = () => {
     setTimeout(() => {
       setTrailerFocusMode(false);
+      uiStore.setState(state => ({ ...state, trailerFocusMode: false }));
       onFocusModeChange?.(false);
     }, 200);
     playerRef.current.mute();
@@ -91,13 +91,17 @@ export default function ContentHero({
   };
   const handlePlayTrailer = () => {
     setIsFadingOut(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    playerRef.current.unMute();
+    setIsMuted(false);
+    playerRef.current.playVideo();
     setTimeout(() => {
       setTrailerFocusMode(true);
+      uiStore.setState(state => ({ ...state, trailerFocusMode: true }));
       onFocusModeChange?.(true);
       setIsFadingOut(false);
     }, 500);
   };
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
@@ -149,11 +153,33 @@ export default function ContentHero({
       }, 400);
     }
   }, [isHeroVisible, trailerFocusMode]);
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (trailerFocusMode) {
+      html.style.overflow = 'hidden';
+      body.style.overflow = 'hidden';
+      body.style.touchAction = 'none';
+    } else {
+      html.style.overflow = '';
+      body.style.overflow = '';
+      body.style.touchAction = '';
+    }
+
+    return () => {
+      html.style.overflow = '';
+      body.style.overflow = '';
+      body.style.touchAction = '';
+    };
+  }, [trailerFocusMode]);
   return (
     <section className={styles.hero} ref={sectionRef}>
       <div
         className={styles.videoWrapper}
-        style={trailerFocusMode ? { minHeight: '100vh' } : {}}
+        style={
+          trailerFocusMode ? { minHeight: 'calc(var(--vh, 1vh) * 100)' } : {}
+        }
       >
         {/* Background Video */}
         <div

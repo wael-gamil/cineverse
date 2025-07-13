@@ -56,6 +56,10 @@ export default function ContentSliderSection({
   const [totalPages, setTotalPages] = useState(1);
   const isMobile = useResponsiveLayout();
   const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
+  const [animation, setAnimation] = useState<'slideLeft' | 'slideRight'>(
+    'slideLeft'
+  );
+  const [shouldAnimate, setShouldAnimate] = useState(false);
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
       const container = entries[0].target as HTMLDivElement;
@@ -94,6 +98,7 @@ export default function ContentSliderSection({
       }
     }
   }, [data]);
+  console.log(data);
 
   const handleFilterChange = (value: FilterType) => {
     setFilter(value);
@@ -103,12 +108,13 @@ export default function ContentSliderSection({
   };
 
   const handleNext = () => {
+    setAnimation('slideRight');
+    setShouldAnimate(true);
     const nextStartIndex = visibleStartIndex + cardsPerView;
     const nextSlice = fetchedContent.slice(
       nextStartIndex,
       nextStartIndex + cardsPerView
     );
-
     if (nextSlice.length === cardsPerView) {
       setVisibleStartIndex(nextStartIndex);
       return;
@@ -122,6 +128,8 @@ export default function ContentSliderSection({
   };
 
   const handlePrev = () => {
+    setAnimation('slideLeft');
+    setShouldAnimate(true);
     setVisibleStartIndex(prev => Math.max(prev - cardsPerView, 0));
   };
 
@@ -129,7 +137,14 @@ export default function ContentSliderSection({
     visibleStartIndex,
     Math.min(visibleStartIndex + cardsPerView, fetchedContent.length)
   );
-
+  useEffect(() => {
+    if (shouldAnimate) {
+      const timer = setTimeout(() => {
+        setShouldAnimate(false);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldAnimate]);
   return (
     <div className={styles.wrapper}>
       <SectionHeader
@@ -155,7 +170,7 @@ export default function ContentSliderSection({
         style={
           isMobile
             ? cardProps?.imageHeight === 'image-lg'
-              ? { minHeight: '600px', maxHeight: '600px' }
+              ? { minHeight: '550px', maxHeight: '550px' }
               : { minHeight: '450px', maxHeight: '450px' }
             : undefined
         }
@@ -178,7 +193,11 @@ export default function ContentSliderSection({
           cardCount={cardsPerView}
           cardGap={16}
           setCardsPerView={setCardsPerView}
-          lastPage={page === totalPages - 1}
+          lastPage={
+            visibleStartIndex + cardsPerView >= fetchedContent.length &&
+            page + 1 >= totalPages
+          }
+          animation={shouldAnimate ? animation : null}
         >
           {(isLoading || (isFetching && visibleContent.length === 0)) &&
             Array.from({ length: cardsPerView }).map((_, idx) => (
@@ -192,10 +211,15 @@ export default function ContentSliderSection({
             ))}
 
           {!isFetching && !isLoading && fetchedContent.length === 0 && (
-            <EmptyCard />
+            <EmptyCard
+              maxWidth={cardProps?.maxWidth}
+              minWidth={minWidth}
+              minHeight={cardProps?.imageHeight}
+            />
           )}
 
           {!isFetching &&
+            !isLoading &&
             visibleContent.length > 0 &&
             visibleContent.map(item => (
               <Card
@@ -258,7 +282,7 @@ export default function ContentSliderSection({
       <div className={styles.pageInfo}>
         Showing {visibleStartIndex + 1} –{' '}
         {Math.min(visibleStartIndex + cardsPerView, fetchedContent.length)} of{' '}
-        {fetchedContent.length}
+        {totalPages * 8}
       </div>
     </div>
   );

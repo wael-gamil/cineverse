@@ -4,7 +4,7 @@ import '@/styles/global.css';
 import '@/styles/reset.css';
 import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer/footer';
-import  Providers  from '@/lib/providers';
+import Providers from '@/lib/providers';
 
 export const metadata: Metadata = {
   title: 'CineVerse',
@@ -12,15 +12,15 @@ export const metadata: Metadata = {
     'CineVerse is a movie and TV series tracking app that allows users to create and manage their watchlists, discover new content, and share their reviews',
   keywords: [
     'CineVerse',
-    'movie',
-    'cinema',
-    'tv',
-    'series',
-    'watchlist',
-    'movies',
-    'tv shows',
-    'tv series',
-    'watch',
+    ' movie',
+    ' cinema',
+    ' tv',
+    ' series',
+    ' watchlist',
+    ' movies',
+    ' tv shows',
+    ' tv series',
+    ' watch',
   ],
   authors: [
     { name: 'Wael Gamil', url: 'https://www.linkedin.com/in/wael-gamil/' },

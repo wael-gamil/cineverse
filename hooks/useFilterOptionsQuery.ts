@@ -10,7 +10,9 @@ export function useFilterOptionsQuery(enabled?: boolean) {
       if (!res.ok) throw new Error('Failed to fetch filter options');
       return (await res.json()) as FilterOpt[];
     },
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 5000),
     enabled,
-    staleTime: 1000 * 60 * 10, 
+    staleTime: 1000 * 60 * 10,
   });
 }

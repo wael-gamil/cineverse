@@ -16,6 +16,7 @@ type GridContainerProps = {
   cardCount?: number;
   lastPage?: boolean;
   scrollRows?: number;
+  animation?: 'slideLeft' | 'slideRight' | 'fade' | null;
 };
 
 export default function GridContainer({
@@ -28,6 +29,7 @@ export default function GridContainer({
   cardCount,
   lastPage = false,
   scrollRows,
+  animation,
 }: GridContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useResponsiveLayout();
@@ -48,13 +50,14 @@ export default function GridContainer({
   }, [modifiedCardMinWidth, cardGap, setCardsPerView]);
 
   const isSingleCard = layout === 'scroll' && cardCount === 1;
-
   return (
     <div
       ref={containerRef}
       className={`${styles.container} ${
         layout === 'grid' ? styles.grid : styles.gridScroll
-      } ${isSingleCard ? styles.centerSingle : ''}`}
+      } ${isSingleCard ? styles.centerSingle : ''} ${
+        animation ? styles[animation] : ''
+      }`}
       style={{
         gap: `${cardGap}px`,
         ...(layout === 'grid'

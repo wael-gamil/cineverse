@@ -10,6 +10,8 @@ export function useSocialQuery(id: number, enabled?: boolean) {
       if (!res.ok) throw new Error('Failed to fetch social');
       return (await res.json()) as SocialLinks;
     },
+    retry: 2,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 5000),
     enabled,
     staleTime: 1000 * 60 * 10,
   });

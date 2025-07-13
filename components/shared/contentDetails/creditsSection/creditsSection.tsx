@@ -55,7 +55,12 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
         <h2 className={styles.heading}>Cast & Crew</h2>
       </div>
 
-      <GridContainer layout='grid' cardMinWidth={270} scrollRows={1}>
+      <GridContainer
+        layout='grid'
+        cardMinWidth={270}
+        cardCount={fullCredits.length}
+        scrollRows={1}
+      >
         {fullCredits.map(person => (
           <Card
             key={person.id}
@@ -63,7 +68,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
             description={person.characterName}
             imageUrl={person.path}
             imageHeight='image-lg'
-            layout='overlay'
+            layout='below'
             href={`/crew/${person.id}`}
             minWidth={270}
             maxWidth={400}

@@ -112,7 +112,7 @@ export default function EpisodesSection({
               />
             ))
           ) : (
-            <EmptyCard />
+            <EmptyCard maxWidth={300} minWidth={270} />
           )}
         </GridContainer>
       )}
