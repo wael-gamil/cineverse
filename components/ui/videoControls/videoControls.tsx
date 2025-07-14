@@ -41,6 +41,11 @@ export default function VideoControls({
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setFullscreen] = useState(false);
   const hideTimeout = useRef<number | undefined>(undefined);
+  const isMobileSafari =
+    typeof window !== 'undefined' &&
+    /iPhone|iPad|iPod/.test(navigator.userAgent) &&
+    /WebKit/.test(navigator.userAgent) &&
+    !/CriOS|FxiOS/.test(navigator.userAgent);
   useEffect(() => {
     if (!player || typeof player.getVolume !== 'function') return;
 
@@ -148,6 +153,14 @@ export default function VideoControls({
     }
     resetHide();
   };
+  useEffect(() => {
+    if (isFullscreen && isMobileSafari) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.body.classList.add('simulate-fullscreen');
+    } else {
+      document.body.classList.remove('simulate-fullscreen');
+    }
+  }, [isFullscreen]);
   return (
     <>
       {/* {!isPlaying && <div className={styles.pauseOverlay}></div>} */}
