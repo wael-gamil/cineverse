@@ -41,11 +41,7 @@ export default function VideoControls({
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setFullscreen] = useState(false);
   const hideTimeout = useRef<number | undefined>(undefined);
-  const isMobileSafari =
-    typeof window !== 'undefined' &&
-    /iPhone|iPad|iPod/.test(navigator.userAgent) &&
-    /WebKit/.test(navigator.userAgent) &&
-    !/CriOS|FxiOS/.test(navigator.userAgent);
+  const [isIOS, setIsIOS] = useState(false);
   useEffect(() => {
     if (!player || typeof player.getVolume !== 'function') return;
 
@@ -154,13 +150,14 @@ export default function VideoControls({
     resetHide();
   };
   useEffect(() => {
-    if (isFullscreen && isMobileSafari) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.body.classList.add('simulate-fullscreen');
-    } else {
-      document.body.classList.remove('simulate-fullscreen');
-    }
-  }, [isFullscreen]);
+    const userAgent =
+      navigator.userAgent || navigator.vendor || (window as any).opera;
+
+    const isIOSDevice =
+      /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+
+    setIsIOS(isIOSDevice);
+  }, []);
   return (
     <>
       {/* {!isPlaying && <div className={styles.pauseOverlay}></div>} */}
@@ -236,17 +233,19 @@ export default function VideoControls({
                 />
               </div>
             </div>
-            <Button
-              onClick={toggleFullscreen}
-              variant='ghost'
-              color='neutral'
-              padding='sm'
-            >
-              <Icon
-                name={isFullscreen ? 'contract' : 'expand'}
-                strokeColor='white'
-              />
-            </Button>
+            {!isIOS && (
+              <Button
+                onClick={toggleFullscreen}
+                variant='ghost'
+                color='neutral'
+                padding='sm'
+              >
+                <Icon
+                  name={isFullscreen ? 'contract' : 'expand'}
+                  strokeColor='white'
+                />
+              </Button>
+            )}
 
             <Button
               onClick={onClose}
