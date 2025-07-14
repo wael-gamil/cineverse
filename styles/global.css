@@ -72,9 +72,10 @@ body {
 }
 .simulate-fullscreen {
   overflow: hidden;
+  height: 100dvh;
 }
 
-.simulate-fullscreen #your-video-wrapper-id {
+.simulate-fullscreen #videoWrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -82,6 +83,9 @@ body {
   height: 100dvh;
   z-index: 9999;
   background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 @media (prefers-color-scheme: light) {
   :root {

@@ -180,6 +180,7 @@ export default function ContentHero({
         style={
           trailerFocusMode ? { minHeight: 'calc(var(--vh, 1vh) * 100)' } : {}
         }
+        id='videoWrapper'
       >
         {/* Background Video */}
         <div
