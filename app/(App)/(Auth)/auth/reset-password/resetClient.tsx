@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import styles from '../page.module.css';
+import styles from '../../page.module.css';
 import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
 import Link from 'next/link';
