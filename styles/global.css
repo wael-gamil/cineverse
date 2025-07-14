@@ -70,7 +70,23 @@ body {
   height: 100vh;
   user-select: none;
 }
+.simulate-fullscreen {
+  overflow: hidden;
+  height: 100dvh;
+}
 
+.simulate-fullscreen #videoWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 9999;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @media (prefers-color-scheme: light) {
   :root {
     --background: #ffffff;
