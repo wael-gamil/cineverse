@@ -9,8 +9,13 @@ export async function GET() {
         status: res.status,
       });
     }
-
-    const data: FilterOpt[] = await res.json();
+    const json = await res.json();
+    if (!json.success || !json.data) {
+      return new Response('Unexpected response format from upstream', {
+        status: 502,
+      });
+    }
+    const data: FilterOpt[] = json.data;
 
     return new Response(JSON.stringify(data), {
       status: 200,

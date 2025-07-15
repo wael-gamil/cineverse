@@ -1,0 +1,9 @@
+.container {
+  padding: var(--space-xxl) var(--space-md);
+}
+.tabsWrapper {
+  margin-top: var(--space-xl);
+}
+.tabContent {
+  margin-top: var(--space-lg);
+}

@@ -1,0 +1,88 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #0d1b2a;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 500px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #f5b841;
+}
+
+.field {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  margin-bottom: 0.4rem;
+  color: #aab1b7;
+  font-size: 0.9rem;
+}
+
+.field input,
+.field textarea {
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #1c4c59;
+  background-color: #142735;
+  color: white;
+  outline: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #f5b841;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cancel {
+  background: transparent;
+  color: #aab1b7;
+  padding: 0.5rem 1rem;
+  border: 1px solid #1c4c59;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.cancel:hover {
+  border-color: #f5b841;
+  color: #f5b841;
+}
+
+.save {
+  background: #f5b841;
+  color: #0d1b2a;
+  padding: 0.5rem 1rem;
+  border: none;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.save:hover {
+  background: #e4a527;
+}
