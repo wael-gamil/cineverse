@@ -28,6 +28,7 @@ export default function Navbar() {
     '/search',
     '/watchlist',
     '/crew',
+    '/profile',
     ...(isMobile ? ['/', '/dynamic-slug'] : []),
   ];
   const isSingleSlugPage =

@@ -22,6 +22,7 @@ const fetcher = async function fetcher(
   revalidateSeconds: number = 60,
   headers: HeadersInit = { 'Content-Type': 'application/json' }
 ) {
+  console.log(`${BASE_URL}${query}`);
   const response = await fetch(`${BASE_URL}${query}`, {
     method: 'GET',
     headers,
@@ -30,18 +31,19 @@ const fetcher = async function fetcher(
     },
   });
 
-  if (!response.ok) {
-    const text = await response.text();
-    let data;
-    try {
-      data = text ? JSON.parse(text) : {};
-    } catch {
-      throw new Error('Invalid JSON response from server');
-    }
-    throw new Error(data.message || 'Something went wrong');
+  const text = await response.text();
+  let result;
+  try {
+    result = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error('Invalid JSON response from server');
   }
 
-  return response.json();
+  if (!response.ok || result.success === false) {
+    throw new Error(result.message || 'Something went wrong');
+  }
+
+  return result.data;
 };
 
 export const getContents = async (
@@ -49,7 +51,12 @@ export const getContents = async (
   filters: Filters,
   page = 0,
   size = 24
-): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
+): Promise<{
+  content: Content[];
+  totalPages: number;
+  currentPage: number;
+  totalElements: number;
+}> => {
   try {
     const query = new URLSearchParams();
     const filterMap: Record<string, string | undefined> = {
@@ -68,11 +75,13 @@ export const getContents = async (
 
     const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=${size}`;
     const rawData = await fetcher(url);
+    console.log('raw', rawData);
     if (!rawData) {
       return {
         content: [],
         totalPages: 0,
         currentPage: 0,
+        totalElements: 0,
       };
     }
 
@@ -90,6 +99,7 @@ export const getContents = async (
       content: content,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
+      totalElements: rawData.totalElements,
     };
   } catch (error) {
     console.error('Error fetching content:', error);
@@ -97,6 +107,7 @@ export const getContents = async (
       content: [],
       totalPages: 0,
       currentPage: 0,
+      totalElements: 0,
     };
   }
 };
@@ -364,6 +375,15 @@ export const requestPasswordReset = async (email: string) => {
 export const resetPassword = async (token: string, newPassword: string) => {
   return await postData('auth/reset-password', { token, newPassword });
 };
+export const getUserProfile = async (token: string) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  };
+
+  const data = await fetcher('users/profile', 60, headers);
+  return data;
+};
 export const getCurrentUser = async (token: string) => {
   const res = await fetch(`${BASE_URL}auth/me`, {
     method: 'GET',
@@ -383,4 +403,42 @@ export const getCurrentUser = async (token: string) => {
 };
 export const verifyEmail = async (token: string) => {
   return await fetcher(`auth/verify?token=${token}`);
+};
+
+const putData = async (endpoint: string, body: any, headers?: HeadersInit) => {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(headers || {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  const text = await response.text();
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error('Invalid JSON response from server');
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Something went wrong');
+  }
+
+  return data;
+};
+export const updateUserProfile = async (
+  token: string,
+  updatedUser: {
+    name: string;
+    bio: string;
+    dateOfBirth: string;
+  }
+) => {
+  console.log(token, updatedUser);
+  return await putData('users/profile', updatedUser, {
+    Authorization: `Bearer ${token}`,
+  });
 };

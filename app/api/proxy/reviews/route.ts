@@ -14,8 +14,13 @@ export async function GET(req: Request) {
         status: res.status,
       });
     }
-
-    const data: Review[] = await res.json();
+    const json = await res.json();
+    if (!json.success || !json.data) {
+      return new Response('Unexpected response format from upstream', {
+        status: 502,
+      });
+    }
+    const data: Review[] = json.data;
 
     return new Response(JSON.stringify(data), {
       status: 200,

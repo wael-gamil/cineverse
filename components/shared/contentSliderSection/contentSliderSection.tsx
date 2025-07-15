@@ -23,6 +23,7 @@ type ContentSliderSectionProps = {
   fetchUrl: string;
   initialFilter?: FilterType;
   initialData?: Content[];
+  initialTotalElements?: number;
   showAllFilter?: boolean;
   enabled?: boolean;
   header?: {
@@ -42,6 +43,7 @@ export default function ContentSliderSection({
   title,
   fetchUrl,
   initialData = [],
+  initialTotalElements,
   initialFilter = 'ALL',
   showAllFilter = true,
   enabled,
@@ -281,7 +283,7 @@ export default function ContentSliderSection({
       <div className={styles.pageInfo}>
         Showing {visibleStartIndex + 1} –{' '}
         {Math.min(visibleStartIndex + cardsPerView, fetchedContent.length)} of{' '}
-        {totalPages * 8}
+        {initialTotalElements || data?.totalElements}
       </div>
     </div>
   );

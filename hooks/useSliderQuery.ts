@@ -11,9 +11,10 @@ export function useSliderQuery(
   return useQuery({
     queryKey: ['slider', title, page, filter],
     queryFn: async () => {
-      let url = `${fetchUrl}page=${page}&type=${
-        filter !== 'ALL' ? filter : ''
-      }`;
+      const size = 16;
+      const typeParam = filter !== 'ALL' ? `&type=${filter}` : '';
+      const url = `${fetchUrl}page=${page}&size=${size}${typeParam}`;
+
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Failed to fetch ${title} content`);
 

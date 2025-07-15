@@ -71,6 +71,7 @@ export default function ContentSliderSectionWrapper({
       initialFilter={initialFilter}
       showAllFilter={showAllFilter}
       initialData={data.content}
+      initialTotalElements={data.totalElements}
       fetchUrl={fetchUrl}
       header={header}
       cardProps={cardProps}
