@@ -540,12 +540,19 @@ export const Icon = ({
       );
     case 'ExternalLink':
       return (
-        <svg {...svgProps}>
+        <svg
+          {...svgProps}
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
           {/* Box */}
-          <rect x='3' y='7' width='14' height='14' rx='2' ry='2'></rect>
-          {/* Arrow */}
-          <polyline points='15 3 21 3 21 9'></polyline>
-          <line x1='10' y1='14' x2='21' y2='3'></line>
+          <path d='M15 3h6v6' />
+          <path d='M10 14L21 3' />
+          <rect x='3' y='7' width='14' height='14' rx='2' ry='2' />
         </svg>
       );
     case 'facebook':
