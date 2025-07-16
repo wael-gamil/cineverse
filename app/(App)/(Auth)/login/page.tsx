@@ -2,12 +2,15 @@
 import Button from '@/components/ui/button/button';
 import styles from '../page.module.css';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon/icon';
 import { useLoginMutation } from '@/hooks/useAuthMutations';
 import { userStore } from '@/utils/userStore';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
 
+const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +22,22 @@ export default function LoginPage() {
     general: '',
   });
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const {
+    loginWithGoogle,
+    loading: googleLoading,
+    error: googleError,
+  } = useGooglePopupLogin();
+  useEffect(() => {
+    const error = searchParams.get('error');
+    if (error === 'oauth') {
+      setErrors(prev => ({
+        ...prev,
+        general: 'Google login failed. Please try again or use manual login.',
+      }));
+    }
+  }, []);
   const { mutate: login, isPending } = useLoginMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -146,7 +164,20 @@ export default function LoginPage() {
             {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
         </form>
+        <div className={styles.divider}>
+          <span>or</span>
+        </div>
 
+        <Button
+          type='button'
+          onClick={loginWithGoogle}
+          width='100%'
+          variant='outline'
+        >
+          <Icon name='google' />
+          {googleLoading ? 'Signing in...' : 'Continue with Google'}
+        </Button>
+        {googleError && <div className={styles.error}>{googleError}</div>}
         <div className={styles.divider}>
           <span>Don't have an account?</span>
         </div>

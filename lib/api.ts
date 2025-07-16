@@ -442,3 +442,26 @@ export const updateUserProfile = async (
     Authorization: `Bearer ${token}`,
   });
 };
+
+export const loginWithGoogleCode = async (code: string) => {
+  const res = await fetch(`${BASE_URL}oauth2/code/google?code=${code}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const text = await res.text();
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error('Invalid JSON response from server');
+  }
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Google OAuth login failed');
+  }
+
+  return data;
+};
