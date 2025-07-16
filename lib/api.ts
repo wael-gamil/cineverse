@@ -444,7 +444,7 @@ export const updateUserProfile = async (
 };
 
 export const loginWithGoogleCode = async (code: string) => {
-  const res = await fetch(`${BASE_URL}oauth2/code/google?code=${code}`, {
+  const res = await fetch(`${BASE_URL}login/oauth2/code/google?code=${code}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
