@@ -14,7 +14,7 @@ export default function GoogleOAuthSuccessPage() {
         { type: 'OAUTH_TOKEN', token },
         window.location.origin
       );
-      setTimeout(() => window.close(), 10000);
+      setTimeout(() => window.close(), 500);
     }
   }, []);
 
