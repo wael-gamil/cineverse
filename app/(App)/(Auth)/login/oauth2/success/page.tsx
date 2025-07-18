@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import styles from '../../../login/page.module.css';
+import styles from '../../../page.module.css';
 import Icon from '@/components/ui/icon/icon';
 
 export default function GoogleOAuthSuccessPage() {
