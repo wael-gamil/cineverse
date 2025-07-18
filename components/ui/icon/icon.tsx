@@ -62,7 +62,8 @@ export type IconName =
   | 'trust-badge'
   | 'lock'
   | 'envelope'
-  | 'google';
+  | 'google'
+  | 'loader';
 type IconProps = {
   name: IconName;
   className?: string;
@@ -808,6 +809,31 @@ export const Icon = ({
             fill='#EB4335'
             d='M130.8 51.51c23.89 0 39.96 10.31 49.17 18.96l35.88-34.9C193.81 13.48 165.31 0 130.8 0 81.81 0 37.5 32.53 25.09 76.38l32.75 25.49c10.26-31.42 39.03-54.35 72.96-54.35Z'
           />
+        </svg>
+      );
+    case 'loader':
+      return (
+        <svg
+          width='20'
+          height='20'
+          viewBox='0 0 38 38'
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          stroke='currentColor'
+        >
+          <g transform='translate(1 1)' strokeWidth='2'>
+            <circle strokeOpacity='.25' cx='18' cy='18' r='18' />
+            <path d='M36 18c0-9.94-8.06-18-18-18'>
+              <animateTransform
+                attributeName='transform'
+                type='rotate'
+                from='0 18 18'
+                to='360 18 18'
+                dur='1s'
+                repeatCount='indefinite'
+              />
+            </path>
+          </g>
         </svg>
       );
     default:
