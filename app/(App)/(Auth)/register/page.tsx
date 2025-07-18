@@ -8,6 +8,7 @@ import {
   useRegisterMutation,
   useResendVerificationMutation,
 } from '@/hooks/useAuthMutations';
+import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -30,6 +31,12 @@ export default function RegisterPage() {
   const [resendMessage, setResendMessage] = useState('');
   const { mutate: resendVerification, isPending: resendLoading } =
     useResendVerificationMutation();
+
+  const {
+    loginWithGoogle,
+    loading: googleLoading,
+    error: googleError,
+  } = useGooglePopupLogin();
 
   useEffect(() => {
     if (resendCooldown > 0) {
@@ -274,6 +281,20 @@ export default function RegisterPage() {
             </Button>
           </form>
         )}
+        <div className={styles.divider}>
+          <span>or</span>
+        </div>
+
+        <Button
+          type='button'
+          onClick={loginWithGoogle}
+          width='100%'
+          variant='outline'
+        >
+          <Icon name='google' />
+          {googleLoading ? 'Signing in...' : 'Continue with Google'}
+        </Button>
+        {googleError && <div className={styles.error}>{googleError}</div>}
 
         <div className={styles.divider}>
           <span>Already have an account?</span>
