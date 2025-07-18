@@ -216,6 +216,15 @@
   text-decoration: none;
   color: white;
 }
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @media (max-width: 940px) {
   .navbarDesktop {
     display: none;
