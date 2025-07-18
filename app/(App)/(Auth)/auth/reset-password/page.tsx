@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
 import ResetPasswordClient from './resetClient';
+import AuthFallback from '../../authFallBack';
 
 export default function ResetPasswordPageWrapper() {
   return (
-    <Suspense fallback={<div>Loading reset form...</div>}>
+    <Suspense fallback={<AuthFallback />}>
       <ResetPasswordClient />
     </Suspense>
   );
