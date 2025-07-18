@@ -80,6 +80,7 @@ export default function ContentSliderSection({
     filter,
     enabled
   );
+  console.log(data);
   useEffect(() => {
     if (data) {
       setTotalPages(data.totalPages);
@@ -283,7 +284,9 @@ export default function ContentSliderSection({
       <div className={styles.pageInfo}>
         Showing {visibleStartIndex + 1} –{' '}
         {Math.min(visibleStartIndex + cardsPerView, fetchedContent.length)} of{' '}
-        {initialTotalElements || data?.totalElements}
+        {data?.totalElements === 0
+          ? 0
+          : data?.totalElements || initialTotalElements}
       </div>
     </div>
   );
