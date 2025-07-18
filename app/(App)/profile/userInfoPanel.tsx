@@ -7,7 +7,7 @@ import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
 import { useUpdateProfileMutation } from '@/hooks/useUpdateProfileMutation';
 import EditProfileModal from './editProfileModal';
 import { useQueryClient } from '@tanstack/react-query';
-
+import toast from 'react-hot-toast';
 export default function UserInfoPanel() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { data: user, isLoading, isError } = useUserProfileQuery();
@@ -90,8 +90,13 @@ export default function UserInfoPanel() {
                 queryKey: ['user-profile'],
               });
               setIsEditModalOpen(false);
+              toast.success('Profile updated successfully!', {
+                className: 'toast-success',
+              });
             } catch (err) {
-              console.error('Profile update failed:', err);
+              toast.error('Profile update failed. Please try again.', {
+                className: 'toast-error',
+              });
             }
           }}
         />

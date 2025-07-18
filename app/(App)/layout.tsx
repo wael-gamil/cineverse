@@ -5,6 +5,7 @@ import '@/styles/reset.css';
 import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer/footer';
 import Providers from '@/lib/providers';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: 'CineVerse',
@@ -59,6 +60,7 @@ export default function RootLayout({
         <Navbar />
         <Providers>{children}</Providers>
         <Footer />
+        <Toaster position='bottom-right' />
       </body>
     </html>
   );

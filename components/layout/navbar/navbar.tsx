@@ -15,6 +15,11 @@ import Button from '@/components/ui/button/button';
 import { uiStore } from '@/utils/uiStore';
 
 export default function Navbar() {
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   const [isShrunk, setIsShrunk] = useState(false);
   const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
   const { email, username } = useStore(userStore);
@@ -31,6 +36,9 @@ export default function Navbar() {
     '/profile',
     '/login',
     '/register',
+    '/forget-password',
+    '/reset-password',
+    '/oauth2/success',
     ...(isMobile ? ['/', '/dynamic-slug'] : []),
   ];
   const isSingleSlugPage =
@@ -113,7 +121,23 @@ export default function Navbar() {
 
           <div className={styles.navbarDesktop}>
             <SearchBar />
-            {isLoggedIn ? (
+            {!hasMounted ? (
+              // Loading state before userStore is ready
+              <Button
+                variant='solid'
+                color='neutral'
+                padding='none'
+                borderRadius='fullRadius'
+                disabled
+              >
+                <Icon
+                  name='loader'
+                  width={20}
+                  strokeColor='white'
+                  className={styles.spin}
+                />
+              </Button>
+            ) : isLoggedIn ? (
               <PanelWrapper
                 icon={isOpen => (
                   <Icon
@@ -140,7 +164,7 @@ export default function Navbar() {
                   padding='none'
                   borderRadius='fullRadius'
                 >
-                  <Icon name={'user'} width={24} strokeColor='white' />
+                  <Icon name='user' width={24} strokeColor='white' />
                 </Button>
               </Link>
             )}
@@ -166,7 +190,16 @@ export default function Navbar() {
             >
               <NavLinks isMobile closeMenu={closePanel} />
               <div className={styles.divider}></div>
-              {isLoggedIn ? (
+              {!hasMounted ? (
+                <Button variant='solid' color='primary' width='100%' disabled>
+                  <Icon
+                    name='loader'
+                    width={20}
+                    strokeColor='white'
+                    className={styles.spin}
+                  />
+                </Button>
+              ) : isLoggedIn ? (
                 <UserPanel closePanel={closePanel} />
               ) : (
                 <Link href='/login'>
