@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export function useGooglePopupLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const popupIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const loginWithGoogle = () => {
     setError(null);
@@ -15,11 +16,25 @@ export function useGooglePopupLogin() {
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
 
-    window.open(
+    const popup = window.open(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}oauth2/authorization/google`,
       'Google Login',
       `width=${width},height=${height},top=${top},left=${left}`
     );
+
+    if (!popup) {
+      setLoading(false);
+      setError('Popup blocked. Please allow popups and try again.');
+      return;
+    }
+
+    popupIntervalRef.current = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(popupIntervalRef.current!);
+        setLoading(false);
+        setError('Login cancelled or popup closed.');
+      }
+    }, 500);
   };
 
   useEffect(() => {
@@ -29,6 +44,7 @@ export function useGooglePopupLogin() {
         event.data?.type === 'OAUTH_TOKEN'
       ) {
         const token = event.data.token;
+        clearInterval(popupIntervalRef.current!); // stop checking
 
         try {
           const res = await fetch(`/api/auth/login/oauth2?token=${token}`, {
@@ -55,7 +71,6 @@ export function useGooglePopupLogin() {
     };
 
     window.addEventListener('message', handleMessage);
-
     return () => {
       window.removeEventListener('message', handleMessage);
     };

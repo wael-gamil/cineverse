@@ -67,8 +67,10 @@
 body {
   background-color: var(--color-bg);
   color: var(--color-white);
-  height: 100vh;
+  min-height: 100vh;
   user-select: none;
+  display: flex;
+  flex-direction: column;
 }
 .toast-error {
   background-color: #ffe0e0;
