@@ -36,6 +36,7 @@ export default function Navbar() {
     '/profile',
     '/login',
     '/register',
+    '/verify',
     '/forget-password',
     '/reset-password',
     '/oauth2/success',
