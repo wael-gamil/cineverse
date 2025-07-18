@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import ResetPasswordClient from './resetClient';
-import AuthFallback from '../../authFallBack';
+import AuthFallback from '../../authFallback';
 
 export default function ResetPasswordPageWrapper() {
   return (

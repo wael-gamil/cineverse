@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import RegisterPage from './registerClient';
-import AuthFallback from '../authFallBack';
+import AuthFallback from '../authFallback';
 
 export default function RegisterPageWrapper() {
   return (
