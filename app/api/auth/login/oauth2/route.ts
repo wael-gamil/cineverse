@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { loginWithGoogleCode } from '@/lib/api';
+import { getUserProfile } from '@/lib/api';
 
 export async function GET(req: NextRequest) {
-  const code = req.nextUrl.searchParams.get('code');
+  const token = req.nextUrl.searchParams.get('token');
 
-  if (!code) {
+  if (!token) {
     return NextResponse.json(
-      { message: 'Missing OAuth code' },
+      { message: 'Missing OAuth token' },
       { status: 400 }
     );
   }
-
+  console.log('OAuth token received:', token);
   try {
-    const { token, username, email } = await loginWithGoogleCode(code);
+    const { username, email } = await getUserProfile(token);
 
     if (!token || !username || !email) {
       return NextResponse.json(
