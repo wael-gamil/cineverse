@@ -6,6 +6,7 @@ import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
 import Link from 'next/link';
 import { useForgetPasswordMutation } from '@/hooks/useAuthMutations';
+import toast from 'react-hot-toast';
 
 export default function ForgetPasswordPage() {
   const [email, setEmail] = useState('');
@@ -21,13 +22,17 @@ export default function ForgetPasswordPage() {
     setSuccess('');
 
     if (!email) {
-      setError('Please enter your email.');
+      toast.error('Please enter your email.', {
+        className: 'toast-error',
+      });
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
+      toast.error('Please enter a valid email address.', {
+        className: 'toast-error',
+      });
       return;
     }
 
@@ -37,13 +42,18 @@ export default function ForgetPasswordPage() {
       { email },
       {
         onSuccess: () => {
-          setSuccess(
-            `✅ A reset link was sent to ${email}. Please check your inbox.`
+          toast.success(
+            `✅ A reset link was sent to ${email}. Please check your inbox.`,
+            {
+              className: 'toast-success',
+            }
           );
           setIsLoading(false);
         },
         onError: err => {
-          setError(err.message || 'Something went wrong.');
+          toast.error(err.message || 'Something went wrong.', {
+            className: 'toast-error',
+          });
           setIsLoading(false);
         },
       }

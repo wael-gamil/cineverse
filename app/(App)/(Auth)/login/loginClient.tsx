@@ -6,11 +6,10 @@ import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon/icon';
 import { useLoginMutation } from '@/hooks/useAuthMutations';
 import { userStore } from '@/utils/userStore';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
+import toast from 'react-hot-toast';
 
-const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,31 +28,31 @@ export default function LoginPage() {
     loading: googleLoading,
     error: googleError,
   } = useGooglePopupLogin();
-  
+
   useEffect(() => {
     const error = searchParams.get('error');
     if (error === 'oauth') {
-      setErrors(prev => ({
-        ...prev,
-        general: 'Google login failed. Please try again or use manual login.',
-      }));
+      toast.error(
+        'Google login failed. Please try again or use manual login.',
+        {
+          className: 'toast-error',
+        }
+      );
     }
   }, []);
-  const { mutate: login, isPending } = useLoginMutation();
+
+  const { mutate: login } = useLoginMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Clear existing errors
     setErrors({ username: '', password: '', general: '' });
 
-    // Simple validation
     if (!username || !password) {
-      setErrors(prev => ({
-        ...prev,
-        general: 'Please enter both username and password.',
-      }));
+      toast.error('Please enter both username and password.', {
+        className: 'toast-error',
+      });
       setIsLoading(false);
       return;
     }
@@ -67,15 +66,16 @@ export default function LoginPage() {
             email: data.user.email,
           });
 
-          alert('Login successful!');
+          toast.success('Login successful!', {
+            className: 'toast-success',
+          });
 
           router.push('/');
         },
         onError: err => {
-          setErrors(prev => ({
-            ...prev,
-            general: err.message || 'Something went wrong',
-          }));
+          toast.error(err.message || 'Something went wrong', {
+            className: 'toast-error',
+          });
           setIsLoading(false);
         },
       }
@@ -89,8 +89,6 @@ export default function LoginPage() {
           <h1 className={styles.heading}>Welcome back</h1>
           <p className={styles.subheading}>Sign in to continue to CineVerse</p>
         </div>
-
-        {errors.general && <div className={styles.error}>{errors.general}</div>}
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {/* Username */}
@@ -114,9 +112,6 @@ export default function LoginPage() {
                 placeholder='username'
               />
             </div>
-            {errors.username && (
-              <div className={styles.error}>{errors.username}</div>
-            )}
           </div>
 
           {/* Password */}
@@ -126,7 +121,6 @@ export default function LoginPage() {
             </label>
             <div className={styles.inputWrapper}>
               <Icon name='lock' strokeColor='muted' width={20} height={20} />
-
               <input
                 id='password'
                 type={showPassword ? 'text' : 'password'}
@@ -154,9 +148,6 @@ export default function LoginPage() {
                 />
               </Button>
             </div>
-            {errors.password && (
-              <div className={styles.error}>{errors.password}</div>
-            )}
             <Link href='/forget-password'>Forget password?</Link>
           </div>
 
@@ -165,6 +156,7 @@ export default function LoginPage() {
             {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
         </form>
+
         <div className={styles.divider}>
           <span>or</span>
         </div>
@@ -179,6 +171,7 @@ export default function LoginPage() {
           {googleLoading ? 'Signing in...' : 'Continue with Google'}
         </Button>
         {googleError && <div className={styles.error}>{googleError}</div>}
+
         <div className={styles.divider}>
           <span>Don't have an account?</span>
         </div>

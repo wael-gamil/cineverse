@@ -9,6 +9,7 @@ import {
   useResendVerificationMutation,
 } from '@/hooks/useAuthMutations';
 import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
+import { toast } from 'react-hot-toast';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -53,7 +54,9 @@ export default function RegisterPage() {
         setResendCooldown(30);
       },
       onError: err => {
-        setResendMessage(err.message || 'Resend failed');
+        toast.error(err.message || 'Resend failed.', {
+          className: 'toast-error',
+        });
       },
     });
   };
@@ -68,33 +71,29 @@ export default function RegisterPage() {
     });
 
     if (!email || !password || !username) {
-      setErrors(prev => ({
-        ...prev,
-        general: 'Please fill in all required fields.',
-      }));
+      toast.error('Please fill in all required fields.', {
+        className: 'toast-error',
+      });
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-      setErrors(prev => ({
-        ...prev,
-        email: 'Please enter a valid email address.',
-      }));
+      toast.error('Please enter a valid email address.', {
+        className: 'toast-error',
+      });
+
       return;
     }
     if (password.length < 8) {
-      setErrors(prev => ({
-        ...prev,
-        password: 'Password must be at least 8 characters.',
-      }));
+      toast.error('Password must be at least 8 characters.', {
+        className: 'toast-error',
+      });
       return;
     }
     if (password !== confirmPassword) {
-      setErrors(prev => ({
-        ...prev,
-        confirmPassword: 'Passwords do not match.',
-      }));
+      toast.error('Passwords do not match.', { className: 'toast-error' });
+
       return;
     }
 
@@ -104,16 +103,15 @@ export default function RegisterPage() {
       { username, email, password },
       {
         onSuccess: () => {
-          setSuccess(
-            'Account created! Please check your email for verification.'
-          );
+          toast.success('Account created! Check your email to verify.', {
+            className: 'toast-success',
+          });
           setIsLoading(false);
         },
         onError: err => {
-          setErrors(prev => ({
-            ...prev,
-            general: err.message || 'Something went wrong',
-          }));
+          toast.error(err.message || 'Something went wrong.', {
+            className: 'toast-error',
+          });
           setIsLoading(false);
         },
       }

@@ -7,6 +7,7 @@ import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
 import Link from 'next/link';
 import { useResetPasswordMutation } from '@/hooks/useAuthMutations';
+import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -30,23 +31,23 @@ export default function ResetPasswordPage() {
     setErrors({ password: '', confirmPassword: '', general: '' });
 
     if (!token) {
-      setErrors(prev => ({ ...prev, general: 'Token is missing or invalid.' }));
+      toast.error('Token is missing or invalid.', {
+        className: 'toast-error',
+      });
       return;
     }
 
     if (!password || password.length < 8) {
-      setErrors(prev => ({
-        ...prev,
-        password: 'Password must be at least 8 characters.',
-      }));
+      toast.error('Password must be at least 8 characters long.', {
+        className: 'toast-error',
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrors(prev => ({
-        ...prev,
-        confirmPassword: 'Passwords do not match.',
-      }));
+      toast.error('Passwords do not match.', {
+        className: 'toast-error',
+      });
       return;
     }
 
@@ -56,14 +57,15 @@ export default function ResetPasswordPage() {
       { token, newPassword: password },
       {
         onSuccess: () => {
-          setSuccess('✅ Password reset successfully. You can now log in.');
+          toast.success('✅ Password reset successfully. You can now log in.', {
+            className: 'toast-success',
+          });
           setIsLoading(false);
         },
         onError: err => {
-          setErrors(prev => ({
-            ...prev,
-            general: err.message || 'Something went wrong.',
-          }));
+          toast.error(err.message || 'Something went wrong.', {
+            className: 'toast-error',
+          });
           setIsLoading(false);
         },
       }

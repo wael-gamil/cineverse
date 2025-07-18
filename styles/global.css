@@ -70,6 +70,47 @@ body {
   height: 100vh;
   user-select: none;
 }
+.toast-error {
+  background-color: #ffe0e0;
+  color: #a00;
+  font-weight: 500;
+  border-left: 4px solid #f00;
+  padding: 12px;
+  border-radius: 8px;
+}
+/* === Themed Toasts === */
+.toast-error {
+  background-color: var(--color-bg-60) !important ;
+  color: var(--color-white) !important ;
+  font-weight: 500 !important ;
+  border-left: 4px solid var(--color-danger) !important ;
+  padding: var(--space-md) !important ;
+  border-radius: var(--radius-md) !important ;
+  box-shadow: var(--shadow-danger-glow) !important ;
+  backdrop-filter: blur(6px) !important ;
+}
+
+.toast-success {
+  background-color: var(--color-bg-60) !important ;
+  color: var(--color-white) !important ;
+  font-weight: 500 !important ;
+  border-left: 4px solid var(--color-success) !important ;
+  padding: var(--space-md) !important ;
+  border-radius: var(--radius-md) !important ;
+  box-shadow: var(--shadow-success-glow) !important ;
+  backdrop-filter: blur(6px) !important ;
+}
+
+.toast-default {
+  background-color: var(--color-bg-60) !important ;
+  color: var(--color-white) !important ;
+  border-left: 4px solid var(--color-primary) !important ;
+  padding: var(--space-md) !important ;
+  border-radius: var(--radius-md) !important ;
+  box-shadow: var(--shadow-blue-glow) !important ;
+  backdrop-filter: blur(6px) !important ;
+}
+
 .simulate-fullscreen {
   overflow: hidden;
   height: 100dvh;
