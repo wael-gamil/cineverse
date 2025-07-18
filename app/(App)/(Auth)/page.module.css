@@ -1,11 +1,10 @@
 /* login.module.css */
 
 .wrapper {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-bg);
+  padding: var(--space-xxl);
 }
 
 .card {
