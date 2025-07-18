@@ -22,7 +22,6 @@ const fetcher = async function fetcher(
   revalidateSeconds: number = 60,
   headers: HeadersInit = { 'Content-Type': 'application/json' }
 ) {
-  console.log(`${BASE_URL}${query}`);
   const response = await fetch(`${BASE_URL}${query}`, {
     method: 'GET',
     headers,
@@ -75,7 +74,6 @@ export const getContents = async (
 
     const url = `contents/filter?type=${type}&${query.toString()}&page=${page}&size=${size}`;
     const rawData = await fetcher(url);
-    console.log('raw', rawData);
     if (!rawData) {
       return {
         content: [],
@@ -437,31 +435,7 @@ export const updateUserProfile = async (
     dateOfBirth: string;
   }
 ) => {
-  console.log(token, updatedUser);
   return await putData('users/profile', updatedUser, {
     Authorization: `Bearer ${token}`,
   });
-};
-
-export const loginWithGoogleCode = async (code: string) => {
-  const res = await fetch(`${BASE_URL}login/oauth2/code/google?code=${code}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const text = await res.text();
-  let data;
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    throw new Error('Invalid JSON response from server');
-  }
-
-  if (!res.ok) {
-    throw new Error(data.message || 'Google OAuth login failed');
-  }
-
-  return data;
 };

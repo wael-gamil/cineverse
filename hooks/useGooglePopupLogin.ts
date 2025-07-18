@@ -1,9 +1,10 @@
-// hooks/useGooglePopupLogin.ts
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function useGooglePopupLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const loginWithGoogle = () => {
     setError(null);
@@ -14,53 +15,51 @@ export function useGooglePopupLogin() {
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
 
-    const popup = window.open(
+    window.open(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}oauth2/authorization/google`,
       'Google Login',
       `width=${width},height=${height},top=${top},left=${left}`
     );
+  };
 
+  useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (
-        event.origin !== window.location.origin ||
-        event.data?.type !== 'OAUTH_CODE'
+        event.origin === window.location.origin &&
+        event.data?.type === 'OAUTH_TOKEN'
       ) {
-        return;
-      }
+        const token = event.data.token;
 
-      const code = event.data.code;
+        try {
+          const res = await fetch(`/api/auth/login/oauth2?token=${token}`, {
+            method: 'GET',
+            credentials: 'include',
+          });
 
-      try {
-        const res = await fetch(`/api/auth/login/oauth2?code=${code}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || 'Login failed');
+          const { userStore } = await import('@/utils/userStore');
+          userStore.setState({
+            username: data.user.username,
+            email: data.user.email,
+          });
+
+          router.push('/');
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
         }
-
-        const { user } = await res.json();
-
-        // Store user
-        const { userStore } = await import('@/utils/userStore');
-        userStore.setState({
-          username: user.username,
-          email: user.email,
-        });
-
-        // Done!
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-        window.removeEventListener('message', handleMessage);
       }
     };
 
     window.addEventListener('message', handleMessage);
-  };
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [router]);
 
   return { loginWithGoogle, loading, error };
 }
