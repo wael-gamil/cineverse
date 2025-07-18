@@ -28,7 +28,13 @@ export default function LoginPage() {
     loading: googleLoading,
     error: googleError,
   } = useGooglePopupLogin();
-
+  useEffect(() => {
+    if (googleError) {
+      toast.error(googleError, {
+        className: 'toast-error',
+      });
+    }
+  }, [googleError]);
   useEffect(() => {
     const error = searchParams.get('error');
     if (error === 'oauth') {
