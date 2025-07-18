@@ -25,7 +25,9 @@ export function useGooglePopupLogin() {
 
     if (!popup) {
       setLoading(false);
-      toast.error('Popup blocked. Please allow popups and try again.');
+      toast.error('Popup blocked. Please allow popups and try again.', {
+        className: 'toast-error',
+      });
       return;
     }
 
@@ -33,7 +35,9 @@ export function useGooglePopupLogin() {
       if (popup.closed) {
         clearInterval(popupIntervalRef.current!);
         setLoading(false);
-        toast.error('Login cancelled or popup closed.');
+        toast.error('Login cancelled or popup closed.', {
+          className: 'toast-error',
+        });
       }
     }, 500);
   };
@@ -62,10 +66,14 @@ export function useGooglePopupLogin() {
             email: data.user.email,
           });
 
-          toast.success('Logged in successfully');
+          toast.success('Logged in successfully', {
+            className: 'toast-success',
+          });
           router.push('/');
         } catch (err: any) {
-          toast.error(err.message || 'Google login failed');
+          toast.error(err.message || 'Google login failed', {
+            className: 'toast-error',
+          });
         } finally {
           setLoading(false);
         }
