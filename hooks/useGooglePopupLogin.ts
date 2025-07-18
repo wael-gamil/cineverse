@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 export function useGooglePopupLogin() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export function useGooglePopupLogin() {
 
     if (!popup) {
       setLoading(false);
-      setError('Popup blocked. Please allow popups and try again.');
+      toast.error('Popup blocked. Please allow popups and try again.');
       return;
     }
 
@@ -32,7 +33,7 @@ export function useGooglePopupLogin() {
       if (popup.closed) {
         clearInterval(popupIntervalRef.current!);
         setLoading(false);
-        setError('Login cancelled or popup closed.');
+        toast.error('Login cancelled or popup closed.');
       }
     }, 500);
   };
@@ -61,9 +62,10 @@ export function useGooglePopupLogin() {
             email: data.user.email,
           });
 
+          toast.success('Logged in successfully');
           router.push('/');
         } catch (err: any) {
-          setError(err.message);
+          toast.error(err.message || 'Google login failed');
         } finally {
           setLoading(false);
         }
