@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
 import LoginPage from './loginClient';
-import AuthFallback from '../authFallback';
+import AuthSkeleton from '../../../../components/ui/authSkeleton/authSkeleton';
 
 export default function LoginPageWrapper() {
   return (
-    <Suspense fallback={<AuthFallback />}>
+    <Suspense fallback={<AuthSkeleton />}>
       <LoginPage />
     </Suspense>
   );

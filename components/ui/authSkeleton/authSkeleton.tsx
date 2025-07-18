@@ -1,6 +1,6 @@
-import styles from './authFallback.module.css';
+import styles from './authSkeleton.module.css';
 
-export default function AuthFallback() {
+export default function AuthSkeleton() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
