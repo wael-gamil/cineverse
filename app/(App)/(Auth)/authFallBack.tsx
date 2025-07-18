@@ -5,10 +5,11 @@ export default function AuthFallback() {
     <div className={styles.wrapper}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <div className={styles.skeletonTitle} />
-          <div className={styles.skeletonSubtitle} />
+          <div className={styles.skeletonTitle}></div>
+          <div className={styles.skeletonSubtitle}></div>
         </div>
-        <div className={styles.skeletonButton} />
+        <div className={styles.skeletonButton}></div>
+        <div className={styles.skeletonButton}></div>
       </div>
     </div>
   );
