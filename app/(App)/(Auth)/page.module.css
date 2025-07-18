@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
   padding: var(--space-xxl);
+  flex: 1;
 }
 
 .card {
