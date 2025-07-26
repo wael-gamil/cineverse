@@ -225,7 +225,7 @@
     transform: rotate(360deg);
   }
 }
-@media (max-width: 940px) {
+@media (max-width: 1150px) {
   .navbarDesktop {
     display: none;
   }
