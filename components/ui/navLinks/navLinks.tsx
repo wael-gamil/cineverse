@@ -11,8 +11,8 @@ const NAV_LINKS = [
   { name: 'Home', path: '/' },
   { name: 'Movies', path: '/explore/movies' },
   { name: 'TV Series', path: '/explore/tv-series' },
-  // { name: 'Reviews', path: '/reviews' },
-  // { name: 'Watchlist', path: '/watchlist' },
+  { name: 'Reviews', path: '/reviews' },
+  { name: 'Watchlist', path: '/watchlist' },
 ];
 
 export default function NavLinks({
