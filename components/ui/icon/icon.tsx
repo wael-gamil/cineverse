@@ -63,7 +63,10 @@ export type IconName =
   | 'lock'
   | 'envelope'
   | 'google'
-  | 'loader';
+  | 'loader'
+  | 'edit'
+  | 'alertTriangle'
+  | 'trash';
 type IconProps = {
   name: IconName;
   className?: string;
@@ -834,6 +837,30 @@ export const Icon = ({
               />
             </path>
           </g>
+        </svg>
+      );
+    case 'edit':
+      return (
+        <svg {...svgProps}>
+          <path d='M3 17.25V21h3.75L17.81 10.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 1 0 1.41l-2.34 2.34-3.75-3.75 2.34-2.34a1 1 0 0 1 1.41 0l2.34 2.34z' />
+        </svg>
+      );
+    case 'alertTriangle':
+      return (
+        <svg {...svgProps}>
+          <polygon points='12 2 22 20 2 20' />
+          <line x1='12' y1='8' x2='12' y2='13' />
+          <circle cx='12' cy='16' r='1' />
+        </svg>
+      );
+    case 'trash':
+      return (
+        <svg {...svgProps}>
+          <polyline points='3 6 5 6 21 6'></polyline>
+          <path d='M19 6V4a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2'></path>
+          <line x1='10' y1='11' x2='10' y2='17'></line>
+          <line x1='14' y1='11' x2='14' y2='17'></line>
+          <path d='M5 6v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6'></path>
         </svg>
       );
     default:
