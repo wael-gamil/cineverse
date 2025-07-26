@@ -1,6 +1,4 @@
-import {
-  getContentDetails,
-} from '@/lib/api';
+import { getContentDetails } from '@/lib/api';
 import { Movie, normalizeContent, Series } from '@/constants/types/movie';
 import ContentHero from '@/components/shared/contentDetails/heroSection/contentHero';
 import ContentOverview from '@/components/shared/contentDetails/overviewSection/contentOverview';
@@ -39,7 +37,12 @@ export default async function MovieOrSeriesPage({
           <ContentSectionWrapper section='seasons' id={details.id} />
         </>
       )}
-      <ContentSectionWrapper section='reviews' id={details.id} />
+      <ContentSectionWrapper
+        section='reviews'
+        id={details.id}
+        contentTitle={details.title}
+        contentPoster={details.posterPath}
+      />
     </HydrationBoundary>
   );
 }

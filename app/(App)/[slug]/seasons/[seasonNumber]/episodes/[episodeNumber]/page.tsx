@@ -71,7 +71,12 @@ export default async function Episode({ params }: EpisodeProps) {
         content={normalizeContent(episodeDetails)}
         genres={details.genres}
       />
-      <ContentSectionWrapper section='reviews' id={details.id} />
+      <ContentSectionWrapper
+        section='reviews'
+        id={details.id}
+        contentTitle={details.title}
+        contentPoster={details.posterPath}
+      />
     </HydrationBoundary>
   );
 }
