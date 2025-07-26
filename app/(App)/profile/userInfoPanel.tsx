@@ -1,99 +1,101 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
-import styles from './userInfoPanel.module.css';
-import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
 import { useUpdateProfileMutation } from '@/hooks/useUpdateProfileMutation';
 import EditProfileModal from './editProfileModal';
-import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-export default function UserInfoPanel() {
+import ContentHeroSimple from '@/components/shared/contentDetails/heroSection/contentHeroSimple';
+import Button from '@/components/ui/button/button';
+import Icon from '@/components/ui/icon/icon';
+import { useUpdateProfilePictureMutation } from '@/hooks/useUpdateProfilePictureMutation';
+import { UserProfile } from '@/constants/types/movie';
+import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
+
+type UserInfoPanelProps = {
+  initialUser: UserProfile;
+};
+export default function UserInfoPanel({ initialUser }: UserInfoPanelProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { data: user, isLoading, isError } = useUserProfileQuery();
+  const { data: user = initialUser, refetch } = useUserProfileQuery();
   const updateProfile = useUpdateProfileMutation();
-  const queryClient = useQueryClient();
+  const updateProfileImage = useUpdateProfilePictureMutation();
 
-  if (isLoading) {
-    return <div className={styles.wrapper}>Loading...</div>;
-  }
-
-  if (isError || !user) {
-    return <div className={styles.wrapper}>Failed to load profile.</div>;
-  }
+  const infoCards = [
+    {
+      iconName: 'calendar' as const,
+      title: 'Joined',
+      description: new Date(user.createdAt).toLocaleString('default', {
+        month: 'long',
+        year: 'numeric',
+      }),
+    },
+    {
+      iconName: 'bookmark' as const,
+      title: 'Watchlist',
+      description: '0',
+    },
+    {
+      iconName: 'star' as const,
+      title: 'Reviews',
+      description: '0',
+    },
+  ];
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.backgroundPattern} />
-
-      <div className={styles.content}>
-        <div className={styles.avatar}>
-          <Image
-            src={
-              user.profilePicture || 'https://placehold.co/200x200?text=Avatar'
-            }
-            alt={user.name || user.username}
-            fill
-            className={styles.image}
-          />
-        </div>
-
-        <div className={styles.info}>
-          <h1 className={styles.name}>{user.name || user.username}</h1>
-          <p className={styles.username}>@{user.username}</p>
-          <p className={styles.joinDate}>
-            Member since{' '}
-            {new Date(user.createdAt).toLocaleString('default', {
-              month: 'long',
-              year: 'numeric',
-            })}
-          </p>
-          <p className={styles.bio}>{user.bio || 'No bio provided yet.'}</p>
-
-          <div className={styles.stats}>
-            <div className={styles.statItem}>
-              <span>
-                <strong>0</strong> in watchlist
-              </span>
-            </div>
-            <div className={styles.statItem}>
-              <span>
-                <strong>0</strong> reviews
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={() => setIsEditModalOpen(true)}
-          className={styles.editBtn}
-        >
-          Edit Profile
-        </button>
-      </div>
+    <>
+      <ContentHeroSimple
+        title={user.name || user.username}
+        image={
+          user.profilePicture || 'https://placehold.co/275x400?text=Avatar'
+        }
+        bio={user.bio || 'No bio provided yet.'}
+        infoCards={infoCards}
+        badges={['User']} // You can map this dynamically if needed
+        actionButton={
+          <Button
+            onClick={() => setIsEditModalOpen(true)}
+            variant='solid'
+            color='neutral'
+          >
+            <Icon name='edit' strokeColor='white' />
+            Edit Profile
+          </Button>
+        }
+      />
 
       {isEditModalOpen && (
         <EditProfileModal
           user={user}
           onClose={() => setIsEditModalOpen(false)}
-          onSave={async updatedData => {
+          onSave={async (updatedData, newImageFile) => {
             try {
+              // First update name/bio/date
               await updateProfile.mutateAsync({
                 name: updatedData.name ?? '',
                 bio: updatedData.bio ?? '',
                 dateOfBirth: updatedData.dateOfBirth ?? '',
               });
-              await queryClient.invalidateQueries({
-                queryKey: ['user-profile'],
-              });
-              queryClient.refetchQueries({
-                queryKey: ['user-profile'],
-              });
+
+              // Then upload image with toast.promise
+              if (newImageFile) {
+                await toast.promise(
+                  updateProfileImage.mutateAsync(newImageFile),
+                  {
+                    loading: 'Uploading profile image...',
+                    success: 'Profile image uploaded!',
+                    error: 'Failed to upload image.',
+                  },
+                  {
+                    className: 'toast-default',
+                  }
+                );
+              }
+              refetch();
               setIsEditModalOpen(false);
               toast.success('Profile updated successfully!', {
                 className: 'toast-success',
               });
-            } catch (err) {
+            } catch (error) {
               toast.error('Profile update failed. Please try again.', {
                 className: 'toast-error',
               });
@@ -101,6 +103,6 @@ export default function UserInfoPanel() {
           }}
         />
       )}
-    </div>
+    </>
   );
 }
