@@ -13,6 +13,10 @@ import {
   Stats,
   Credits,
   ExtendedPerson,
+  UserReview,
+  UserProfile,
+  ExtendedReview,
+  WatchlistItem,
 } from '@/constants/types/movie';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
@@ -320,6 +324,7 @@ export const getPersonContents = async (
 };
 
 const postData = async (endpoint: string, body: any, headers?: HeadersInit) => {
+  console.log('POST request to:', `${BASE_URL}${endpoint}`, body);
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: 'POST',
     headers: {
@@ -373,13 +378,13 @@ export const requestPasswordReset = async (email: string) => {
 export const resetPassword = async (token: string, newPassword: string) => {
   return await postData('auth/reset-password', { token, newPassword });
 };
-export const getUserProfile = async (token: string) => {
+export const getUserProfile = async (token: string): Promise<UserProfile> => {
   const headers = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   };
 
-  const data = await fetcher('users/profile', 60, headers);
+  const data = await fetcher('users/profile', 0, headers);
   return data;
 };
 export const getCurrentUser = async (token: string) => {
@@ -438,4 +443,327 @@ export const updateUserProfile = async (
   return await putData('users/profile', updatedUser, {
     Authorization: `Bearer ${token}`,
   });
+};
+
+export const updateUserProfilePicture = async (token: string, file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${BASE_URL}users/profile-picture`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to update picture');
+  return data;
+};
+
+export const getUserReviews = async (
+  token: string,
+  username: string,
+  page = 0,
+  size = 10
+): Promise<{
+  reviews: UserReview[];
+  totalPages: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `reviews/users/${username}?${query.toString()}`;
+    const rawData = await fetcher(url, 0, {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    const reviews: UserReview[] = rawData.content;
+    console.log('Fetched user reviews:', reviews);
+    return {
+      reviews,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching user reviews:', error);
+    return {
+      reviews: [],
+      totalPages: 0,
+      currentPage: 0,
+    };
+  }
+};
+export const getContentSummary = async (
+  contentId: number,
+  contentType: 'MOVIE' | 'SERIES' | 'SEASON' | 'EPISODE'
+): Promise<{
+  contentType: string;
+  slug: string;
+  seasonNumber: number | null;
+  episodeNumber: number | null;
+}> => {
+  try {
+    const url = `contents/${contentId}/summary?contentType=${contentType}`;
+    const rawData = await fetcher(url);
+    return rawData;
+  } catch (error) {
+    throw error;
+  }
+};
+type ReviewPayload = {
+  contentId: number;
+  rate: number;
+  title: string;
+  description: string;
+  spoiler: boolean;
+};
+export const postUserReview = async (token: string, review: ReviewPayload) => {
+  return await postData('reviews', review, {
+    Authorization: `Bearer ${token}`,
+  });
+};
+export const deleteUserReview = async (token: string, contentId: number) => {
+  console.log('Deleting review for content ID:', contentId);
+  const res = await fetch(`${BASE_URL}reviews/${contentId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : {};
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Failed to delete review');
+  }
+
+  return data;
+};
+
+type UpdateReviewPayload = {
+  reviewId: number;
+  rate: number;
+  title: string;
+  description: string;
+  spoiler: boolean;
+};
+
+export const updateUserReview = async (
+  token: string,
+  review: UpdateReviewPayload
+) => {
+  return await putData(`reviews/${review.reviewId}`, review, {
+    Authorization: `Bearer ${token}`,
+  });
+};
+
+export const reactToReview = async (
+  token: string,
+  reviewId: number,
+  type: 'LIKE' | 'DISLIKE'
+) => {
+  const res = await fetch(`${BASE_URL}reviews/${reviewId}/react?type=${type}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const text = await res.text();
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error('Invalid JSON response from server');
+  }
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Failed to react to review');
+  }
+
+  return data;
+};
+
+export const getAllReviews = async (
+  page = 0,
+  size = 10
+): Promise<{
+  reviews: ExtendedReview[];
+  totalPages: number;
+  currentPage: number;
+  totalElements: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `reviews?${query.toString()}`;
+    const rawData = await fetcher(url, 0);
+
+    const reviews: ExtendedReview[] = rawData.content;
+
+    return {
+      reviews,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+      totalElements: rawData.totalElements,
+    };
+  } catch (error) {
+    console.error('Error fetching all reviews:', error);
+    return {
+      reviews: [],
+      totalPages: 0,
+      currentPage: 0,
+      totalElements: 0,
+    };
+  }
+};
+
+export const getTopReviewers = async (
+  size = 5
+): Promise<
+  {
+    user: {
+      userId: number;
+      username: string;
+      name: string;
+      imageUrl: string;
+    };
+    reviewCount: number;
+    averageRating: number;
+  }[]
+> => {
+  try {
+    const url = `reviews/top-reviewers?size=${size}`;
+    const data = await fetcher(url);
+    return data;
+  } catch (error) {
+    console.error('Error fetching top reviewers:', error);
+    return [];
+  }
+};
+
+export const getTopReviewedContent = async (): Promise<
+  {
+    contentId: number;
+    title: string;
+    contentType: 'MOVIE' | 'SERIES';
+    averageRate: number;
+    reviewCount: number;
+  }[]
+> => {
+  try {
+    const url = `reviews/top-reviewed`;
+    const data = await fetcher(url);
+    return data;
+  } catch (error) {
+    console.error('Error fetching top reviewed content:', error);
+    return [];
+  }
+};
+
+export const getUserWatchlist = async (
+  username: string,
+  status: 'TO_WATCH' | 'WATCHED',
+  page = 0,
+  size = 10
+): Promise<{
+  items: WatchlistItem[];
+  totalPages: number;
+  totalElements: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('status', status);
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `watchlist/${username}?${query.toString()}`;
+    const rawData = await fetcher(url, 0);
+
+    return {
+      items: rawData.content,
+      totalPages: rawData.totalPages,
+      totalElements: rawData.totalElements,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching watchlist:', error);
+    return {
+      items: [],
+      totalPages: 0,
+      totalElements: 0,
+      currentPage: 0,
+    };
+  }
+};
+
+export const addToWatchlist = async (
+  token: string,
+  contentId: number
+): Promise<any> => {
+  return await postData(
+    'watchlist?contentId=' + contentId,
+    {},
+    {
+      Authorization: `Bearer ${token}`,
+    }
+  );
+};
+export const updateWatchlistStatus = async (
+  token: string,
+  watchlistId: number,
+  status: 'WATCHED' | 'TO_WATCH'
+): Promise<any> => {
+  const url = `watchlist/${watchlistId}?status=${status}`;
+
+  const res = await fetch(`${BASE_URL}${url}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : {};
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Failed to update watchlist status');
+  }
+
+  return data;
+};
+
+export const removeFromWatchlist = async (
+  token: string,
+  watchlistId: number
+): Promise<any> => {
+  const res = await fetch(`${BASE_URL}watchlist/${watchlistId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : {};
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Failed to delete watchlist item');
+  }
+
+  return data;
 };
