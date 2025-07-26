@@ -20,9 +20,11 @@ type SectionType = 'credits' | 'seasons' | 'reviews' | 'episodes';
 type ContentSectionWrapperProps = {
   section: SectionType;
   id: number;
-  seasonNumber?: number; 
+  seasonNumber?: number;
   fallbackPoster?: string;
   seasonsData?: Season[];
+  contentTitle?: string;
+  contentPoster?: string;
 };
 
 export default function ContentSectionWrapper({
@@ -31,10 +33,12 @@ export default function ContentSectionWrapper({
   seasonNumber,
   fallbackPoster,
   seasonsData,
+  contentTitle,
+  contentPoster,
 }: ContentSectionWrapperProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewOnce(ref, '300px', 0.6);
-  const { data, isLoading } = useContentSectionQuery(
+  const { data, isLoading, refetch } = useContentSectionQuery(
     section,
     id,
     isVisible,
@@ -60,7 +64,15 @@ export default function ContentSectionWrapper({
     case 'seasons':
       return <SeasonsSection data={data as Season[]} seriesId={id} />;
     case 'reviews':
-      return <ReviewsSection data={data as Review[]} />;
+      return (
+        <ReviewsSection
+          data={data as Review[]}
+          contentId={id}
+          contentTitle={contentTitle ?? ''}
+          contentPoster={contentPoster}
+          refetch={refetch}
+        />
+      );
     case 'episodes':
       return (
         <EpisodesSection
