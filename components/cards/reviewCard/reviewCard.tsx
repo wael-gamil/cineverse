@@ -6,15 +6,23 @@ import fallbackAvatar from '@/public/avatar_fallback.png';
 import Button from '../../ui/button/button';
 type ReviewCardProps = {
   review: Review;
+  onReact?: (reviewId: number, type: 'LIKE' | 'DISLIKE') => void;
 };
 
-export default function ReviewCard({ review }: ReviewCardProps) {
+export default function ReviewCard({ review, onReact }: ReviewCardProps) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
   return (
     <div className={styles.reviewCard}>
       <div className={styles.cardTop}>
         <div className={styles.avatar}>
           <Image
-            src={review.user?.path || fallbackAvatar}
+            src={review.user?.imageUrl || fallbackAvatar}
             alt={review.user?.name || 'User'}
             fill
             className='object-cover'
@@ -38,28 +46,35 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             </div>
           </div>
           <h5 className={styles.reviewTitle}>{review.title}</h5>
-          <p className={styles.reviewContent}>{review.content}</p>
+          <p className={styles.reviewContent}>{review.description}</p>
           <div className={styles.reviewFooter}>
-            <span>Was it helpful? </span>
             <Button
               padding='sm'
               variant='ghost'
               color='neutral'
               borderRadius='fullRadius'
+              onClick={e => {
+                e.stopPropagation();
+                onReact?.(review.reviewID, 'LIKE');
+              }}
             >
               <Icon name='thumbUp' strokeColor='white' />
-              <span>{review.likes || 0}</span>
+              <span>{review.likeCount || 0}</span>
             </Button>
             <Button
               padding='sm'
               variant='ghost'
               color='neutral'
               borderRadius='fullRadius'
+              onClick={e => {
+                e.stopPropagation();
+                onReact?.(review.reviewID, 'DISLIKE');
+              }}
             >
               <Icon name='thumbDown' strokeColor='white' />
-              <span>{review.dislikes || 0}</span>
+              <span>{review.dislikeCount || 0}</span>
             </Button>
-            <span className={styles.date}>{review.date}</span>
+            <span className={styles.date}>{formatDate(review.createdAt)}</span>
           </div>
         </div>
       </div>

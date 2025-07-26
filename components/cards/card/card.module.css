@@ -96,6 +96,37 @@
   opacity: 1;
 }
 
+/* === ACTION BUTTONS === */
+.actionButton {
+  position: absolute;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.cardWrapper:hover .actionButton {
+  opacity: 1;
+}
+
+.actionButton.top-left {
+  top: var(--space-md);
+  left: var(--space-md);
+}
+
+.actionButton.top-right {
+  top: var(--space-md);
+  right: calc(var(--space-md) + 44px); /* Offset to avoid info button */
+}
+
+.actionButton.bottom-left {
+  bottom: var(--space-md);
+  left: var(--space-md);
+}
+
+.actionButton.bottom-right {
+  bottom: var(--space-md);
+  right: var(--space-md);
+}
 /* === BELOW LAYOUT DETAILS === */
 .belowDetails {
   padding: var(--space-md);
