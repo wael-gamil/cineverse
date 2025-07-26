@@ -152,7 +152,7 @@ const sectionConfig: Record<
     fetchUrl: '/api/slider?section=family-picks&',
     header: {
       variant: 'block',
-      subtitle: 'Top-rated films to watch with family',
+      subtitle: 'Most-Recent films to watch with family',
       icon: <Icon name='family' strokeColor='white' width={32} height={32} />,
     },
     cardProps: {

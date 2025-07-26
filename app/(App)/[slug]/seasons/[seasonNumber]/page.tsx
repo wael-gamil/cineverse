@@ -56,7 +56,12 @@ export default async function Season({ params }: SeasonProps) {
         fallbackPoster={seasonDetails.posterPath || details.posterPath}
         seasonsData={[seasonDetails]}
       />
-      <ContentSectionWrapper section='reviews' id={details.id} />
+      <ContentSectionWrapper
+        section='reviews'
+        id={details.id}
+        contentTitle={details.title}
+        contentPoster={details.posterPath}
+      />
     </HydrationBoundary>
   );
 }

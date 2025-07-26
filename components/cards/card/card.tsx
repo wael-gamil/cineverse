@@ -19,6 +19,14 @@ type BadgeType = {
   position?: 'top-left' | 'top-right';
 };
 
+type ActionButtonType = {
+  iconName: IconName;
+  onClick: (e: React.MouseEvent) => void;
+  color?: 'primary' | 'secondary' | 'danger' | 'neutral';
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  ariaLabel?: string;
+};
+
 type LayoutType = 'overlay' | 'below' | 'wide';
 
 export type CardProps = {
@@ -36,6 +44,7 @@ export type CardProps = {
     iconName?: IconName;
     onClick: () => void;
   };
+  actionButtons?: ActionButtonType[];
   highlight?: boolean;
   className?: string;
   minWidth?: number;
@@ -54,6 +63,7 @@ export default function Card({
   layout = 'overlay',
   children,
   additionalButton,
+  actionButtons = [],
   highlight,
   className = '',
   minWidth,
@@ -77,6 +87,7 @@ export default function Card({
           : `${maxWidth}px`
         : undefined,
   };
+
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Left click only
     if (e.button === 0) {
@@ -102,6 +113,37 @@ export default function Card({
       />
     ));
 
+  const renderActionButtons = () =>
+    actionButtons.map((button, i) => {
+      // Adjust position if info button exists and action button is in same area
+      let positionClass = button.position || 'top-right';
+      if (additionalButton && button.position === 'top-right') {
+        // If there's an info button in top-right, offset the action button
+        positionClass = 'top-right';
+      }
+
+      return (
+        <div
+          key={i}
+          className={`${styles.actionButton} ${styles[positionClass]}`}
+        >
+          <Button
+            borderRadius='fullRadius'
+            variant='ghost'
+            color={'neutral'}
+            ariaLabel={button.ariaLabel || 'action'}
+            padding='none'
+            onClick={button.onClick}
+          >
+            <Icon
+              name={button.iconName}
+              strokeColor={button.color === 'danger' ? 'secondary' : 'white'}
+            />
+          </Button>
+        </div>
+      );
+    });
+
   const renderImage = () => (
     <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
       <Image
@@ -113,21 +155,23 @@ export default function Card({
         sizes='(max-width: 768px) 100vw, 400px'
       />
       {renderBadges()}
-      <div className={styles.infoButtonWrapper}>
-        <Button
-          borderRadius='fullRadius'
-          variant='ghost'
-          color='neutral'
-          ariaLabel='show more info'
-          padding='none'
-          onClick={additionalButton?.onClick}
-        >
-          <Icon
-            name={additionalButton?.iconName || 'info'}
-            strokeColor='white'
-          />
-        </Button>
-      </div>
+      {additionalButton && (
+        <div className={styles.infoButtonWrapper}>
+          <Button
+            borderRadius='fullRadius'
+            variant='ghost'
+            color='neutral'
+            ariaLabel='show more info'
+            padding='none'
+            onClick={additionalButton?.onClick}
+          >
+            <Icon
+              name={additionalButton?.iconName || 'info'}
+              strokeColor='white'
+            />
+          </Button>
+        </div>
+      )}
     </div>
   );
 
@@ -141,6 +185,7 @@ export default function Card({
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         </div>
         <div className={styles.hoverOverlay}>
+          {renderActionButtons()}
           <div className={styles.infoButtonWrapper}>
             <Button
               borderRadius='fullRadius'

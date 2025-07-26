@@ -66,6 +66,16 @@ export type ExtendedPerson = Person & {
   knownForDepartment: string;
   alsoKnownAs: string[];
 };
+export type UserProfile = {
+  id: number;
+  username: string;
+  email: string;
+  name: string;
+  bio: string;
+  dateOfBirth: string;
+  profilePicture: string;
+  createdAt: string;
+};
 export type Trailer = {
   trailer: string;
 };
@@ -73,21 +83,65 @@ export type Provider = {
   name: string;
   logo: string;
 };
-export type Review = {
-  id: number;
+// Shared review base
+export type BaseReview = {
+  reviewID: number;
+  rate: number;
+  title: string;
+  description: string;
+  spoiler: boolean;
+  likeCount: number;
+  dislikeCount: number;
+  userReaction: null | 'like' | 'dislike';
+  createdAt: string;
+};
+
+// If user info is needed (like for public reviews display)
+export type ReviewWithUser = BaseReview & {
   user: {
     id: number;
     name: string;
-    path: string;
+    imageUrl: string;
   };
-  date: string;
-  rate: number;
-  title: string;
-  content: string;
-  likes: number;
-  dislikes: number;
-  spoiler: boolean;
 };
+
+// If content info is needed (like for profile page)
+export type ReviewWithContent = Omit<BaseReview, 'reviewID'> & {
+  reviewId: number;
+  contentId: number;
+  contentType: 'MOVIE' | 'SERIES' | 'SEASON' | 'EPISODE';
+  contentTitle: string;
+  contentPosterPath: string;
+};
+export type ExtendedReview = Omit<BaseReview, 'reviewID'> & {
+  user: {
+    id: number;
+    name: string;
+    imageUrl: string;
+    username: string;
+  };
+  reviewId: number;
+  contentId: number;
+  contentType: 'MOVIE' | 'SERIES' | 'SEASON' | 'EPISODE';
+  contentTitle: string;
+  contentPosterPath: string;
+};
+export type Review = ReviewWithUser;
+export type UserReview = ReviewWithContent;
+
+export type WatchlistItem = {
+  id: number;
+  contentId: number;
+  title: string;
+  overview: string;
+  contentPoster: string;
+  contentType: 'MOVIE' | 'SERIES';
+  imdbRate: number;
+  watchingStatus: 'TO_WATCH' | 'WATCHED';
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Stats = {
   totalReviews: number;
   watchlistCount: number;
@@ -222,7 +276,7 @@ export function normalizeContent(
       description: data.overview,
       releaseDate: data.releaseDate,
       imageUrl: data.posterPath,
-      backgroundUrl: '', 
+      backgroundUrl: '',
       imdbRate: data.imdbRate,
       numberOfEpisodes: data.numberOfEpisodes,
     };

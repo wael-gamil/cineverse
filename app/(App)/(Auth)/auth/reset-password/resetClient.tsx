@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
       { token, newPassword: password },
       {
         onSuccess: () => {
-          toast.success('✅ Password reset successfully. You can now log in.', {
+          toast.success('Password reset successfully. You can now log in.', {
             className: 'toast-success',
           });
           setIsLoading(false);

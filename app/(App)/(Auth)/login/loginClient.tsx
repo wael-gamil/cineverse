@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon/icon';
 import { useLoginMutation } from '@/hooks/useAuthMutations';
-import { userStore } from '@/utils/userStore';
+import { setUserWithExpiry } from '@/utils/userStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
 import toast from 'react-hot-toast';
@@ -67,10 +67,7 @@ export default function LoginPage() {
       { username, password },
       {
         onSuccess: data => {
-          userStore.setState({
-            username: data.user.username,
-            email: data.user.email,
-          });
+          setUserWithExpiry(data.user.username, data.user.email);
 
           toast.success('Login successful!', {
             className: 'toast-success',

@@ -8,7 +8,8 @@ import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import { useAddToWatchlistMutation } from '@/hooks/useAddToWatchlistMutation';
+import toast from 'react-hot-toast';
 type Props = {
   content: NormalizedContent;
   runtime: string;
@@ -41,6 +42,32 @@ export default function HeroMetadata({
   slug,
 }: Props) {
   const genreList = content.genres || genres || [];
+  const { mutate: addToWatchlist, isPending } = useAddToWatchlistMutation();
+  const handleAddToWatchlist = () => {
+    const addPromise = new Promise<void>((resolve, reject) => {
+      console.log('id', content.id);
+      addToWatchlist(content.id, {
+        onSuccess: () => {
+          resolve();
+        },
+        onError: (err: any) => {
+          reject(err);
+        },
+      });
+    });
+
+    toast.promise(
+      addPromise,
+      {
+        loading: 'Adding to watchlist...',
+        success: 'Added to watchlist!',
+        error: 'Failed to add to watchlist.',
+      },
+      {
+        className: 'toast-default',
+      }
+    );
+  };
 
   return (
     <div className={`${styles.rightSection} ${className}`}>
@@ -143,9 +170,13 @@ export default function HeroMetadata({
             Play Trailer
           </Button>
         )}
-        <Button color='neutral'>
+        <Button
+          color='neutral'
+          disabled={isPending}
+          onClick={handleAddToWatchlist}
+        >
           <Icon name='bookmark' strokeColor='white' />
-          Add to Watchlist
+          {isPending ? 'Adding...' : 'Add to Watchlist'}
         </Button>
         <Button color='neutral' onClick={onShare}>
           <Icon name='share' strokeColor='white' />

@@ -62,7 +62,9 @@ export default function RegisterPage() {
     setResendMessage('');
     resendVerification(username, {
       onSuccess: () => {
-        setResendMessage('Verification email resent successfully.');
+        toast.success('Verification email resent successfully.', {
+          className: 'toast-success',
+        });
         setResendCooldown(30);
       },
       onError: err => {
@@ -118,6 +120,9 @@ export default function RegisterPage() {
           toast.success('Account created! Check your email to verify.', {
             className: 'toast-success',
           });
+          setSuccess(
+            'Account created successfully! Please check your email to verify your account.'
+          );
           setIsLoading(false);
         },
         onError: err => {

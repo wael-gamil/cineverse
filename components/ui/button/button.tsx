@@ -5,7 +5,7 @@ type ButtonProps = {
   variant?: 'solid' | 'outline' | 'ghost';
   color?: 'primary' | 'neutral' | 'danger';
   ariaLabel?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   hide?: boolean;
   type?: 'button' | 'submit' | 'reset';

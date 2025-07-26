@@ -1,7 +1,20 @@
-export default function Reviews() {
+import styles from './page.module.css';
+import { getAllReviewsSSR } from '@/lib/api';
+import TopReviewersSidebar from './topReviewersSidebar';
+import ReviewsClientWrapper from './reviewsClientWrapper';
+
+export default async function Reviews() {
+  const { reviews } = await getAllReviewsSSR(0, 20);
+
   return (
-    <div>
-      <h1>Reviews</h1>
+    <div className={styles.pageContainer}>
+      <div className={styles.mainContent}>
+        <h1 className={styles.pageTitle}>Reviews</h1>
+        <div className={styles.reviewsList}>
+          <ReviewsClientWrapper initialReviews={reviews || []} />
+        </div>
+      </div>
+      <TopReviewersSidebar />
     </div>
   );
 }

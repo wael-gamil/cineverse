@@ -1,7 +1,11 @@
-export default function Watchlist() {
+import { Suspense } from 'react';
+import WatchlistClient from './watchlistClient'; // move existing logic here
+import WatchlistSkeleton from '@/components/shared/watchlist/watchListSkeleton';
+
+export default function WatchlistPageWrapper() {
   return (
-    <div>
-      <h1>Watchlist</h1>
-    </div>
+    <Suspense fallback={<WatchlistSkeleton />}>
+      <WatchlistClient />
+    </Suspense>
   );
 }

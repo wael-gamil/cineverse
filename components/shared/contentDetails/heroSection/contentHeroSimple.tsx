@@ -29,6 +29,7 @@ export type ContentHeroSimpleProps = {
   };
   alsoKnownAs?: string[];
   bio?: string;
+  actionButton?: React.ReactNode;
 };
 
 export default function ContentHeroSimple({
@@ -39,6 +40,7 @@ export default function ContentHeroSimple({
   socialLinks = {},
   alsoKnownAs = [],
   bio,
+  actionButton,
 }: ContentHeroSimpleProps) {
   const [showFullBio, setShowFullBio] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -196,7 +198,6 @@ export default function ContentHeroSimple({
             </div>
           ))}
         </div>
-
         {alsoKnownAs.length > 0 && (
           <div className={styles.akaSection}>
             <span className={styles.akaTitle}>Also Known As</span>
@@ -206,6 +207,9 @@ export default function ContentHeroSimple({
               ))}
             </div>
           </div>
+        )}
+        {actionButton && (
+          <div className={styles.actionWrapper}>{actionButton}</div>
         )}
       </div>
     </section>
