@@ -76,6 +76,8 @@
   flex-direction: column;
   gap: var(--space-md);
   justify-content: flex-start;
+  flex: 1;
+  position: relative;
 }
 
 .contentHeader {
@@ -253,7 +255,10 @@
 .readMoreBtn:hover {
   color: var(--color-primary-80);
 }
-
+.actionWrapper {
+  position: absolute;
+  right: 0;
+}
 /* Responsive fix */
 @media (max-width: 768px) {
   .hero {
