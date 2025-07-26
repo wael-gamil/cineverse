@@ -96,7 +96,7 @@ const sortMap: Record<SectionKey, SortMapValue> = {
   },
 
   'family-picks': {
-    sortBy: 'topRated',
+    sortBy: 'mostRecent',
     year: '2000',
     lang: 'en',
     genres: {
