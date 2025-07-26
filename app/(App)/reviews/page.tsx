@@ -1,11 +1,10 @@
 import styles from './page.module.css';
-import { getAllReviews } from '@/lib/api';
-import type { ExtendedReview } from '@/constants/types/movie';
+import { getAllReviewsSSR } from '@/lib/api';
 import TopReviewersSidebar from './topReviewersSidebar';
 import ReviewsClientWrapper from './reviewsClientWrapper';
 
 export default async function Reviews() {
-  const { reviews } = await getAllReviews(0, 20);
+  const { reviews } = await getAllReviewsSSR(0, 20);
 
   return (
     <div className={styles.pageContainer}>

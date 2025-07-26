@@ -593,7 +593,7 @@ export const reactToReview = async (
   return data;
 };
 
-export const getAllReviews = async (
+export const getAllReviewsSSR = async (
   page = 0,
   size = 10
 ): Promise<{
@@ -608,18 +608,50 @@ export const getAllReviews = async (
     query.set('size', String(size));
 
     const url = `reviews?${query.toString()}`;
-    const rawData = await fetcher(url, 0);
-
-    const reviews: ExtendedReview[] = rawData.content;
+    const rawData = await fetcher(url); 
 
     return {
-      reviews,
+      reviews: rawData.content,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
       totalElements: rawData.totalElements,
     };
   } catch (error) {
-    console.error('Error fetching all reviews:', error);
+    console.error('Error fetching all reviews (SSR):', error);
+    return {
+      reviews: [],
+      totalPages: 0,
+      currentPage: 0,
+      totalElements: 0,
+    };
+  }
+};
+
+export const getAllReviewsClient = async (
+  page = 0,
+  size = 10
+): Promise<{
+  reviews: ExtendedReview[];
+  totalPages: number;
+  currentPage: number;
+  totalElements: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `reviews?${query.toString()}`;
+    const rawData = await fetcher(url, 0); 
+
+    return {
+      reviews: rawData.content,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+      totalElements: rawData.totalElements,
+    };
+  } catch (error) {
+    console.error('Error fetching all reviews (Client):', error);
     return {
       reviews: [],
       totalPages: 0,

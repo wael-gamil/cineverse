@@ -1,5 +1,5 @@
 // app/api/reviews/all/route.ts
-import { getAllReviews } from '@/lib/api';
+import { getAllReviewsClient } from '@/lib/api';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const size = Number(searchParams.get('size')) || 10;
 
   try {
-    const result = await getAllReviews(page, size);
+    const result = await getAllReviewsClient(page, size);
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(
