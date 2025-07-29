@@ -1,7 +1,7 @@
-import UserInfoPanel from './userInfoPanel';
+import UserInfoPanel from '@/components/pages/profile/userInfoPanel';
 import styles from './profile.module.css';
 import { getQueryClient } from '@/lib/getQueryClient';
-import TabsWrapper from './tabsWrapper';
+import TabsWrapper from '@/components/pages/profile/tabsWrapper';
 import { getUserProfile } from '@/lib/api';
 import { cookies } from 'next/headers';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';

@@ -10,6 +10,10 @@
   min-width: 0;
 }
 
+.header {
+  margin-bottom: var(--space-xxl);
+}
+
 .pageTitle {
   font-size: var(--font-size-xxl);
   font-weight: 700;
@@ -26,6 +30,10 @@
 .emptyMessage {
   color: var(--color-muted);
   font-size: var(--font-size-base);
+  text-align: center;
+  padding: var(--space-xxl);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
 }
 
 @media (max-width: 1024px) {
@@ -40,5 +48,9 @@
   .pageContainer {
     padding: var(--space-lg);
     gap: var(--space-lg);
+  }
+
+  .header {
+    margin-bottom: var(--space-xl);
   }
 }

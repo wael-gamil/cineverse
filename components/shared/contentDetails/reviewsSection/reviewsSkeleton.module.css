@@ -7,7 +7,39 @@
   overflow: hidden;
 }
 
-.skeletonHeading::after {
+.skeletonSubheading {
+  width: 120px;
+  height: 18px;
+  background-color: var(--color-surface-60);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--space-xs);
+}
+
+.skeletonButton {
+  width: 160px;
+  height: 40px;
+  background-color: var(--color-surface-60);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeletonSectionTitle {
+  width: 180px;
+  height: 24px;
+  background-color: var(--color-surface-60);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+}
+
+.skeletonHeading::after,
+.skeletonSubheading::after,
+.skeletonButton::after,
+.skeletonSectionTitle::after {
   content: '';
   position: absolute;
   inset: 0;

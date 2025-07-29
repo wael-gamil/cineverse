@@ -43,6 +43,8 @@ export type IconName =
   | 'tv-alt'
   | 'globe'
   | 'starFilled'
+  | 'starEmpty'
+  | 'starHalf'
   | 'PlusCircle'
   | 'thumbUp'
   | 'thumbDown'
@@ -497,6 +499,40 @@ export const Icon = ({
             points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'
             fill='currentColor'
             stroke='none'
+          />
+        </svg>
+      );
+    case 'starEmpty':
+      return (
+        <svg {...svgProps}>
+          <polygon
+            points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+          />
+        </svg>
+      );
+    case 'starHalf':
+      return (
+        <svg {...svgProps}>
+          <defs>
+            <mask id='half-star-mask'>
+              <rect x='0' y='0' width='12' height='24' fill='white' />
+              <rect x='12' y='0' width='12' height='24' fill='black' />
+            </mask>
+          </defs>
+          <polygon
+            points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'
+            fill='currentColor'
+            stroke='none'
+            mask='url(#half-star-mask)'
+          />
+          <polygon
+            points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
           />
         </svg>
       );

@@ -34,8 +34,8 @@ export default function heroSectionWrapper({
   );
 
   const imageSrc =
-    typeof person.path === 'string'
-      ? person.path
+    typeof person.imageUrl === 'string'
+      ? person.imageUrl
       : (AvatarFallback as { src: string }).src ?? '';
 
   const infoCards = [];

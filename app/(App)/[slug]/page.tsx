@@ -41,7 +41,7 @@ export default async function MovieOrSeriesPage({
         section='reviews'
         id={details.id}
         contentTitle={details.title}
-        contentPoster={details.posterPath}
+        contentPoster={details.posterUrl}
       />
     </HydrationBoundary>
   );

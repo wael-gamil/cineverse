@@ -94,7 +94,7 @@ export const getContents = async (
       releaseDate: content.releaseDate,
       imdbRate: content.imdbRate,
       genres: content.genres,
-      posterUrl: content.posterPath,
+      posterUrl: content.posterUrl,
       slug: content.slug,
     }));
     return {
@@ -142,7 +142,7 @@ export const getSearchResults = async (
       releaseDate: movie.releaseDate,
       imdbRate: movie.imdbRate,
       genres: movie.genres,
-      posterUrl: movie.posterPath,
+      posterUrl: movie.posterUrl,
       slug: movie.slug,
       type: movie.type,
     }));
@@ -252,6 +252,27 @@ export const getContentReviews = async (id: number): Promise<Review[]> => {
     throw error;
   }
 };
+
+export const getContentReviewsClient = async (
+  id: number,
+  token?: string
+): Promise<Review[]> => {
+  try {
+    const url = `reviews/contents/${id}`;
+    console.log('Fetching content reviews from:', url);
+    // Build headers with optional Authorization
+    const headers: HeadersInit = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const rawData = await fetcher(url, 0, headers);
+    return rawData.content as Review[];
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getContentCredits = async (id: number): Promise<Credits> => {
   try {
     const rawData = await fetcher(`contents/${id}/credits`);
@@ -304,7 +325,7 @@ export const getPersonContents = async (
       releaseDate: item.releaseDate,
       imdbRate: item.imdbRate,
       genres: item.genres,
-      posterUrl: item.posterPath,
+      posterUrl: item.posterUrl,
       slug: item.slug,
     }));
 
@@ -528,9 +549,11 @@ export const postUserReview = async (token: string, review: ReviewPayload) => {
     Authorization: `Bearer ${token}`,
   });
 };
-export const deleteUserReview = async (token: string, contentId: number) => {
-  console.log('Deleting review for content ID:', contentId);
-  const res = await fetch(`${BASE_URL}reviews/${contentId}`, {
+export const deleteUserReview = async (token: string, reviewId: number) => {
+  console.log('Deleting review with ID:', reviewId);
+
+  // Try the standard delete endpoint first
+  const res = await fetch(`${BASE_URL}reviews/${reviewId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -542,6 +565,12 @@ export const deleteUserReview = async (token: string, contentId: number) => {
   const data = text ? JSON.parse(text) : {};
 
   if (!res.ok) {
+    // If it's a foreign key constraint error, provide a more helpful message
+    if (data.message && data.message.includes('foreign key constraint')) {
+      throw new Error(
+        'Cannot delete review: This review has reactions that must be removed first. Please contact support if this issue persists.'
+      );
+    }
     throw new Error(data.message || 'Failed to delete review');
   }
 
@@ -568,7 +597,7 @@ export const updateUserReview = async (
 export const reactToReview = async (
   token: string,
   reviewId: number,
-  type: 'LIKE' | 'DISLIKE'
+  type: 'LIKE' | 'DISLIKE' | 'UNDO'
 ) => {
   const res = await fetch(`${BASE_URL}reviews/${reviewId}/react?type=${type}`, {
     method: 'PUT',
@@ -595,7 +624,9 @@ export const reactToReview = async (
 
 export const getAllReviewsSSR = async (
   page = 0,
-  size = 10
+  size = 10,
+  sortBy = 'recent',
+  token?: string
 ): Promise<{
   reviews: ExtendedReview[];
   totalPages: number;
@@ -606,10 +637,21 @@ export const getAllReviewsSSR = async (
     const query = new URLSearchParams();
     query.set('page', String(page));
     query.set('size', String(size));
+    query.set('sortBy', sortBy);
 
     const url = `reviews?${query.toString()}`;
-    const rawData = await fetcher(url); 
 
+    // Create headers with authorization if token is provided
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const rawData = await fetcher(url, 60, headers);
+    console.log('Fetched all reviews (SSR):', rawData);
     return {
       reviews: rawData.content,
       totalPages: rawData.totalPages,
@@ -629,7 +671,9 @@ export const getAllReviewsSSR = async (
 
 export const getAllReviewsClient = async (
   page = 0,
-  size = 10
+  size = 10,
+  sortBy = 'recent',
+  token?: string
 ): Promise<{
   reviews: ExtendedReview[];
   totalPages: number;
@@ -640,9 +684,17 @@ export const getAllReviewsClient = async (
     const query = new URLSearchParams();
     query.set('page', String(page));
     query.set('size', String(size));
+    query.set('sortBy', sortBy);
 
     const url = `reviews?${query.toString()}`;
-    const rawData = await fetcher(url, 0); 
+
+    // Build headers with optional Authorization
+    const headers: HeadersInit = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const rawData = await fetcher(url, 0, headers);
 
     return {
       reviews: rawData.content,
@@ -753,6 +805,35 @@ export const addToWatchlist = async (
     }
   );
 };
+
+export const checkWatchlistExists = async (
+  token: string,
+  contentId: number
+): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}watchlist/exists?contentId=${contentId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to check watchlist existence');
+    }
+
+    const result = await response.json();
+    return result.data; // boolean value
+  } catch (error) {
+    console.error('Error checking watchlist existence:', error);
+    return false;
+  }
+};
+
 export const updateWatchlistStatus = async (
   token: string,
   watchlistId: number,
@@ -790,12 +871,30 @@ export const removeFromWatchlist = async (
     },
   });
 
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
-
   if (!res.ok) {
-    throw new Error(data.message || 'Failed to delete watchlist item');
+    const errorData = await res.json();
+    throw new Error(errorData.message || 'Failed to remove from watchlist');
   }
 
-  return data;
+  return await res.json();
+};
+
+export const removeFromWatchlistByContentId = async (
+  token: string,
+  contentId: number
+): Promise<any> => {
+  const res = await fetch(`${BASE_URL}watchlist/content/${contentId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || 'Failed to remove from watchlist');
+  }
+
+  return await res.json();
 };

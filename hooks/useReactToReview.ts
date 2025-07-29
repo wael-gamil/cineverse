@@ -7,7 +7,7 @@ export const useReactToReview = () => {
       type,
     }: {
       reviewId: number;
-      type: 'LIKE' | 'DISLIKE';
+      type: 'LIKE' | 'DISLIKE' | 'UNDO';
     }) => {
       const res = await fetch('/api/reviews/react', {
         method: 'PUT',

@@ -1,7 +1,7 @@
 'use client';
 import ReviewsTab from '@/components/pages/profile/reviewsTab/reviewsTab';
 import ProfileTabs from './profileTabs';
-import styles from './profile.module.css';
+import styles from '../../../app/(App)/profile/profile.module.css';
 import { useState } from 'react';
 import WatchListTab from '@/components/pages/profile/watchlistTab/watchListTab';
 export default function TabsWrapper() {
@@ -12,12 +12,7 @@ export default function TabsWrapper() {
     <div className={styles.tabsWrapper}>
       <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'reviews' && <ReviewsTab />}
-
       {activeTab === 'watchlist' && <WatchListTab />}
-      {/* <div className={styles.tabContent}>
-          {activeTab === 'reviews' && <ReviewsTab />}
-          {activeTab === 'watchlist' && <WatchlistTab />}
-        </div> */}
     </div>
   );
 }

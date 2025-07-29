@@ -13,9 +13,21 @@
 .options {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: var(--space-sm);
-  padding: var(--space-xs);
-  white-space: nowrap;
+  gap: var(--space-xs);
+  min-width: 200px;
+}
+
+.panelTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-white-20);
+}
+
+@media (max-width: 768px) {
+  .options {
+    min-width: 180px;
+  }
 }

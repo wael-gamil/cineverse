@@ -1,35 +1,28 @@
 import { Review } from '@/constants/types/movie';
-export async function GET(req: Request) {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+import { getContentReviewsClient } from '@/lib/api';
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
 
   if (!id) return new Response('Missing id', { status: 400 });
 
   try {
-    const url = `${BASE_URL}reviews/contents/${id}`;
-    const res = await fetch(url);
-    if (!res.ok) {
-      return new Response(`Failed to fetch reviews from upstream ${url}`, {
-        status: res.status,
-      });
-    }
-    const json = await res.json();
-    if (!json.success || !json.data) {
-      return new Response('Unexpected response format from upstream', {
-        status: 502,
-      });
-    }
-    const data: Review[] = json.data.content;
+    // Extract token from cookies for authentication
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
 
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    // Use Client function with optional token for userReaction field
+    const data: Review[] = await getContentReviewsClient(Number(id), token);
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Proxy error:', error);
-    return new Response('Internal Server Error in proxy', { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch content reviews' },
+      { status: 500 }
+    );
   }
 }

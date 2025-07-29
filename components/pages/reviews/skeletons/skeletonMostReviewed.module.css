@@ -1,0 +1,70 @@
+/* Base skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Trending Item Layout */
+.trendingItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.badge {
+  width: 40px;
+  height: 24px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.trendingContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  height: 20px;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-xs);
+  width: 85%;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-top: var(--space-xs);
+}
+
+.contentType {
+  width: 50px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.divider {
+  color: var(--color-white-20);
+  font-size: var(--font-size-sm);
+}
+
+.stars {
+  width: 80px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}

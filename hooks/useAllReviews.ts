@@ -9,11 +9,18 @@ type AllReviewsResponse = {
   totalElements: number;
 };
 
-export function useAllReviews(page = 0, size = 10, enabled = true) {
+export function useAllReviews(
+  page = 0,
+  size = 10,
+  sortBy = 'recent',
+  enabled = true
+) {
   return useQuery<AllReviewsResponse>({
-    queryKey: ['all-reviews', page, size],
+    queryKey: ['all-reviews', page, size, sortBy],
     queryFn: async () => {
-      const res = await fetch(`/api/reviews/all?page=${page}&size=${size}`);
+      const res = await fetch(
+        `/api/reviews/all?page=${page}&size=${size}&sortBy=${sortBy}`
+      );
       if (!res.ok) {
         throw new Error('Failed to fetch reviews');
       }

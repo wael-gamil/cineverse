@@ -2,6 +2,10 @@
 
 import { useTopReviewersQuery } from '@/hooks/useTopReviewersQuery';
 import { useTopReviewedContentQuery } from '@/hooks/useTopReviewedContentQuery';
+import StarRating from '@/components/ui/starRating/starRating';
+import Badge from '@/components/ui/badge/badge';
+import SkeletonMostReviewed from './skeletons/skeletonMostReviewed';
+import SkeletonTopReviewers from './skeletons/skeletonTopReviewers';
 import styles from './topReviewersSidebar.module.css';
 
 export default function TopReviewersSidebar() {
@@ -12,23 +16,25 @@ export default function TopReviewersSidebar() {
 
   return (
     <div className={styles.sidebar}>
-      {/* Most Liked This Week */}
+      {/* Most Reviewed */}
       <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Most Liked This Week</h3>
+        <h3 className={styles.sectionTitle}>Most Reviewed</h3>
         <div className={styles.sectionContent}>
           {loadingTrending ? (
-            <span className={styles.loadingText}>Loading...</span>
+            <SkeletonMostReviewed />
           ) : trendingReviews.length > 0 ? (
             trendingReviews.slice(0, 5).map((review, idx) => (
               <div
                 key={review.contentId || idx}
                 className={styles.trendingItem}
               >
-                <div className={styles.reviewCount}>
-                  <span className={styles.countNumber}>
-                    {review.reviewCount}
-                  </span>
-                </div>
+                <Badge
+                  number={review.reviewCount}
+                  backgroundColor='bg-white'
+                  numberColor='color-white'
+                  size='size-md'
+                  borderRadius='border-md'
+                />
                 <div className={styles.trendingContent}>
                   <h4 className={styles.trendingTitle}>{review.title}</h4>
                   <div className={styles.trendingMeta}>
@@ -36,18 +42,11 @@ export default function TopReviewersSidebar() {
                       {review.contentType}
                     </span>
                     <span>•</span>
-                    <div className={styles.stars}>
-                      {Array.from({
-                        length: Math.floor(review.averageRate),
-                      }).map((_, i) => (
-                        <span key={i} className={styles.star}>
-                          ★
-                        </span>
-                      ))}
-                      {review.averageRate % 1 !== 0 && (
-                        <span className={styles.star}>½</span>
-                      )}
-                    </div>
+                    <StarRating
+                      rating={review.averageRate}
+                      size='sm'
+                      className={styles.starsContainer}
+                    />
                   </div>
                 </div>
               </div>
@@ -63,7 +62,7 @@ export default function TopReviewersSidebar() {
         <h3 className={styles.sectionTitle}>Top Reviewers</h3>
         <div className={styles.sectionContent}>
           {loadingReviewers ? (
-            <span className={styles.loadingText}>Loading...</span>
+            <SkeletonTopReviewers />
           ) : topReviewers.length > 0 ? (
             topReviewers.map((reviewer, idx) => (
               <div
@@ -85,10 +84,11 @@ export default function TopReviewersSidebar() {
                     <span className={styles.reviewCount}>
                       {reviewer.reviewCount} reviews
                     </span>
-                    <div className={styles.rating}>
-                      <span className={styles.star}>★</span>
-                      <span>{reviewer.averageRating.toFixed(1)}</span>
-                    </div>
+                    <StarRating
+                      rating={reviewer.averageRating}
+                      size='sm'
+                      className={styles.starsContainer}
+                    />
                   </div>
                 </div>
               </div>

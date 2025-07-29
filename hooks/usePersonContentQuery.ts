@@ -1,12 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Content } from '@/constants/types/movie';
 
-type RawContent = Omit<Content, 'posterUrl'> & {
-  posterPath: string;
-};
-
 type PersonContentResponse = {
-  content: RawContent[];
+  content: Content[];
   totalPages: number;
 };
 
@@ -35,15 +31,7 @@ export function usePersonContentQuery(
 
       const raw: PersonContentResponse = await res.json();
 
-      const content: Content[] = raw.content.map(item => ({
-        ...item,
-        posterUrl: item.posterPath,
-      }));
-
-      return {
-        ...raw,
-        content,
-      };
+      return raw;
     },
     retry: 2,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 5000),

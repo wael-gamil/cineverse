@@ -3,17 +3,37 @@
 import Image from 'next/image';
 import type React from 'react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './extendedReviewCard.module.css';
 import { Icon } from '../../ui/icon/icon';
 import Button from '../../ui/button/button';
-import type { ExtendedReview } from '@/constants/types/movie';
+import StarRating from '../../ui/starRating/starRating';
+import Badge from '../../ui/badge/badge';
+import type { ExtendedReview, UserReview } from '@/constants/types/movie';
+import fallbackImage from '@/public/avatar_fallback.png';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type ExtendedReviewCardProps = {
-  review: ExtendedReview;
+  review: ExtendedReview | UserReview;
   onReact?: (reviewId: number, type: 'LIKE' | 'DISLIKE') => void;
   onUserClick?: (username: string) => void;
   onContentClick?: (contentId: number, contentType: string) => void;
+  onEdit?: (
+    reviewId: number,
+    updatedReview: {
+      title: string;
+      description: string;
+      rate: number;
+      spoiler: boolean;
+    }
+  ) => void;
+  onDelete?: (reviewId: number) => void;
   showFullDescription?: boolean;
+  showUserInfo?: boolean;
+  showContentInfo?: boolean;
+  className?: string;
+  onClick?: () => void;
+  href?: string;
 };
 
 export default function ExtendedReviewCard({
@@ -21,11 +41,28 @@ export default function ExtendedReviewCard({
   onReact,
   onUserClick,
   onContentClick,
+  onEdit,
+  onDelete,
   showFullDescription = false,
+  showUserInfo = true,
+  showContentInfo = true,
+  className = '',
+  onClick,
+  href,
 }: ExtendedReviewCardProps) {
+  const router = useRouter();
   const [hasAvatarError, setHasAvatarError] = useState(false);
   const [hasPosterError, setHasPosterError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(showFullDescription);
+  const [spoilerRevealed, setSpoilerRevealed] = useState(false);
+  const isMobile = useResponsiveLayout();
+
+  // Type guard to check if review has user info
+  const hasUserInfo = (
+    review: ExtendedReview | UserReview
+  ): review is ExtendedReview => {
+    return 'user' in review;
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -35,25 +72,15 @@ export default function ExtendedReviewCard({
     });
   };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }).map((_, i) => (
-      <Icon
-        key={i}
-        name='starFilled'
-        className={rating >= (i + 1) * 2 ? styles.starFilled : styles.starEmpty}
-      />
-    ));
-  };
-
   const avatarToUse =
-    hasAvatarError || !review.user?.imageUrl
-      ? '/avatar_fallback.png'
+    hasAvatarError || !hasUserInfo(review) || !review.user?.imageUrl
+      ? fallbackImage
       : review.user.imageUrl;
 
   const posterToUse =
-    hasPosterError || !review.contentPosterPath
-      ? '/poster_fallback.png'
-      : review.contentPosterPath;
+    hasPosterError || !review.contentPosterUrl
+      ? fallbackImage
+      : review.contentPosterUrl;
 
   const shouldShowReadMore =
     review.description.length > 300 && !showFullDescription;
@@ -63,9 +90,18 @@ export default function ExtendedReviewCard({
       ? review.description.slice(0, 300) + '...'
       : review.description;
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button === 0) {
+      if (onClick) onClick();
+      else if (href) router.push(href);
+    }
+  };
+
   const handleUserClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onUserClick?.(review.user.username || 'unknown_user');
+    if (hasUserInfo(review)) {
+      onUserClick?.(review.user.username || 'unknown_user');
+    }
   };
 
   const handleContentClick = (e: React.MouseEvent) => {
@@ -78,74 +114,127 @@ export default function ExtendedReviewCard({
     setIsExpanded(!isExpanded);
   };
 
-  return (
-    <div className={styles.reviewCard}>
-      {/* Content Header */}
-      <div className={styles.contentHeader} onClick={handleContentClick}>
-        <div className={styles.poster}>
-          <Image
-            src={posterToUse || '/placeholder.svg'}
-            alt={review.contentTitle}
-            fill
-            onError={() => setHasPosterError(true)}
-            className={styles.posterImage}
-            sizes='(max-width: 768px) 60px, 80px'
-          />
-        </div>
-        <div className={styles.contentInfo}>
-          <h2 className={styles.contentTitle}>{review.contentTitle}</h2>
-          <span className={styles.contentType}>{review.contentType}</span>
-        </div>
-      </div>
+  const handleSpoilerReveal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSpoilerRevealed(true);
+  };
 
-      {/* Review Content */}
-      <div className={styles.reviewContent}>
-        {/* User Info */}
-        <div className={styles.userInfo} onClick={handleUserClick}>
+  const renderImage = () => (
+    <div className={styles.imageWrapper} onClick={handleContentClick}>
+      <Image
+        src={posterToUse}
+        alt={review.contentTitle}
+        fill
+        onError={() => setHasPosterError(true)}
+        className={styles.posterImage}
+        sizes='(max-width: 768px) 100vw, 180px'
+        style={{ opacity: 1 }}
+      />
+    </div>
+  );
+
+  const renderAuthorSection = () => {
+    if (!hasUserInfo(review) || !showUserInfo) return null;
+
+    return (
+      <div className={styles.authorSection} onClick={handleUserClick}>
+        <span className={styles.authorText}>By</span>
+        <div className={styles.authorInfo}>
           <div className={styles.avatar}>
             <Image
-              src={avatarToUse || '/placeholder.svg'}
+              src={avatarToUse}
               alt={review.user?.name || 'User'}
               fill
               onError={() => setHasAvatarError(true)}
               className={styles.avatarImage}
-              sizes='(max-width: 768px) 40px, 48px'
+              sizes='24px'
             />
           </div>
-          <div className={styles.userDetails}>
-            <div className={styles.userNameSection}>
-              <h3 className={styles.userName}>{review.user?.name}</h3>
-              <span className={styles.username}>@{review.user?.username}</span>
+          <span className={styles.authorName}>{review.user?.name}</span>
+        </div>
+        <span className={styles.reviewDate}>
+          • {formatDate(review.createdAt)}
+        </span>
+      </div>
+    );
+  };
+
+  return (
+    <div className={`${styles.cardWrapper} ${className}`} onClick={handleClick}>
+      {showContentInfo && renderImage()}
+
+      <div className={styles.contentDetails}>
+        {/* Content Header */}
+        {showContentInfo && (
+          <div className={styles.contentHeader} onClick={handleContentClick}>
+            <div className={styles.contentInfo}>
+              <h2 className={styles.contentTitle}>{review.contentTitle}</h2>
+              <Badge
+                text={review.contentType}
+                backgroundColor='bg-primary'
+                color='color-white'
+                size='size-md'
+                borderRadius='border-full'
+              />
             </div>
-            <div className={styles.rating}>
-              <div className={styles.stars}>{renderStars(review.rate)}</div>
-              <span className={styles.rateNumber}>{review.rate}/10</span>
-            </div>
+            <StarRating
+              rating={review.rate}
+              size='md'
+              showSparkles={true}
+              animated={true}
+            />
           </div>
+        )}
+
+        {/* Star Rating when content info is hidden */}
+        {!showContentInfo && (
+          <div className={styles.ratingOnly}>
+            <StarRating
+              rating={review.rate}
+              size='md'
+              showSparkles={true}
+              animated={true}
+            />
+          </div>
+        )}
+
+        {/* Review Meta */}
+        <div className={styles.reviewMeta}>
+          {renderAuthorSection()}
+
+          {/* Review Title */}
+          <h3 className={styles.reviewTitle}>{review.title}</h3>
         </div>
 
-        {/* Review Details */}
-        <div className={styles.reviewDetails}>
-          <h4 className={styles.reviewTitle}>{review.title}</h4>
-          {review.spoiler && (
-            <div className={styles.spoilerWarning}>
-              <Icon name='alertTriangle' strokeColor='secondary' />
-              <span>Contains Spoilers</span>
-            </div>
-          )}
-          <p className={styles.reviewDescription}>{displayDescription}</p>
-          {shouldShowReadMore && (
-            <button
-              className={styles.readMoreButton}
-              onClick={handleReadMoreClick}
+        {/* Review Description with Spoiler Handling */}
+        <div className={styles.reviewDescriptionContainer}>
+          {review.spoiler && !spoilerRevealed ? (
+            <div
+              className={styles.spoilerOverlay}
+              onClick={handleSpoilerReveal}
             >
-              {isExpanded ? 'Show Less' : 'Read More'}
-            </button>
+              <div className={styles.spoilerContent}>
+                <Icon name='eye' className={styles.spoilerIcon} />
+                <span className={styles.spoilerText}>Contains Spoilers</span>
+                <span className={styles.spoilerSubtext}>Click to reveal</span>
+              </div>
+            </div>
+          ) : (
+            <p className={styles.reviewDescription}>{displayDescription}</p>
           )}
         </div>
 
-        {/* Review Footer */}
-        <div className={styles.reviewFooter}>
+        {shouldShowReadMore && (spoilerRevealed || !review.spoiler) && (
+          <button
+            className={styles.readMoreButton}
+            onClick={handleReadMoreClick}
+          >
+            {isExpanded ? 'Show Less' : 'Read More'}
+          </button>
+        )}
+
+        {/* Actions */}
+        <div className={styles.actions}>
           <div className={styles.reactions}>
             <Button
               padding='sm'
@@ -174,7 +263,50 @@ export default function ExtendedReviewCard({
               <span>{review.dislikeCount}</span>
             </Button>
           </div>
-          <span className={styles.date}>{formatDate(review.createdAt)}</span>
+
+          {/* Edit and Delete buttons for profile view */}
+          {(onEdit || onDelete) && (
+            <div className={styles.editActions}>
+              {!showUserInfo && (
+                <span className={styles.reviewDate}>
+                  {formatDate(review.createdAt)}
+                </span>
+              )}
+              {onEdit && (
+                <Button
+                  padding='sm'
+                  variant='ghost'
+                  color='primary'
+                  borderRadius='fullRadius'
+                  onClick={e => {
+                    e.stopPropagation();
+                    onEdit(review.reviewId, {
+                      title: review.title,
+                      description: review.description,
+                      rate: review.rate,
+                      spoiler: review.spoiler,
+                    });
+                  }}
+                >
+                  <Icon name='edit' strokeColor='white' />
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  padding='sm'
+                  variant='ghost'
+                  color='danger'
+                  borderRadius='fullRadius'
+                  onClick={e => {
+                    e.stopPropagation();
+                    onDelete(review.reviewId);
+                  }}
+                >
+                  <Icon name='trash' strokeColor='white' />
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

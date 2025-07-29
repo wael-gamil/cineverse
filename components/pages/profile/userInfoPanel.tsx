@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useUpdateProfileMutation } from '@/hooks/useUpdateProfileMutation';
-import EditProfileModal from './editProfileModal';
+import EditProfileModal from './modals/editProfileModal';
 import toast from 'react-hot-toast';
 import ContentHeroSimple from '@/components/shared/contentDetails/heroSection/contentHeroSimple';
 import Button from '@/components/ui/button/button';

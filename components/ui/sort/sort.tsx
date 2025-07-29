@@ -50,14 +50,13 @@ export default function Sort({ initialSortBy, sortOptions }: SortProps) {
       relativePanel
     >
       <div className={styles.options}>
+        <h3 className={styles.panelTitle}>Sort By</h3>
         {sortOptions.options.map(option => (
           <Button
             key={option.value}
-            type='button'
-            align='left'
-            width='100%'
-            variant={sortBy === option.value ? 'solid' : 'ghost'}
-            color={sortBy === option.value ? 'primary' : 'neutral'}
+            variant="list"
+            active={sortBy === option.value}
+            width="100%"
             onClick={() =>
               option.value === sortBy ? setSortBy('') : setSortBy(option.value)
             }

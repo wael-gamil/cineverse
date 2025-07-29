@@ -1,0 +1,80 @@
+/* Base skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Reviewer Item Layout */
+.reviewerItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid var(--color-white-20);
+}
+
+.reviewerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  height: 18px;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-xs);
+  width: 70%;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-xs);
+}
+
+.count {
+  width: 60px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.stars {
+  width: 80px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .name {
+    height: 16px;
+  }
+}

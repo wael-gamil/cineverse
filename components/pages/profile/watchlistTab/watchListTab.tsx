@@ -15,14 +15,6 @@ export default function WatchListTab() {
 
   return (
     <div className={styles.tabContainer}>
-      {/* <div className={styles.header}>
-        <h2 className={styles.title}>My Watchlist</h2>
-        <FilterTabs
-          options={WATCHLIST_STATUSES}
-          active={status}
-          onChange={val => setStatus(val as 'TO_WATCH' | 'WATCHED')}
-        />
-      </div> */}
       <SectionHeader
         title='My Watchlist'
         variant='ghost'

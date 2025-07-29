@@ -40,8 +40,8 @@ export default async function Season({ params }: SeasonProps) {
     <HydrationBoundary state={dehydratedState}>
       <ContentHero
         content={normalizeContent(seasonDetails)}
-        backgroundUrl={details.backdropPath}
-        fallbackPoster={details.posterPath}
+        backgroundUrl={details.backdropUrl}
+        fallbackPoster={details.posterUrl}
         genres={details.genres}
       />
       <ContentOverview
@@ -53,14 +53,14 @@ export default async function Season({ params }: SeasonProps) {
         section='episodes'
         id={details.id}
         seasonNumber={seasonNumber}
-        fallbackPoster={seasonDetails.posterPath || details.posterPath}
+        fallbackPoster={seasonDetails.posterUrl || details.posterUrl}
         seasonsData={[seasonDetails]}
       />
       <ContentSectionWrapper
         section='reviews'
         id={details.id}
         contentTitle={details.title}
-        contentPoster={details.posterPath}
+        contentPoster={details.posterUrl}
       />
     </HydrationBoundary>
   );
