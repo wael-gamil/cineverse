@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import styles from './reviewsSection.module.css';
-import { Review } from '@/constants/types/movie';
+import { Review, ExtendedReview } from '@/constants/types/movie';
 import Link from 'next/link';
 import Button from '../../../ui/button/button';
 import { Icon } from '../../../ui/icon/icon';
-import ReviewCard from '../../../cards/reviewCard/reviewCard';
+import ExtendedReviewCard from '../../../cards/extendedReviewCard/extendedReviewCard';
 import AddReviewPopup from './addReviewPopup';
 import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import toast from 'react-hot-toast';
@@ -31,6 +31,20 @@ export default function ReviewsSection({
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
   console.log('content id:', contentId);
+
+  // Convert Review to ExtendedReview format for ExtendedReviewCard
+  const convertToExtendedReview = (review: Review): ExtendedReview => ({
+    ...review,
+    user: {
+      ...review.user,
+      username: review.user.name.toLowerCase().replace(/\s+/g, ''), // Generate username from name
+    },
+    // Add dummy content info (will be hidden with showContentInfo={false})
+    contentId: 0,
+    contentType: 'MOVIE' as const,
+    contentTitle: '',
+    contentPosterUrl: '',
+  });
 
   const handleAddReview = () => {
     setIsPopupOpen(true);
@@ -63,7 +77,7 @@ export default function ReviewsSection({
 
     resetForm();
     onClose();
-    
+
     await toast.promise(
       submitPromise,
       {
@@ -82,11 +96,21 @@ export default function ReviewsSection({
     reviewId: number,
     type: 'LIKE' | 'DISLIKE'
   ) => {
+    // Find the current review to check existing reaction
+    const currentReview = data.find(review => review.reviewId === reviewId);
+    console.log('Current review:', currentReview);
+    // Determine the actual type to send based on current reaction
+    let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
+    if (currentReview?.userReaction === type) {
+      // User is clicking the same reaction again, so undo it
+      actionType = 'UNDO';
+    }
+
     const reactPromise = new Promise<void>((resolve, reject) => {
       reactToReview(
         {
           reviewId,
-          type,
+          type: actionType,
         },
         {
           onSuccess: () => {
@@ -103,8 +127,12 @@ export default function ReviewsSection({
     await toast.promise(
       reactPromise,
       {
-        loading: 'Sending reaction...',
-        success: 'Thanks for your feedback!',
+        loading:
+          actionType === 'UNDO'
+            ? 'Removing reaction...'
+            : `${actionType === 'LIKE' ? 'Liking' : 'Disliking'} review...`,
+        success:
+          actionType === 'UNDO' ? 'Reaction removed!' : 'Reaction recorded!',
         error: 'Failed to send reaction.',
       },
       {
@@ -131,9 +159,13 @@ export default function ReviewsSection({
           {mostHelpfulReview && (
             <div className={styles.cardWrapper}>
               <h3>Most Helpful Review</h3>
-              <ReviewCard
-                review={mostHelpfulReview}
-                onReact={(id, type) => handleReactToReview(id, type)}
+              <ExtendedReviewCard
+                review={convertToExtendedReview(mostHelpfulReview)}
+                showUserInfo={true}
+                showContentInfo={false}
+                onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
+                  handleReactToReview(id, type)
+                }
               />
             </div>
           )}
@@ -144,10 +176,14 @@ export default function ReviewsSection({
               <h3>All Reviews ({otherReviews.length})</h3>
               <div className={styles.reviewList}>
                 {otherReviews.map((review, index) => (
-                  <ReviewCard
-                    review={review}
+                  <ExtendedReviewCard
+                    review={convertToExtendedReview(review)}
                     key={index}
-                    onReact={(id, type) => handleReactToReview(id, type)}
+                    showUserInfo={true}
+                    showContentInfo={false}
+                    onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
+                      handleReactToReview(id, type)
+                    }
                   />
                 ))}
               </div>

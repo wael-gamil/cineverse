@@ -172,7 +172,7 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
             key={item.id}
             title={item.title}
             subtitle={item.contentType}
-            imageUrl={item.posterUrl || '/images/placeholder.jpg'}
+            imageUrl={item.contentPosterUrl || '/images/placeholder.jpg'}
             description={item.overview}
             layout='overlay'
             actionButtons={[
