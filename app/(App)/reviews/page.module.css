@@ -3,9 +3,6 @@
   gap: var(--space-xxl);
   padding: var(--space-xxl);
   flex: 1;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
 }
 
 .mainContent {
