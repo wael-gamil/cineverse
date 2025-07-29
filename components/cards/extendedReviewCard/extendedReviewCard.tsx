@@ -51,9 +51,9 @@ export default function ExtendedReviewCard({
       : review.user.imageUrl;
 
   const posterToUse =
-    hasPosterError || !review.contentPosterPath
+    hasPosterError || !review.contentPosterUrl
       ? '/poster_fallback.png'
-      : review.contentPosterPath;
+      : review.contentPosterUrl;
 
   const shouldShowReadMore =
     review.description.length > 300 && !showFullDescription;

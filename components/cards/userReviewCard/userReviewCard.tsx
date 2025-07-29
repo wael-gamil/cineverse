@@ -54,9 +54,9 @@ export default function UserReviewCard({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const imageToUse =
-    hasError || !review.contentPosterPath
+    hasError || !review.contentPosterUrl
       ? fallbackImage
-      : review.contentPosterPath;
+      : review.contentPosterUrl;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {

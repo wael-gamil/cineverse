@@ -40,7 +40,7 @@ export type MovieDetails = {
 export type Person = {
   id: number;
   name: string;
-  path: string;
+  imageUrl: string;
 };
 
 export type Director = Person;
@@ -85,7 +85,7 @@ export type Provider = {
 };
 // Shared review base
 export type BaseReview = {
-  reviewID: number;
+  reviewId: number;
   rate: number;
   title: string;
   description: string;
@@ -106,25 +106,23 @@ export type ReviewWithUser = BaseReview & {
 };
 
 // If content info is needed (like for profile page)
-export type ReviewWithContent = Omit<BaseReview, 'reviewID'> & {
-  reviewId: number;
+export type ReviewWithContent = BaseReview & {
   contentId: number;
   contentType: 'MOVIE' | 'SERIES' | 'SEASON' | 'EPISODE';
   contentTitle: string;
-  contentPosterPath: string;
+  contentPosterUrl: string;
 };
-export type ExtendedReview = Omit<BaseReview, 'reviewID'> & {
+export type ExtendedReview = BaseReview & {
   user: {
     id: number;
     name: string;
     imageUrl: string;
     username: string;
   };
-  reviewId: number;
   contentId: number;
   contentType: 'MOVIE' | 'SERIES' | 'SEASON' | 'EPISODE';
   contentTitle: string;
-  contentPosterPath: string;
+  contentPosterUrl: string;
 };
 export type Review = ReviewWithUser;
 export type UserReview = ReviewWithContent;
@@ -134,7 +132,7 @@ export type WatchlistItem = {
   contentId: number;
   title: string;
   overview: string;
-  contentPoster: string;
+  posterUrl: string;
   contentType: 'MOVIE' | 'SERIES';
   imdbRate: number;
   watchingStatus: 'TO_WATCH' | 'WATCHED';
@@ -164,12 +162,12 @@ export type BaseContent = {
   id: number;
   title: string;
   overview: string;
-  posterPath: string;
+  posterUrl: string;
   releaseDate: string;
 };
 
 export type Movie = BaseContent & {
-  backdropPath: string;
+  backdropUrl: string;
   runtime: number;
   language: string;
   productionCountry: string;
@@ -180,7 +178,7 @@ export type Movie = BaseContent & {
 };
 
 export type Series = BaseContent & {
-  backdropPath: string;
+  backdropUrl: string;
   language: string;
   productionCountry: string;
   imdbRate: number;
@@ -237,8 +235,8 @@ export function normalizeContent(
       title: data.title,
       description: data.overview,
       releaseDate: data.releaseDate,
-      imageUrl: data.posterPath,
-      backgroundUrl: data.backdropPath,
+      imageUrl: data.posterUrl,
+      backgroundUrl: data.backdropUrl,
       runtime: data.runtime,
       imdbRate: data.imdbRate,
       platformRate: data.platformRate,
@@ -255,8 +253,8 @@ export function normalizeContent(
       title: data.title,
       description: data.overview,
       releaseDate: data.releaseDate,
-      imageUrl: data.posterPath,
-      backgroundUrl: data.backdropPath,
+      imageUrl: data.posterUrl,
+      backgroundUrl: data.backdropUrl,
       imdbRate: data.imdbRate,
       platformRate: data.platformRate,
       genres: data.genres,
@@ -275,7 +273,7 @@ export function normalizeContent(
       title: data.title,
       description: data.overview,
       releaseDate: data.releaseDate,
-      imageUrl: data.posterPath,
+      imageUrl: data.posterUrl,
       backgroundUrl: '',
       imdbRate: data.imdbRate,
       numberOfEpisodes: data.numberOfEpisodes,
@@ -288,7 +286,7 @@ export function normalizeContent(
     title: data.title,
     description: data.overview,
     releaseDate: data.releaseDate,
-    imageUrl: data.posterPath,
+    imageUrl: data.posterUrl,
     backgroundUrl: '',
     imdbRate: data.imdbRate,
     runtime: data.runTime,

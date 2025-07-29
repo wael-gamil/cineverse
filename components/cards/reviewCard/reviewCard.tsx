@@ -55,7 +55,7 @@ export default function ReviewCard({ review, onReact }: ReviewCardProps) {
               borderRadius='fullRadius'
               onClick={e => {
                 e.stopPropagation();
-                onReact?.(review.reviewID, 'LIKE');
+                onReact?.(review.reviewId, 'LIKE');
               }}
             >
               <Icon name='thumbUp' strokeColor='white' />
@@ -68,7 +68,7 @@ export default function ReviewCard({ review, onReact }: ReviewCardProps) {
               borderRadius='fullRadius'
               onClick={e => {
                 e.stopPropagation();
-                onReact?.(review.reviewID, 'DISLIKE');
+                onReact?.(review.reviewId, 'DISLIKE');
               }}
             >
               <Icon name='thumbDown' strokeColor='white' />

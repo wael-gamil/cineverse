@@ -13,19 +13,10 @@ import Pagination from '@/components/ui/pagination/pagination';
 import { Icon } from '@/components/ui/icon/icon';
 import toast from 'react-hot-toast';
 import styles from './watchList.module.css';
+import { WatchlistItem } from '@/constants/types/movie';
 
 type WatchlistItemProp = {
   status: 'TO_WATCH' | 'WATCHED';
-};
-
-type WatchlistItem = {
-  id: number;
-  title: string;
-  contentType: string;
-  contentPoster: string | null;
-  overview: string;
-  contentId: number;
-  createdAt: string;
 };
 
 export default function WatchlistList({ status }: WatchlistItemProp) {
@@ -181,7 +172,7 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
             key={item.id}
             title={item.title}
             subtitle={item.contentType}
-            imageUrl={item.contentPoster || '/images/placeholder.jpg'}
+            imageUrl={item.posterUrl || '/images/placeholder.jpg'}
             description={item.overview}
             layout='overlay'
             actionButtons={[
