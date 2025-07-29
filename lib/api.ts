@@ -94,7 +94,7 @@ export const getContents = async (
       releaseDate: content.releaseDate,
       imdbRate: content.imdbRate,
       genres: content.genres,
-      posterUrl: content.posterPath,
+      posterUrl: content.posterUrl,
       slug: content.slug,
     }));
     return {
@@ -142,7 +142,7 @@ export const getSearchResults = async (
       releaseDate: movie.releaseDate,
       imdbRate: movie.imdbRate,
       genres: movie.genres,
-      posterUrl: movie.posterPath,
+      posterUrl: movie.posterUrl,
       slug: movie.slug,
       type: movie.type,
     }));
@@ -304,7 +304,7 @@ export const getPersonContents = async (
       releaseDate: item.releaseDate,
       imdbRate: item.imdbRate,
       genres: item.genres,
-      posterUrl: item.posterPath,
+      posterUrl: item.posterUrl,
       slug: item.slug,
     }));
 
@@ -609,7 +609,7 @@ export const getAllReviewsSSR = async (
 
     const url = `reviews?${query.toString()}`;
     const rawData = await fetcher(url); 
-
+    console.log('Fetched all reviews (SSR):', rawData);
     return {
       reviews: rawData.content,
       totalPages: rawData.totalPages,
