@@ -1,0 +1,197 @@
+.reviewCard {
+  background: var(--color-surface-60);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.cardContent {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.imageSection {
+  flex-shrink: 0;
+}
+
+.posterImage {
+  width: 120px;
+  height: 180px;
+  border-radius: var(--radius-md);
+}
+
+.contentSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.contentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.contentTitle {
+  width: 200px;
+  height: 1.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.contentType {
+  width: 80px;
+  height: 1rem;
+  border-radius: var(--radius-full);
+}
+
+.ratingSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.stars {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.star {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+}
+
+.reviewMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.authorSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.authorText {
+  width: 20px;
+  height: 0.875rem;
+  border-radius: var(--radius-sm);
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.username {
+  width: 100px;
+  height: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.reviewTitle {
+  width: 60%;
+  height: 1.25rem;
+  border-radius: var(--radius-sm);
+}
+
+.reviewDescriptionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.reviewDescription1 {
+  width: 100%;
+  height: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.reviewDescription2 {
+  width: 85%;
+  height: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.reviewDescription3 {
+  width: 70%;
+  height: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-sm);
+}
+
+.reactions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.reactionButton {
+  width: 3.5rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+}
+
+.date {
+  width: 100px;
+  height: 0.875rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Skeleton base class */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .cardContent {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .posterImage {
+    width: 100px;
+    height: 150px;
+    align-self: center;
+  }
+
+  .contentTitle {
+    width: 80%;
+  }
+
+  .reviewTitle {
+    width: 90%;
+  }
+}
