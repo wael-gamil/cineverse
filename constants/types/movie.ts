@@ -92,7 +92,7 @@ export type BaseReview = {
   spoiler: boolean;
   likeCount: number;
   dislikeCount: number;
-  userReaction: null | 'like' | 'dislike';
+  userReaction: null | 'LIKE' | 'DISLIKE';
   createdAt: string;
 };
 
@@ -132,7 +132,7 @@ export type WatchlistItem = {
   contentId: number;
   title: string;
   overview: string;
-  posterUrl: string;
+  contentPosterUrl: string;
   contentType: 'MOVIE' | 'SERIES';
   imdbRate: number;
   watchingStatus: 'TO_WATCH' | 'WATCHED';

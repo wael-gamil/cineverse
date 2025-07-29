@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { deleteUserReview, updateUserReview } from '@/lib/api';
+import { revalidatePath } from 'next/cache';
 
 export async function DELETE(request: NextRequest) {
   const cookieStore = await cookies();
@@ -14,6 +15,13 @@ export async function DELETE(request: NextRequest) {
 
   try {
     await deleteUserReview(token, id);
+
+    // Revalidate the reviews page after deletion
+    revalidatePath('/reviews');
+
+    // Also revalidate content pages that might contain this review
+    revalidatePath('/[slug]', 'page');
+
     return NextResponse.json({ message: 'Review deleted successfully' });
   } catch (error: any) {
     return NextResponse.json(
@@ -33,6 +41,13 @@ export async function PUT(request: NextRequest) {
   const body = await request.json();
   try {
     const result = await updateUserReview(token, body);
+
+    // Revalidate the reviews page after update
+    revalidatePath('/reviews');
+
+    // Also revalidate content pages that might contain this review
+    revalidatePath('/[slug]', 'page');
+
     return NextResponse.json(result);
   } catch (error: any) {
     return NextResponse.json(
