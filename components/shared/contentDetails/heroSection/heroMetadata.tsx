@@ -9,6 +9,8 @@ import { Icon } from '@/components/ui/icon/icon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAddToWatchlistMutation } from '@/hooks/useAddToWatchlistMutation';
+import { useRemoveFromWatchlistMutation } from '@/hooks/useRemoveFromWatchlistMutation';
+import { useWatchlistExistsQuery } from '@/hooks/useWatchlistExistsQuery';
 import toast from 'react-hot-toast';
 type Props = {
   content: NormalizedContent;
@@ -42,7 +44,14 @@ export default function HeroMetadata({
   slug,
 }: Props) {
   const genreList = content.genres || genres || [];
-  const { mutate: addToWatchlist, isPending } = useAddToWatchlistMutation();
+  const { mutate: addToWatchlist, isPending: isAddingToWatchlist } =
+    useAddToWatchlistMutation();
+  const { mutate: removeFromWatchlist, isPending: isRemovingFromWatchlist } =
+    useRemoveFromWatchlistMutation();
+  const { data: isInWatchlist = false, isLoading: isCheckingWatchlist } =
+    useWatchlistExistsQuery(content.id);
+
+  const isPending = isAddingToWatchlist || isRemovingFromWatchlist;
   const handleAddToWatchlist = () => {
     const addPromise = new Promise<void>((resolve, reject) => {
       console.log('id', content.id);
@@ -62,6 +71,32 @@ export default function HeroMetadata({
         loading: 'Adding to watchlist...',
         success: 'Added to watchlist!',
         error: 'Failed to add to watchlist.',
+      },
+      {
+        className: 'toast-default',
+      }
+    );
+  };
+
+  const handleRemoveFromWatchlist = () => {
+    const removePromise = new Promise<void>((resolve, reject) => {
+      console.log('Removing content id:', content.id);
+      removeFromWatchlist(content.id, {
+        onSuccess: () => {
+          resolve();
+        },
+        onError: (err: any) => {
+          reject(err);
+        },
+      });
+    });
+
+    toast.promise(
+      removePromise,
+      {
+        loading: 'Removing from watchlist...',
+        success: 'Removed from watchlist!',
+        error: 'Failed to remove from watchlist.',
       },
       {
         className: 'toast-default',
@@ -172,11 +207,31 @@ export default function HeroMetadata({
         )}
         <Button
           color='neutral'
-          disabled={isPending}
-          onClick={handleAddToWatchlist}
+          disabled={isPending || isCheckingWatchlist}
+          onClick={
+            isInWatchlist ? handleRemoveFromWatchlist : handleAddToWatchlist
+          }
         >
-          <Icon name='bookmark' strokeColor='white' />
-          {isPending ? 'Adding...' : 'Add to Watchlist'}
+          {isCheckingWatchlist ? (
+            <>
+              <Icon name='loader' strokeColor='white' />
+              Loading...
+            </>
+          ) : (
+            <>
+              <Icon
+                name={isInWatchlist ? 'trash' : 'bookmark'}
+                strokeColor='white'
+              />
+              {isPending
+                ? isInWatchlist
+                  ? 'Removing...'
+                  : 'Adding...'
+                : isInWatchlist
+                ? 'Remove from Watchlist'
+                : 'Add to Watchlist'}
+            </>
+          )}
         </Button>
         <Button color='neutral' onClick={onShare}>
           <Icon name='share' strokeColor='white' />
