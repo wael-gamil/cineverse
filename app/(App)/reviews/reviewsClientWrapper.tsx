@@ -90,11 +90,27 @@ export default function ReviewsClientWrapper({
   };
 
   return (
-    <>
+    <div>
       {isLoading ? (
-        <p>Loading...</p>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: 'var(--space-xxl)',
+            color: 'var(--color-muted)',
+          }}
+        >
+          <p>Loading reviews...</p>
+        </div>
       ) : error ? (
-        <p>Error loading reviews</p>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: 'var(--space-xxl)',
+            color: 'var(--color-danger)',
+          }}
+        >
+          <p>Error loading reviews. Please try again later.</p>
+        </div>
       ) : reviews && reviews.length > 0 ? (
         reviews.map((review: ExtendedReview) => (
           <ExtendedReviewCard
@@ -106,8 +122,18 @@ export default function ReviewsClientWrapper({
           />
         ))
       ) : (
-        <p>No reviews found.</p>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: 'var(--space-xxl)',
+            background: 'var(--color-surface)',
+            borderRadius: 'var(--radius-lg)',
+            color: 'var(--color-muted)',
+          }}
+        >
+          <p>No reviews found. Be the first to write a review!</p>
+        </div>
       )}
-    </>
+    </div>
   );
 }
