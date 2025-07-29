@@ -87,6 +87,32 @@
   background-color: var(--color-danger-60);
   box-shadow: var(--shadow-danger-glow);
 }
+
+/* === Variant: List === */
+.list {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  font-size: var(--font-size-sm);
+  padding: var(--space-sm) var(--space-md);
+  justify-content: flex-start;
+}
+
+.list:hover {
+  background-color: var(--color-white-20);
+  color: var(--color-white);
+}
+
+.list.active {
+  background-color: var(--color-primary-20);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
 /* === Disabled === */
 .disabled {
   box-shadow: none;

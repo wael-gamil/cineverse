@@ -1,0 +1,164 @@
+/* === STAR RATING CONTAINER === */
+.starRating {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: flex-start;
+}
+
+.starRating.animated {
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: starsSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+}
+
+@keyframes starsSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* === STAR CONTAINER SIZES === */
+.starContainer {
+  position: relative;
+  transition: transform var(--transition-fast);
+}
+
+.starContainer.sm {
+  width: 12px;
+  height: 12px;
+  gap: 1px;
+}
+
+.starContainer.md {
+  width: 16px;
+  height: 16px;
+}
+
+.starContainer.lg {
+  width: 20px;
+  height: 20px;
+}
+
+.starContainer:hover {
+  transform: scale(1.1);
+}
+
+/* === STAR ICONS === */
+.star {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: all var(--transition-normal);
+}
+
+.starBackground {
+  color: var(--color-white-20);
+  z-index: 1;
+}
+
+.starForeground {
+  color: var(--color-secondary);
+  z-index: 2;
+  clip-path: inset(0 calc(100% - var(--fill-percentage)) 0 0);
+  transition: all var(--transition-normal);
+}
+
+/* === HOVER EFFECTS === */
+.starContainer:hover .starForeground {
+  color: var(--color-secondary);
+  transform: scale(1.05);
+}
+
+/* === ANIMATED ENTRANCE === */
+.starContainer.animated {
+  opacity: 0;
+  animation: starMagicalEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation-delay: calc(1.2s + var(--delay));
+  animation-fill-mode: both;
+}
+
+@keyframes starMagicalEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-360deg) translateY(-50px);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2) rotate(-180deg) translateY(-10px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* === SPARKLE EFFECTS === */
+.sparkleEffect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.sparkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, #fff 0%, #ffd700 50%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.sparkle:nth-child(1) {
+  top: 2px;
+  right: 3px;
+  animation-delay: 0s;
+}
+
+.sparkle:nth-child(2) {
+  bottom: 3px;
+  left: 2px;
+  animation-delay: 0.7s;
+}
+
+.sparkle:nth-child(3) {
+  top: 50%;
+  right: 1px;
+  animation-delay: 1.4s;
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === SIZE VARIATIONS === */
+.starRating .starContainer.sm {
+  gap: 1px;
+}
+
+.starRating .starContainer.sm .sparkle {
+  width: 2px;
+  height: 2px;
+}
+
+.starRating .starContainer.lg .sparkle {
+  width: 4px;
+  height: 4px;
+}
