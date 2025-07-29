@@ -66,7 +66,7 @@ export default function SeasonsSection({
                   title={season.title}
                   subtitle={subtitle}
                   description={season.overview}
-                  imageUrl={season.posterPath || seriesData?.posterPath}
+                  imageUrl={season.posterUrl || seriesData?.posterUrl}
                   imageHeight='image-lg'
                   layout='overlay'
                   highlight={season.seasonNumber === selectedSeason}
@@ -116,7 +116,7 @@ export default function SeasonsSection({
         <EpisodesSection
           seasonNumber={selectedSeason}
           seriesId={seriesId!}
-          fallbackPoster={currentSeason?.posterPath || seriesData?.posterPath}
+          fallbackPoster={currentSeason?.posterUrl || seriesData?.posterUrl}
           seasonsData={data}
         />
       </div>

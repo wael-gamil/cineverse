@@ -12,7 +12,7 @@ type CreditsSectionProps = {
 
 export default function CreditsSection({ data }: CreditsSectionProps) {
   const fullCredits = useMemo(() => {
-    const castWithPath = data.casts.filter(actor => actor.path);
+    const castWithPath = data.casts.filter(actor => actor.imageUrl);
 
     // Check if director is also in the cast
     const overlappingCast = castWithPath.find(
@@ -25,7 +25,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
         const merged = {
           id: data.director.id,
           name: data.director.name,
-          path: data.director.path,
+          imageUrl: data.director.imageUrl,
           characterName: `Director – ${overlappingCast.characterName}`,
         };
 
@@ -39,7 +39,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
         const directorCard = {
           id: data.director.id,
           name: data.director.name,
-          path: data.director.path,
+          imageUrl: data.director.imageUrl,
           characterName: 'Director',
         };
         return [directorCard, ...castWithPath];
@@ -49,6 +49,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
     // No director, just cast
     return castWithPath;
   }, [data]);
+  console.log('Full Credits:', fullCredits);
   return (
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
@@ -66,7 +67,7 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
             key={person.id}
             title={person.name}
             description={person.characterName}
-            imageUrl={person.path}
+            imageUrl={person.imageUrl}
             imageHeight='image-lg'
             layout='below'
             href={`/crew/${person.id}`}

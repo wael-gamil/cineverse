@@ -63,8 +63,8 @@ export default async function Episode({ params }: EpisodeProps) {
     <HydrationBoundary state={dehydratedState}>
       <ContentHero
         content={normalizeContent(episodeDetails)}
-        backgroundUrl={details.backdropPath}
-        fallbackPoster={seasonDetails.posterPath || details.posterPath}
+        backgroundUrl={details.backdropUrl}
+        fallbackPoster={seasonDetails.posterUrl || details.posterUrl}
         genres={details.genres}
       />
       <ContentOverview
@@ -75,7 +75,7 @@ export default async function Episode({ params }: EpisodeProps) {
         section='reviews'
         id={details.id}
         contentTitle={details.title}
-        contentPoster={details.posterPath}
+        contentPoster={details.posterUrl}
       />
     </HydrationBoundary>
   );

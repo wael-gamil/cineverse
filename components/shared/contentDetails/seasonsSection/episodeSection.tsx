@@ -76,10 +76,10 @@ export default function EpisodesSection({
                   !episodesData ? 'seasons/' + seasonNumber + '/' : ''
                 }episodes/${episode.episodeNumber}`}
                 imageUrl={
-                  episode.posterPath ||
-                  currentSeason?.posterPath ||
+                  episode.posterUrl ||
+                  currentSeason?.posterUrl ||
                   fallbackPoster ||
-                  seriesData?.posterPath
+                  seriesData?.posterUrl
                 }
                 badges={[
                   {
