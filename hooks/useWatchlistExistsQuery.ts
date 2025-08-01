@@ -10,10 +10,8 @@ export const useWatchlistExistsQuery = (contentId: number, enabled = true) => {
 
       if (!response.ok) {
         throw new Error('Failed to check watchlist existence');
-      }
-
-      const data = await response.json();
-      return data.exists;
+      }      const data = await response.json();
+      return data.watchlistId ?? null; // Returns watchlist ID (number) or null, ensuring we never return undefined
     },
     enabled: enabled && !!contentId,
     staleTime: 1000 * 60 * 5, // 5 minutes
