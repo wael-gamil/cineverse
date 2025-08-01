@@ -1,5 +1,3 @@
-// components/shared/watchlist/watchlistSkeleton.tsx
-'use client';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import GridContainer from '@/components/shared/gridContainer/gridContainer';
 
@@ -14,7 +12,6 @@ export default function WatchlistSkeleton() {
       cardMaxWidth={500}
       cardCount={8}
     >
-      {' '}
       {placeholders.map((_, i) => (
         <SkeletonCard
           key={i}

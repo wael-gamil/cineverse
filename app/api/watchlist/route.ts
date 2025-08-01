@@ -1,6 +1,7 @@
 // /app/api/watchlist/route.ts
-import { getUserWatchlist } from '@/lib/api';
+import { getUserWatchlist, getUserWatchlistSSR } from '@/lib/api';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -22,6 +23,32 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || 'Failed to fetch watchlist' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const cookie = await cookies();
+    const token = cookie.get('token')?.value;
+
+    if (!token) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { status, page = 0, size = 20 } = await req.json();
+
+    if (!status || !['TO_WATCH', 'WATCHED'].includes(status)) {
+      return NextResponse.json({ message: 'Invalid status' }, { status: 400 });
+    }
+
+    const result = await getUserWatchlistSSR(token, status, page, size);
+    return NextResponse.json(result);
+  } catch (error: any) {
+    console.error('Error fetching watchlist:', error);
+    return NextResponse.json(
+      { message: error.message || 'Internal server error' },
       { status: 500 }
     );
   }
