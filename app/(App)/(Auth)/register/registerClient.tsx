@@ -9,11 +9,14 @@ import {
   useResendVerificationMutation,
 } from '@/hooks/useAuthMutations';
 import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
 
 export default function RegisterPage() {
+  const { redirectIfAuthenticated } = useAuth();
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +42,12 @@ export default function RegisterPage() {
     loginWithGoogle,
     loading: googleLoading,
     error: googleError,
-  } = useGooglePopupLogin();
+  } = useGooglePopupLogin(redirectTo);
+  // Redirect if already authenticated
+  useEffect(() => {
+    const redirectTo = searchParams.get('redirect') || '/';
+    redirectIfAuthenticated(redirectTo);
+  }, [redirectIfAuthenticated, searchParams]);
   useEffect(() => {
     const error = searchParams.get('error');
     if (error === 'oauth') {
