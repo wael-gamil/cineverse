@@ -12,6 +12,7 @@ import Badge from '../../ui/badge/badge';
 import type { ExtendedReview, UserReview } from '@/constants/types/movie';
 import fallbackImage from '@/public/avatar_fallback.png';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import { useAuth } from '@/hooks/useAuth';
 
 type ExtendedReviewCardProps = {
   review: ExtendedReview | UserReview;
@@ -51,6 +52,7 @@ export default function ExtendedReviewCard({
   href,
 }: ExtendedReviewCardProps) {
   const router = useRouter();
+  const { requireAuth } = useAuth();
   const [hasAvatarError, setHasAvatarError] = useState(false);
   const [hasPosterError, setHasPosterError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(showFullDescription);
@@ -236,6 +238,7 @@ export default function ExtendedReviewCard({
         {/* Actions */}
         <div className={styles.actions}>
           <div className={styles.reactions}>
+            {' '}
             <Button
               padding='sm'
               variant='ghost'
@@ -243,7 +246,9 @@ export default function ExtendedReviewCard({
               borderRadius='fullRadius'
               onClick={e => {
                 e.stopPropagation();
-                onReact?.(review.reviewId, 'LIKE');
+                requireAuth(() => {
+                  onReact?.(review.reviewId, 'LIKE');
+                }, 'Please log in to like reviews');
               }}
             >
               <Icon name='thumbUp' strokeColor='white' />
@@ -256,7 +261,9 @@ export default function ExtendedReviewCard({
               borderRadius='fullRadius'
               onClick={e => {
                 e.stopPropagation();
-                onReact?.(review.reviewId, 'DISLIKE');
+                requireAuth(() => {
+                  onReact?.(review.reviewId, 'DISLIKE');
+                }, 'Please log in to dislike reviews');
               }}
             >
               <Icon name='thumbDown' strokeColor='white' />

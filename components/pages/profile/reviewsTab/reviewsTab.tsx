@@ -14,10 +14,12 @@ import type { UserReview } from '@/constants/types/movie';
 import { useReviewAction } from '@/hooks/useReviewAction';
 import toast from 'react-hot-toast';
 import { useReactToReview } from '@/hooks/useReactToReview';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ReviewsTab() {
   const router = useRouter();
   const { username } = useStore(userStore);
+  const { requireAuth } = useAuth();
   const [selectedReview, setSelectedReview] = useState<UserReview | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<UserReview | null>(null);
@@ -163,6 +165,10 @@ export default function ReviewsTab() {
     reviewId: number,
     type: 'LIKE' | 'DISLIKE'
   ) => {
+    if (!requireAuth(undefined, 'Please log in to react to reviews')) {
+      return;
+    }
+
     // Find the current review to check existing reaction
     const currentReview = reviewsData?.reviews.find(
       review => review.reviewId === reviewId

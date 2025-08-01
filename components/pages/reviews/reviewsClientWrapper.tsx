@@ -9,6 +9,7 @@ import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviews
 import type { ExtendedReview } from '@/constants/types/movie';
 import { useContentSummary } from '@/hooks/useContentSummary';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 type ReviewsClientWrapperProps = {
   initialReviews: ExtendedReview[];
@@ -20,6 +21,7 @@ export default function ReviewsClientWrapper({
   searchParams = {},
 }: ReviewsClientWrapperProps) {
   const router = useRouter();
+  const { requireAuth } = useAuth();
   const [selectedReview, setSelectedReview] = useState<ExtendedReview | null>(
     null
   );
@@ -79,11 +81,14 @@ export default function ReviewsClientWrapper({
   }, [summaryData, selectedReview, router]);
   // Use fetched data if available, otherwise fall back to initial data
   const reviews = reviewsData?.reviews || initialReviews;
-
   const handleReactToReview: (
     reviewId: number,
-    type: 'LIKE' | 'DISLIKE' 
+    type: 'LIKE' | 'DISLIKE'
   ) => Promise<void> = async (reviewId, type) => {
+    if (!requireAuth(undefined, 'Please log in to react to reviews')) {
+      return;
+    }
+
     // Find the current review to check existing reaction
     const currentReview = reviews.find(review => review.reviewId === reviewId);
     // Determine the actual type to send based on current reaction

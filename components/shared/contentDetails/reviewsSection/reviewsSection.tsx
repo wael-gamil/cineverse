@@ -11,6 +11,7 @@ import AddReviewPopup from './addReviewPopup';
 import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import toast from 'react-hot-toast';
 import { useReactToReview } from '@/hooks/useReactToReview';
+import { useAuth } from '@/hooks/useAuth';
 
 type ReviewsSectionProps = {
   data: Review[];
@@ -28,6 +29,7 @@ export default function ReviewsSection({
   refetch,
 }: ReviewsSectionProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { requireAuth } = useAuth();
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
 
@@ -44,9 +46,10 @@ export default function ReviewsSection({
     contentTitle: '',
     contentPosterUrl: '',
   });
-
   const handleAddReview = () => {
-    setIsPopupOpen(true);
+    requireAuth(() => {
+      setIsPopupOpen(true);
+    }, 'Please log in to write a review');
   };
   const { mutate: postReview, isPending } = useAddReviewMutation();
   const { mutate: reactToReview } = useReactToReview();
@@ -90,11 +93,14 @@ export default function ReviewsSection({
       }
     );
   };
-
   const handleReactToReview = async (
     reviewId: number,
     type: 'LIKE' | 'DISLIKE'
   ) => {
+    if (!requireAuth(undefined, 'Please log in to react to reviews')) {
+      return;
+    }
+
     // Find the current review to check existing reaction
     const currentReview = data.find(review => review.reviewId === reviewId);
     // Determine the actual type to send based on current reaction
