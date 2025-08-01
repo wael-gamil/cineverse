@@ -259,7 +259,6 @@ export const getContentReviewsClient = async (
 ): Promise<Review[]> => {
   try {
     const url = `reviews/contents/${id}`;
-    console.log('Fetching content reviews from:', url);
     // Build headers with optional Authorization
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
     if (token) {
@@ -345,7 +344,6 @@ export const getPersonContents = async (
 };
 
 const postData = async (endpoint: string, body: any, headers?: HeadersInit) => {
-  console.log('POST request to:', `${BASE_URL}${endpoint}`, body);
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: 'POST',
     headers: {
@@ -505,7 +503,6 @@ export const getUserReviews = async (
     });
 
     const reviews: UserReview[] = rawData.content;
-    console.log('Fetched user reviews:', reviews);
     return {
       reviews,
       totalPages: rawData.totalPages,
@@ -550,7 +547,6 @@ export const postUserReview = async (token: string, review: ReviewPayload) => {
   });
 };
 export const deleteUserReview = async (token: string, reviewId: number) => {
-  console.log('Deleting review with ID:', reviewId);
 
   // Try the standard delete endpoint first
   const res = await fetch(`${BASE_URL}reviews/${reviewId}`, {
@@ -651,7 +647,6 @@ export const getAllReviewsSSR = async (
     }
 
     const rawData = await fetcher(url, 60, headers);
-    console.log('Fetched all reviews (SSR):', rawData);
     return {
       reviews: rawData.content,
       totalPages: rawData.totalPages,
@@ -809,7 +804,7 @@ export const addToWatchlist = async (
 export const checkWatchlistExists = async (
   token: string,
   contentId: number
-): Promise<boolean> => {
+): Promise<number | null> => {
   try {
     const response = await fetch(
       `${BASE_URL}watchlist/exists?contentId=${contentId}`,
@@ -827,10 +822,10 @@ export const checkWatchlistExists = async (
     }
 
     const result = await response.json();
-    return result.data; // boolean value
+    return result.data; // Returns watchlist ID or null
   } catch (error) {
     console.error('Error checking watchlist existence:', error);
-    return false;
+    return null;
   }
 };
 
@@ -864,26 +859,6 @@ export const removeFromWatchlist = async (
   watchlistId: number
 ): Promise<any> => {
   const res = await fetch(`${BASE_URL}watchlist/${watchlistId}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || 'Failed to remove from watchlist');
-  }
-
-  return await res.json();
-};
-
-export const removeFromWatchlistByContentId = async (
-  token: string,
-  contentId: number
-): Promise<any> => {
-  const res = await fetch(`${BASE_URL}watchlist/content/${contentId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
