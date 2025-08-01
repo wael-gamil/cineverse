@@ -30,7 +30,6 @@ export default function ReviewsSection({
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
-  console.log('content id:', contentId);
 
   // Convert Review to ExtendedReview format for ExtendedReviewCard
   const convertToExtendedReview = (review: Review): ExtendedReview => ({
@@ -98,7 +97,6 @@ export default function ReviewsSection({
   ) => {
     // Find the current review to check existing reaction
     const currentReview = data.find(review => review.reviewId === reviewId);
-    console.log('Current review:', currentReview);
     // Determine the actual type to send based on current reaction
     let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
     if (currentReview?.userReaction === type) {

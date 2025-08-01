@@ -184,7 +184,7 @@ const sectionConfig: Record<
 export default async function Home() {
   const { content } = await getContents(
     'MOVIE',
-    { sortBy: 'mostRecent', lang: 'en', genres: ['Action'] },
+    { sortBy: 'mostRecent', lang: 'en', genres: [''] },
     0,
     4
   );

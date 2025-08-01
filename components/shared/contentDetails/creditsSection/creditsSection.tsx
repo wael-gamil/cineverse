@@ -49,7 +49,6 @@ export default function CreditsSection({ data }: CreditsSectionProps) {
     // No director, just cast
     return castWithPath;
   }, [data]);
-  console.log('Full Credits:', fullCredits);
   return (
     <section className={styles.section}>
       <div className={styles.sectionHeader}>

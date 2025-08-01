@@ -84,13 +84,10 @@ export default function ReviewsClientWrapper({
     reviewId: number,
     type: 'LIKE' | 'DISLIKE' 
   ) => Promise<void> = async (reviewId, type) => {
-    console.log('Reacting to review:', reviewId, type);
     // Find the current review to check existing reaction
     const currentReview = reviews.find(review => review.reviewId === reviewId);
-    console.log('Current review:', currentReview);
     // Determine the actual type to send based on current reaction
     let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
-    console.log('Action type before check:', actionType);
     if (currentReview?.userReaction === type) {
       // User is clicking the same reaction again, so undo it
       actionType = 'UNDO';
