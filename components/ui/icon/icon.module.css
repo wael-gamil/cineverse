@@ -26,6 +26,11 @@
 .stroke_muted {
   stroke: var(--color-muted);
 }
+
+.stroke_danger {
+  stroke: var(--color-danger);
+}
+
 .hide {
   opacity: 0;
 }

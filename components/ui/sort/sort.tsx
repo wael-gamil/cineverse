@@ -54,9 +54,9 @@ export default function Sort({ initialSortBy, sortOptions }: SortProps) {
         {sortOptions.options.map(option => (
           <Button
             key={option.value}
-            variant="list"
+            variant='list'
             active={sortBy === option.value}
-            width="100%"
+            width='100%'
             onClick={() =>
               option.value === sortBy ? setSortBy('') : setSortBy(option.value)
             }

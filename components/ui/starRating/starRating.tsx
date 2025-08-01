@@ -70,7 +70,11 @@ export default function StarRating({
   };
 
   return (
-    <div className={`${styles.starRating} ${animated ? styles.animated : ''} ${className}`}>
+    <div
+      className={`${styles.starRating} ${
+        animated ? styles.animated : ''
+      } ${className}`}
+    >
       {renderStars()}
     </div>
   );

@@ -68,7 +68,8 @@ export type IconName =
   | 'loader'
   | 'edit'
   | 'alertTriangle'
-  | 'trash';
+  | 'trash'
+  | 'check';
 type IconProps = {
   name: IconName;
   className?: string;
@@ -78,7 +79,8 @@ type IconProps = {
     | 'success'
     | 'white'
     | 'black'
-    | 'muted';
+    | 'muted'
+    | 'danger';
   width?: number | string;
   height?: number | string;
   hide?: boolean;
@@ -896,7 +898,13 @@ export const Icon = ({
           <path d='M19 6V4a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2'></path>
           <line x1='10' y1='11' x2='10' y2='17'></line>
           <line x1='14' y1='11' x2='14' y2='17'></line>
-          <path d='M5 6v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6'></path>
+          <path d='M5 6v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6'></path>{' '}
+        </svg>
+      );
+    case 'check':
+      return (
+        <svg {...svgProps}>
+          <polyline points='20 6 9 17 4 12'></polyline>
         </svg>
       );
     default:

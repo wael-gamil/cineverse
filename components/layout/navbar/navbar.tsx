@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import NavLinks from '../../ui/navLinks/navLinks';
 import SearchBar from '../../ui/search/searchBar';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import PanelWrapper from '@/components/ui/panelWrapper/panelWrapper';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 import { useStore } from '@tanstack/react-store';
@@ -25,8 +25,17 @@ export default function Navbar() {
   const { email, username } = useStore(userStore);
   const isLoggedIn = !!email && !!username;
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isMobile = useResponsiveLayout();
   const { trailerFocusMode } = useStore(uiStore);
+
+  // Helper function to generate login URL with current page as redirect parameter
+  const getLoginUrl = () => {
+    const currentPath =
+      pathname +
+      (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+    return `/login?redirect=${encodeURIComponent(currentPath)}`;
+  };
   const allowedPathsWithSpacer = [
     '/explore',
     '/reviews',
@@ -115,11 +124,9 @@ export default function Navbar() {
               <span className={styles.verse}>VERSE</span>
             </h1>
           </Link>
-
           <div className={styles.navbarDesktop}>
             <NavLinks />
           </div>
-
           <div className={styles.navbarDesktop}>
             <SearchBar />
             {!hasMounted ? (
@@ -140,25 +147,28 @@ export default function Navbar() {
               </Button>
             ) : isLoggedIn ? (
               <PanelWrapper
+                label='Account'
                 icon={isOpen => (
                   <Icon
                     name={isOpen ? 'close' : 'user'}
-                    width={24}
+                    width={16}
                     strokeColor='primary'
                   />
                 )}
+                badge={hasMounted ? username || undefined : undefined}
                 position='right'
                 padding='lg'
                 solidPanel
                 varient='solid'
                 buttonRadius='full'
                 buttonPadding='sm'
+                relativePanel
                 setClose={setClosePanel}
               >
                 <UserPanel closePanel={closePanel} />
               </PanelWrapper>
             ) : (
-              <Link href='/login'>
+              <Link href={getLoginUrl()}>
                 <Button
                   variant='solid'
                   color='neutral'
@@ -169,10 +179,11 @@ export default function Navbar() {
                 </Button>
               </Link>
             )}
-          </div>
+          </div>{' '}
           <div className={styles.navbarMobile}>
             <SearchBar />
             <PanelWrapper
+              label='Menu'
               icon={isOpen => (
                 <Icon
                   name={isOpen ? 'close' : 'burger'}
@@ -180,6 +191,9 @@ export default function Navbar() {
                   strokeColor='white'
                 />
               )}
+              badge={
+                hasMounted && isLoggedIn && username ? username : undefined
+              }
               position='right'
               padding='lg'
               solidPanel={true}
@@ -203,7 +217,7 @@ export default function Navbar() {
               ) : isLoggedIn ? (
                 <UserPanel closePanel={closePanel} />
               ) : (
-                <Link href='/login'>
+                <Link href={getLoginUrl()}>
                   <Button
                     variant='solid'
                     color='primary'
