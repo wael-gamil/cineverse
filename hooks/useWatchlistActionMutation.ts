@@ -1,13 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type WatchlistAction =
   | {
       mode: 'update';
       payload: { watchlistId: number; status: 'WATCHED' | 'TO_WATCH' };
+      contentId?: number; // Optional for cache invalidation
     }
-  | { mode: 'delete'; id: number };
+  | { mode: 'delete'; id: number; contentId?: number }; // Optional for cache invalidation
 
 export const useWatchlistActionMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (action: WatchlistAction) => {
       if (action.mode === 'update') {
@@ -35,6 +38,26 @@ export const useWatchlistActionMutation = () => {
       }
 
       throw new Error('Invalid watchlist action');
+    },
+    onSuccess: (data, action) => {
+      // Invalidate watchlist queries to refresh the data
+      queryClient.invalidateQueries({
+        queryKey: ['user-watchlist'],
+      });
+
+      // For delete operations, also invalidate the watchlist existence query if contentId is provided
+      if (action.mode === 'delete' && action.contentId) {
+        queryClient.invalidateQueries({
+          queryKey: ['watchlist-exists', action.contentId],
+        });
+      }
+
+      // For update operations, also invalidate the watchlist existence query if contentId is provided
+      if (action.mode === 'update' && action.contentId) {
+        queryClient.invalidateQueries({
+          queryKey: ['watchlist-exists', action.contentId],
+        });
+      }
     },
   });
 };

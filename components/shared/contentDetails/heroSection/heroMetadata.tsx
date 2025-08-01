@@ -9,7 +9,7 @@ import { Icon } from '@/components/ui/icon/icon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAddToWatchlistMutation } from '@/hooks/useAddToWatchlistMutation';
-import { useRemoveFromWatchlistMutation } from '@/hooks/useRemoveFromWatchlistMutation';
+import { useWatchlistActionMutation } from '@/hooks/useWatchlistActionMutation';
 import { useWatchlistExistsQuery } from '@/hooks/useWatchlistExistsQuery';
 import toast from 'react-hot-toast';
 type Props = {
@@ -47,14 +47,16 @@ export default function HeroMetadata({
   const { mutate: addToWatchlist, isPending: isAddingToWatchlist } =
     useAddToWatchlistMutation();
   const { mutate: removeFromWatchlist, isPending: isRemovingFromWatchlist } =
-    useRemoveFromWatchlistMutation();
-  const { data: isInWatchlist = false, isLoading: isCheckingWatchlist } =
+    useWatchlistActionMutation();
+  const { data: watchlistId = null, isLoading: isCheckingWatchlist } =
     useWatchlistExistsQuery(content.id);
+
+  // Check if content is in watchlist (watchlistId is a number when in watchlist, null when not)
+  const isInWatchlist = watchlistId !== null;
 
   const isPending = isAddingToWatchlist || isRemovingFromWatchlist;
   const handleAddToWatchlist = () => {
     const addPromise = new Promise<void>((resolve, reject) => {
-      console.log('id', content.id);
       addToWatchlist(content.id, {
         onSuccess: () => {
           resolve();
@@ -77,18 +79,21 @@ export default function HeroMetadata({
       }
     );
   };
-
   const handleRemoveFromWatchlist = () => {
+    if (!watchlistId) return; // Don't attempt removal if no watchlistId
+
     const removePromise = new Promise<void>((resolve, reject) => {
-      console.log('Removing content id:', content.id);
-      removeFromWatchlist(content.id, {
-        onSuccess: () => {
-          resolve();
-        },
-        onError: (err: any) => {
-          reject(err);
-        },
-      });
+      removeFromWatchlist(
+        { mode: 'delete', id: watchlistId, contentId: content.id },
+        {
+          onSuccess: data => {
+            resolve();
+          },
+          onError: (err: any) => {
+            reject(err);
+          },
+        }
+      );
     });
 
     toast.promise(
