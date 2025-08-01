@@ -121,30 +121,27 @@ export default function Card({
         // If there's an info button in top-right, offset the action button
         positionClass = 'top-right';
       }
-
       return (
         <div
           key={i}
           className={`${styles.actionButton} ${styles[positionClass]}`}
+          title={button.ariaLabel || 'action'}
         >
+          {' '}
           <Button
             borderRadius='fullRadius'
-            variant='ghost'
-            color={'neutral'}
+            variant='solid'
+            color={button.color === 'danger' ? 'danger' : 'primary'}
             ariaLabel={button.ariaLabel || 'action'}
             padding='none'
             onClick={button.onClick}
           >
-            <Icon
-              name={button.iconName}
-              strokeColor={button.color === 'danger' ? 'secondary' : 'white'}
-            />
+            <Icon name={button.iconName} strokeColor='white' />
           </Button>
         </div>
       );
     });
-
-  const renderImage = () => (
+  const renderImage = (includeActionButtons = false) => (
     <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
       <Image
         src={imageToUse}
@@ -172,6 +169,29 @@ export default function Card({
           </Button>
         </div>
       )}
+      {/* Render action buttons inside image wrapper for below layout */}
+      {includeActionButtons &&
+        actionButtons.map((button, i) => {
+          const positionClass = button.position || 'top-right';
+          return (
+            <div
+              key={i}
+              className={`${styles.actionButton} ${styles[positionClass]}`}
+              title={button.ariaLabel || 'action'}
+            >
+              <Button
+                borderRadius='fullRadius'
+                variant='solid'
+                color={button.color === 'danger' ? 'danger' : 'primary'}
+                ariaLabel={button.ariaLabel || 'action'}
+                padding='none'
+                onClick={button.onClick}
+              >
+                <Icon name={button.iconName} strokeColor='white' />
+              </Button>
+            </div>
+          );
+        })}
     </div>
   );
 
@@ -212,10 +232,9 @@ export default function Card({
       </>
     </>
   );
-
   const renderBelowLayout = () => (
     <>
-      {renderImage()}
+      {renderImage(true)} {/* Pass true to include action buttons in image */}
       <div className={styles.belowDetails}>
         <h3 className={styles.contentTitle}>{title}</h3>
 
@@ -223,7 +242,7 @@ export default function Card({
         {description && (
           <p className={styles.contentBelowOverview}>{description}</p>
         )}
-        {/* {children} */}
+        {children}
       </div>
     </>
   );

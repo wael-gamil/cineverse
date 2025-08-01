@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useAddToWatchlistMutation } from '@/hooks/useAddToWatchlistMutation';
 import { useWatchlistActionMutation } from '@/hooks/useWatchlistActionMutation';
 import { useWatchlistExistsQuery } from '@/hooks/useWatchlistExistsQuery';
+import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 type Props = {
   content: NormalizedContent;
@@ -43,19 +44,26 @@ export default function HeroMetadata({
   showExternalLink,
   slug,
 }: Props) {
+  const { isAuthenticated, requireAuth } = useAuth();
   const genreList = content.genres || genres || [];
   const { mutate: addToWatchlist, isPending: isAddingToWatchlist } =
     useAddToWatchlistMutation();
   const { mutate: removeFromWatchlist, isPending: isRemovingFromWatchlist } =
     useWatchlistActionMutation();
   const { data: watchlistId = null, isLoading: isCheckingWatchlist } =
-    useWatchlistExistsQuery(content.id);
+    useWatchlistExistsQuery(content.id, isAuthenticated);
 
   // Check if content is in watchlist (watchlistId is a number when in watchlist, null when not)
   const isInWatchlist = watchlistId !== null;
 
   const isPending = isAddingToWatchlist || isRemovingFromWatchlist;
   const handleAddToWatchlist = () => {
+    if (
+      !requireAuth(() => {}, 'Please log in to add items to your watchlist')
+    ) {
+      return;
+    }
+
     const addPromise = new Promise<void>((resolve, reject) => {
       addToWatchlist(content.id, {
         onSuccess: () => {
@@ -80,6 +88,10 @@ export default function HeroMetadata({
     );
   };
   const handleRemoveFromWatchlist = () => {
+    if (!requireAuth(() => {}, 'Please log in to manage your watchlist')) {
+      return;
+    }
+
     if (!watchlistId) return; // Don't attempt removal if no watchlistId
 
     const removePromise = new Promise<void>((resolve, reject) => {

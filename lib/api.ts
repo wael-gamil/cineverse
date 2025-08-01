@@ -406,25 +406,83 @@ export const getUserProfile = async (token: string): Promise<UserProfile> => {
   const data = await fetcher('users/profile', 0, headers);
   return data;
 };
-export const getCurrentUser = async (token: string) => {
-  const res = await fetch(`${BASE_URL}auth/me`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
 
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.message || 'Failed to fetch user');
-  }
-
+// Public profile functions
+export const getPublicUserProfile = async (
+  username: string
+): Promise<UserProfile> => {
+  const data = await fetcher(`users/profile/${username}`, 0);
   return data;
 };
-export const verifyEmail = async (token: string) => {
-  return await fetcher(`auth/verify?token=${token}`);
+
+export const getPublicUserReviews = async (
+  username: string,
+  page = 0,
+  size = 10
+): Promise<{
+  reviews: UserReview[];
+  totalPages: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `reviews/users/${username}?${query.toString()}`;
+    const rawData = await fetcher(url, 0);
+
+    const reviews: UserReview[] = rawData.content;
+    return {
+      reviews,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching public user reviews:', error);
+    return {
+      reviews: [],
+      totalPages: 0,
+      currentPage: 0,
+    };
+  }
+};
+
+export const getPublicUserWatchlist = async (
+  username: string,
+  status: 'TO_WATCH' | 'WATCHED',
+  page = 0,
+  size = 10
+): Promise<{
+  items: WatchlistItem[];
+  totalPages: number;
+  totalElements: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('status', status);
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `watchlist/${username}?${query.toString()}`;
+    const rawData = await fetcher(url, 0);
+
+    return {
+      items: rawData.content,
+      totalPages: rawData.totalPages,
+      totalElements: rawData.totalElements,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching public user watchlist:', error);
+    return {
+      items: [],
+      totalPages: 0,
+      totalElements: 0,
+      currentPage: 0,
+    };
+  }
 };
 
 const putData = async (endpoint: string, body: any, headers?: HeadersInit) => {
@@ -547,7 +605,6 @@ export const postUserReview = async (token: string, review: ReviewPayload) => {
   });
 };
 export const deleteUserReview = async (token: string, reviewId: number) => {
-
   // Try the standard delete endpoint first
   const res = await fetch(`${BASE_URL}reviews/${reviewId}`, {
     method: 'DELETE',
@@ -779,6 +836,48 @@ export const getUserWatchlist = async (
     };
   } catch (error) {
     console.error('Error fetching watchlist:', error);
+    return {
+      items: [],
+      totalPages: 0,
+      totalElements: 0,
+      currentPage: 0,
+    };
+  }
+};
+
+export const getUserWatchlistSSR = async (
+  token: string,
+  status: 'TO_WATCH' | 'WATCHED',
+  page = 0,
+  size = 10
+): Promise<{
+  items: WatchlistItem[];
+  totalPages: number;
+  totalElements: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('status', status);
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `watchlist?${query.toString()}`;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    const rawData = await fetcher(url, 0, headers);
+
+    return {
+      items: rawData.content,
+      totalPages: rawData.totalPages,
+      totalElements: rawData.totalElements,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching user watchlist SSR:', error);
     return {
       items: [],
       totalPages: 0,
