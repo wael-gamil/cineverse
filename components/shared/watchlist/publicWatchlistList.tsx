@@ -10,6 +10,8 @@ import Pagination from '@/components/ui/pagination/pagination';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import styles from './watchList.module.css';
 import { WatchlistItem } from '@/constants/types/movie';
+import EmptyCard from '@/components/cards/card/emptyCard';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type PublicWatchlistListProps = {
   username: string;
@@ -26,6 +28,7 @@ export default function PublicWatchlistList({
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null);
 
+  const isMobile = useResponsiveLayout();
   const { data, isLoading, isError } = usePublicUserWatchlistQuery({
     username,
     status,
@@ -67,50 +70,8 @@ export default function PublicWatchlistList({
     setSelectedItem(item);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
-  if (isLoading) {
-    const placeholders = Array.from({ length: 8 });
-
-    return (
-      <GridContainer
-        layout='grid'
-        cardGap={26}
-        cardMinWidth={250}
-        cardMaxWidth={500}
-        cardCount={8}
-      >
-        {placeholders.map((_, i) => (
-          <SkeletonCard
-            key={i}
-            layout='overlay'
-            imageHeight='image-lg'
-            minWidth={250}
-            maxWidth={500}
-          />
-        ))}
-      </GridContainer>
-    );
-  }
-
-  if (isError || !data?.items?.length) {
-    return (
-      <p className={styles.emptyMessage}>
-        {status === 'TO_WATCH'
-          ? `${username} has no items in their watchlist yet.`
-          : `${username} has no watched content yet.`}
-      </p>
-    );
-  }
-
-  const totalPages = data.totalPages;
-  const currentPage = data.currentPage;
+  const totalPages = data?.totalPages;
+  const currentPage = data?.currentPage;
 
   return (
     <>
@@ -119,10 +80,23 @@ export default function PublicWatchlistList({
         cardGap={26}
         cardMinWidth={250}
         cardMaxWidth={500}
-        cardCount={data.items.length}
+        cardCount={data?.items.length}
+        scrollRows={isMobile ? 1 : undefined}
       >
-        {' '}
-        {data.items.map((item: WatchlistItem) => (
+        {isLoading &&
+          Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard
+              key={i}
+              layout='overlay'
+              imageHeight='image-lg'
+              minWidth={250}
+              maxWidth={500}
+            />
+          ))}
+        {(isError || !data?.items?.length) && (
+          <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
+        )}
+        {data?.items.map((item: WatchlistItem) => (
           <div key={item.id} className={styles.cardWrapper}>
             <Card
               title={item.title}
@@ -144,11 +118,16 @@ export default function PublicWatchlistList({
         ))}
       </GridContainer>
 
-      {totalPages > 1 && (
-        <div className={styles.paginationWrapper}>
-          <Pagination currentPage={currentPage} totalPages={totalPages} />
-        </div>
-      )}
+      {totalPages
+        ? totalPages > 1 && (
+            <div className={styles.paginationWrapper}>
+              <Pagination
+                currentPage={currentPage ?? 1}
+                totalPages={totalPages}
+              />
+            </div>
+          )
+        : null}
     </>
   );
 }

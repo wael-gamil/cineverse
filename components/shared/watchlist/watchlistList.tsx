@@ -16,6 +16,8 @@ import SkeletonCard from '@/components/cards/card/skeletonCard';
 import toast from 'react-hot-toast';
 import styles from './watchList.module.css';
 import { WatchlistItem } from '@/constants/types/movie';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import EmptyCard from '@/components/cards/card/emptyCard';
 
 type WatchlistItemProp = {
   status: 'TO_WATCH' | 'WATCHED';
@@ -31,6 +33,7 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<WatchlistItem | null>(null);
   const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null);
+  const isMobile = useResponsiveLayout();
 
   useEffect(() => {
     setIsClient(true);
@@ -173,6 +176,7 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
         cardMinWidth={250}
         cardMaxWidth={500}
         cardCount={8}
+        scrollRows={isMobile ? 1 : undefined}
       >
         {placeholders.map((_, i) => (
           <SkeletonCard
@@ -187,16 +191,6 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
     );
   }
 
-  if (isError || !data?.items?.length) {
-    return (
-      <p className={styles.emptyMessage}>
-        {status === 'TO_WATCH'
-          ? 'Your watchlist is empty. Add some content to start tracking!'
-          : 'You have no watched content yet. Start watching something!'}
-      </p>
-    );
-  }
-
   return (
     <>
       <GridContainer
@@ -204,10 +198,23 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
         cardGap={26}
         cardMinWidth={250}
         cardMaxWidth={500}
-        cardCount={data.items.length}
+        cardCount={data?.items.length}
+        scrollRows={isMobile ? 1 : undefined}
       >
-        {' '}
-        {data.items.map(item => (
+        {isLoading &&
+          Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard
+              key={i}
+              layout='overlay'
+              imageHeight='image-md'
+              minWidth={250}
+              maxWidth={500}
+            />
+          ))}
+        {(isError || !data?.items?.length) && (
+          <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
+        )}
+        {data?.items.map(item => (
           <Card
             key={item.id}
             title={item.title}
@@ -217,7 +224,6 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
               setSelectedId(item.id);
               setSelectedItem(item);
             }}
-      
             className={
               selectedId === null
                 ? ''
@@ -259,11 +265,12 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
           </Card>
         ))}
       </GridContainer>
-
-      <Pagination
-        currentPage={data.currentPage || 0}
-        totalPages={data.totalPages || 1}
-      />
+      {data?.items.length !== 0 && (
+        <Pagination
+          currentPage={data?.currentPage || 0}
+          totalPages={data?.totalPages || 1}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && itemToDelete && (

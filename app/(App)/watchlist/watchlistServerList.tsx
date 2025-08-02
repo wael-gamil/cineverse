@@ -12,6 +12,8 @@ import { Icon } from '@/components/ui/icon/icon';
 import toast from 'react-hot-toast';
 import styles from '../../../components/shared/watchlist/watchList.module.css';
 import { WatchlistItem } from '@/constants/types/movie';
+import EmptyCard from '@/components/cards/card/emptyCard';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type WatchlistServerListProps = {
   status: 'TO_WATCH' | 'WATCHED';
@@ -36,6 +38,7 @@ export default function WatchlistServerList({
   const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null);
   // Use initial data from server directly
   const data = initialData;
+  const isMobile = useResponsiveLayout();
 
   const { mutate: watchlistAction } = useWatchlistActionMutation();
   const {
@@ -150,13 +153,7 @@ export default function WatchlistServerList({
   if (data.items.length === 0) {
     return (
       <div className={styles.emptyContainer}>
-        <Icon name='bookmark' strokeColor='muted' width={48} height={48} />
-        <h3>Your watchlist is empty</h3>
-        <p>
-          {status === 'TO_WATCH'
-            ? 'Add some movies and shows to watch later!'
-            : 'No watched content yet. Start watching!'}
-        </p>
+        <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
       </div>
     );
   }
@@ -168,18 +165,14 @@ export default function WatchlistServerList({
         cardMinWidth={250}
         cardMaxWidth={500}
         cardCount={data.items.length}
-        scrollRows={undefined}
+        scrollRows={isMobile ? 1 : undefined}
       >
         {data.items.map((item: WatchlistItem) => {
-          const subtitle =
-            item.contentType.charAt(0).toUpperCase() +
-            item.contentType.slice(1).toLowerCase();
           return (
             <Card
               key={item.id}
               imageUrl={item.contentPosterUrl}
               title={item.title}
-              // subtitle={subtitle}
               badges={[
                 {
                   iconName: 'star',
@@ -195,7 +188,6 @@ export default function WatchlistServerList({
                     item.contentType.slice(1).toLowerCase(),
                 },
               ]}
-              // description={item.overview}
               onClick={() => handleContentClick(item)}
               layout='below'
               minWidth={250}
