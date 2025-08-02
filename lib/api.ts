@@ -307,7 +307,12 @@ export const getPersonContents = async (
   page = 0,
   size = 24,
   type?: 'MOVIE' | 'SERIES'
-): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
+): Promise<{
+  content: Content[];
+  totalPages: number;
+  currentPage: number;
+  totalElements: number;
+}> => {
   try {
     const query = new URLSearchParams();
     query.set('page', String(page));
@@ -332,6 +337,7 @@ export const getPersonContents = async (
       content,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
+      totalElements: rawData.totalElements,
     };
   } catch (error) {
     console.error('Error fetching person content:', error);
@@ -339,6 +345,7 @@ export const getPersonContents = async (
       content: [],
       totalPages: 0,
       currentPage: 0,
+      totalElements: 0,
     };
   }
 };
