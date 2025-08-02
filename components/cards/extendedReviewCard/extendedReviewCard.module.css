@@ -648,34 +648,45 @@
 /* === SPOILER OVERLAY === */
 
 .spoilerOverlay {
+  position: relative;
   width: 100%;
   min-height: 60px;
-  border: 2px dashed var(--color-danger-20);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
   opacity: 1;
   transform: translateY(0);
-  animation: spoilerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes spoilerFadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.spoilerOverlay::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(239, 68, 68),
+    transparent
+  );
+  transition: width 0.4s ease;
+}
+
+.spoilerOverlay:hover::after {
+  width: 80%;
 }
 
 .spoilerOverlay:hover {
-  border-color: var(--color-danger-60);
+  border-color: rgba(239, 68, 68, 0.3);
   transform: translateY(-1px);
 }
 
@@ -687,47 +698,62 @@
   padding: var(--space-md) var(--space-lg);
   position: relative;
   z-index: 2;
-  transition: all var(--transition-normal);
+  transition: all 0.3s ease;
 }
 
 .spoilerIcon {
   width: 20px;
   height: 20px;
-  color: var(--color-white);
-  opacity: 0.9;
-  transition: all var(--transition-normal);
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
 .spoilerOverlay:hover .spoilerIcon {
   transform: scale(1.1);
-  opacity: 1;
-  color: var(--color-danger);
+  color: rgb(239, 68, 68);
 }
 
 .spoilerText {
-  color: var(--color-white);
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
   font-size: var(--font-size-sm);
   margin: 0;
-  transition: all var(--transition-normal);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.spoilerText::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: rgb(239, 68, 68);
+  transition: width 0.3s ease;
 }
 
 .spoilerOverlay:hover .spoilerText {
-  color: var(--color-danger);
+  color: rgba(255, 255, 255, 1);
+}
+
+.spoilerOverlay:hover .spoilerText::after {
+  width: 100%;
 }
 
 .spoilerSubtext {
-  color: var(--color-white-60);
+  color: rgba(255, 255, 255, 0.4);
   font-size: var(--font-size-xs);
-  font-style: italic;
+  font-weight: 400;
   margin: 0;
   margin-left: var(--space-xs);
-  transition: all var(--transition-normal);
+  transition: all 0.3s ease;
+  font-style: italic;
 }
 
 .spoilerOverlay:hover .spoilerSubtext {
-  color: var(--color-white-80);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* === RESPONSIVE DESIGN === */
