@@ -7,13 +7,14 @@ import { logout } from '@/utils/logout';
 import Button from '@/components/ui/button/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import fallBackAvatar from '@/public/avatar_fallback.png';
 
 type Props = {
   closePanel?: () => void;
 };
 
 export default function UserPanel({ closePanel }: Props) {
-  const { username, email } = useStore(userStore);
+  const { username, email, profilePicture } = useStore(userStore);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -25,7 +26,7 @@ export default function UserPanel({ closePanel }: Props) {
       <div className={styles.profileSection}>
         <div className={styles.avatarWrapper}>
           <Image
-            src='https://image.tmdb.org/t/p/w500/zpIK3GYmqDPumneEDf0aqsqxhV1.jpg'
+            src={profilePicture || fallBackAvatar}
             alt='User Avatar'
             fill
           />
