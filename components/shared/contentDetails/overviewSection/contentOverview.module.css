@@ -59,6 +59,8 @@
   position: relative;
   transition: max-height 0.3s ease;
   color: var(--color-muted);
+  font-size: var(--font-size-base);
+  line-height: 1.7;
 }
 .descriptionText.expanded {
   max-height: 1000px;
