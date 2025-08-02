@@ -13,6 +13,7 @@ import { useWatchlistActionMutation } from '@/hooks/useWatchlistActionMutation';
 import { useWatchlistExistsQuery } from '@/hooks/useWatchlistExistsQuery';
 import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
+import { useState, useEffect } from 'react';
 type Props = {
   content: NormalizedContent;
   runtime: string;
@@ -45,6 +46,13 @@ export default function HeroMetadata({
   slug,
 }: Props) {
   const { isAuthenticated, requireAuth } = useAuth();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Prevent hydration mismatches by only showing loading states after hydration
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const genreList = content.genres || genres || [];
   const { mutate: addToWatchlist, isPending: isAddingToWatchlist } =
     useAddToWatchlistMutation();
@@ -221,15 +229,15 @@ export default function HeroMetadata({
             <Icon name='play' strokeColor='white' />
             Play Trailer
           </Button>
-        )}
+        )}{' '}
         <Button
           color='neutral'
-          disabled={isPending || isCheckingWatchlist}
+          disabled={isPending || (isHydrated && isCheckingWatchlist)}
           onClick={
             isInWatchlist ? handleRemoveFromWatchlist : handleAddToWatchlist
           }
         >
-          {isCheckingWatchlist ? (
+          {isHydrated && isCheckingWatchlist ? (
             <>
               <Icon name='loader' strokeColor='white' />
               Loading...

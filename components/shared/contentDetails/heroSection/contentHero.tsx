@@ -37,6 +37,9 @@ export default function ContentHero({
 }: ContentHeroProps) {
   useMobileVh();
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [trailerLoaded, setTrailerLoaded] = useState(false);
+
   const { data, isLoading } =
     content.type === 'movie' || content.type === 'series'
       ? useTrailerQuery(content.id)
@@ -63,6 +66,24 @@ export default function ContentHero({
   const sectionRef = useRef<HTMLElement | null>(null);
   const isHeroVisible = useIsInView(sectionRef, '0px', 0.3);
   const [showBottomOverlay, setShowBottomOverlay] = useState(false);
+  // Handle smooth transition from poster to trailer
+  useEffect(() => {
+    if (videoId && !isLoading) {
+      // Delay showing trailer to allow for smooth transition
+      const timer = setTimeout(() => {
+        setShowTrailer(true);
+        // Set trailer loaded after a brief delay to allow for fade-in
+        setTimeout(() => {
+          setTrailerLoaded(true);
+        }, 300);
+      }, 800); // 800ms delay for transition
+
+      return () => clearTimeout(timer);
+    } else {
+      setShowTrailer(false);
+      setTrailerLoaded(false);
+    }
+  }, [videoId, isLoading]);
   const toggleMute = () => {
     const player = playerRef.current;
     if (!player) return;
@@ -182,6 +203,7 @@ export default function ContentHero({
         }
         id='videoWrapper'
       >
+        {' '}
         {/* Background Video */}
         <div
           className={`${styles.background} ${
@@ -189,28 +211,33 @@ export default function ContentHero({
           }`}
           onClick={togglePlayPause}
         >
-          {/* YouTube Player injected here */}
-          {videoId ? (
-            <TrailerPlayer
-              videoId={videoId}
-              focusMode={trailerFocusMode}
-              isMuted={isMuted}
-              setIsMuted={setIsMuted}
-              onEnd={handleExitingFocusMode}
-              playerRef={playerRef}
-            />
-          ) : (
-            <Image
-              src={content.backgroundUrl || backgroundUrl}
-              alt={content.title}
-              fill
-              className={`${styles.backdropImage} ${
-                videoId ? styles.backdropHidden : ''
+          {/* Poster Image - always render but fade out when trailer loads */}
+          <Image
+            src={content.backgroundUrl || backgroundUrl}
+            alt={content.title}
+            fill
+            className={`${styles.backdropImage} ${
+              showTrailer && trailerLoaded ? styles.backdropHidden : ''
+            }`}
+          />
+          {/* YouTube Player - fade in when ready */}
+          {showTrailer && (
+            <div
+              className={`${styles.trailerContainer} ${
+                trailerLoaded ? styles.trailerVisible : styles.trailerHidden
               }`}
-            />
+            >
+              <TrailerPlayer
+                videoId={videoId!}
+                focusMode={trailerFocusMode}
+                isMuted={isMuted}
+                setIsMuted={setIsMuted}
+                onEnd={handleExitingFocusMode}
+                playerRef={playerRef}
+              />
+            </div>
           )}
         </div>
-
         {/* Overlays */}
         {(!trailerFocusMode || isFadingOut) && (
           <>
@@ -227,7 +254,6 @@ export default function ContentHero({
             )}
           </>
         )}
-
         {/* Content Metadata */}
         {(!trailerFocusMode || isFadingOut) && (
           <div
@@ -235,7 +261,7 @@ export default function ContentHero({
               isFadingOut ? styles.fadeOut : ''
             }`}
           >
-            {!videoId && !isLoading && (
+            {(!showTrailer || !trailerLoaded) && (
               <div className={styles.posterWrapper}>
                 <Image
                   src={content.imageUrl || fallbackPoster}
@@ -256,12 +282,18 @@ export default function ContentHero({
               onShare={() => {
                 if (navigator.share) {
                   navigator.share({
-                    url: window.location.href,
+                    url: slug
+                      ? `${window.location.origin}/${encodeURI(slug)}`
+                      : window.location.href,
                     title: content.title,
                     text: content.description,
                   });
                 } else {
-                  navigator.clipboard.writeText(window.location.href);
+                  navigator.clipboard.writeText(
+                    slug
+                      ? `${window.location.origin}/${encodeURI(slug)}`
+                      : window.location.href
+                  );
                   alert('Link copied to clipboard!');
                 }
               }}
@@ -277,10 +309,10 @@ export default function ContentHero({
             onClose={handleExitingFocusMode}
           />
         )}
-      </div>
+      </div>{' '}
       {/* Mobile Metadata */}
       <div className={styles.mobileContainer}>
-        {!videoId && !isLoading && (
+        {(!showTrailer || !trailerLoaded) && (
           <div className={styles.posterWrapper}>
             <Image
               src={content.imageUrl || fallbackPoster}
@@ -301,12 +333,18 @@ export default function ContentHero({
           onShare={() => {
             if (navigator.share) {
               navigator.share({
-                url: window.location.href,
+                url: slug
+                  ? `${window.location.origin}/${encodeURI(slug)}`
+                  : window.location.href,
                 title: content.title,
                 text: content.description,
               });
             } else {
-              navigator.clipboard.writeText(window.location.href);
+              navigator.clipboard.writeText(
+                slug
+                  ? `${window.location.origin}/${encodeURI(slug)}`
+                  : window.location.href
+              );
               alert('Link copied to clipboard!');
             }
           }}
