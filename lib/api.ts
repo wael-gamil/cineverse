@@ -485,6 +485,9 @@ export const getPublicUserWatchlist = async (
   }
 };
 
+export const verifyEmail = async (token: string) => {
+  return await fetcher(`auth/verify?token=${token}`);
+};
 const putData = async (endpoint: string, body: any, headers?: HeadersInit) => {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: 'PUT',
