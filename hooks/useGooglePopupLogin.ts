@@ -58,12 +58,31 @@ export function useGooglePopupLogin(redirectTo?: string | null) {
 
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
+          const { userStore, setUserWithExpiry } = await import(
+            '@/utils/userStore'
+          );
 
-          const { userStore } = await import('@/utils/userStore');
-          userStore.setState({
-            username: data.user.username,
-            email: data.user.email,
-          });
+          // Fetch user profile to get complete user data
+          try {
+            const profileRes = await fetch('/api/user/profile', {
+              credentials: 'include',
+            });
+            const profileData = await profileRes.json();
+
+            if (profileRes.ok && profileData.user) {
+              setUserWithExpiry(
+                profileData.user.username,
+                profileData.user.email,
+                profileData.user.profilePicture
+              );
+            } else {
+              // Fallback to basic user data if profile fetch fails
+              setUserWithExpiry(data.user.username, data.user.email);
+            }
+          } catch (profileError) {
+            // Fallback to basic user data if profile fetch fails
+            setUserWithExpiry(data.user.username, data.user.email);
+          }
           toast.success('Logged in successfully', {
             className: 'toast-success',
           });

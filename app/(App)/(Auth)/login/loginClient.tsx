@@ -9,6 +9,7 @@ import { setUserWithExpiry } from '@/utils/userStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -25,6 +26,24 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect');
+  // User profile query (disabled initially)
+  const { refetch: fetchUserProfile } = useUserProfileQuery();
+
+  // Helper function to fetch and store user profile after login
+  const fetchAndStoreUserProfile = async () => {
+    try {
+      const { data: userProfile } = await fetchUserProfile();
+      if (userProfile) {
+        setUserWithExpiry(
+          userProfile.username,
+          userProfile.email,
+          userProfile.profilePicture
+        );
+      }
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+    }
+  };
   // Redirect if already authenticated
   useEffect(() => {
     const redirectTo = searchParams.get('redirect') || '/';
@@ -69,16 +88,18 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
-
     login(
       { username, password },
       {
-        onSuccess: data => {
-          setUserWithExpiry(data.user.username, data.user.email);
+        onSuccess: async data => {
+          // Fetch and store complete user profile
+          await fetchAndStoreUserProfile();
 
           toast.success('Login successful!', {
             className: 'toast-success',
-          }); // Check if there's a redirect parameter
+          });
+
+          // Check if there's a redirect parameter
           const redirectTo = searchParams.get('redirect') || '/';
           router.push(redirectTo);
         },
