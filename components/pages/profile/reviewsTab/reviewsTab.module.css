@@ -250,7 +250,7 @@
 @media (max-width: 768px) {
   .reviewsContainer {
     padding: var(--space-md);
-    gap: var(--space-sm);
+    gap: var(--space-lg);
   }
 }
 
@@ -258,7 +258,7 @@
 @media (max-width: 480px) {
   .reviewsContainer {
     padding: var(--space-sm);
-    gap: var(--space-sm);
+    gap: var(--space-lg);
   }
 }
 
@@ -266,6 +266,6 @@
 @media (max-width: 320px) {
   .reviewsContainer {
     padding: var(--space-xs);
-    gap: var(--space-xs);
+    gap: var(--space-lg);
   }
 }

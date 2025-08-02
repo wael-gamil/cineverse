@@ -152,7 +152,9 @@ export default function ExtendedReviewCard({
               sizes='24px'
             />
           </div>
-          <span className={styles.authorName}>{review.user?.name}</span>
+          <span className={styles.authorName}>
+            {review.user?.name || review.user?.username}
+          </span>
         </div>
         <span className={styles.reviewDate}>
           • {formatDate(review.createdAt)}
