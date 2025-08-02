@@ -2,7 +2,7 @@
 
 import styles from './profileTabs.module.css';
 
-type TabId = 'reviews' | 'watchlist' | 'friends';
+type TabId = 'reviews' | 'to-watch' | 'watched';
 
 type ProfileTabsProps = {
   activeTab: TabId;
@@ -15,7 +15,8 @@ export default function ProfileTabs({
 }: ProfileTabsProps) {
   const tabs: { id: TabId; label: string }[] = [
     { id: 'reviews', label: 'Reviews' },
-    { id: 'watchlist', label: 'Watchlist' },
+    { id: 'to-watch', label: 'To Watch' },
+    { id: 'watched', label: 'Watched' },
   ];
 
   return (
