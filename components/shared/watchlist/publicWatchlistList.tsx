@@ -30,7 +30,7 @@ export default function PublicWatchlistList({
     username,
     status,
     page,
-    size: 20,
+    size: 24,
   });
 
   const {
@@ -90,7 +90,7 @@ export default function PublicWatchlistList({
           <SkeletonCard
             key={i}
             layout='overlay'
-            imageHeight='image-md'
+            imageHeight='image-lg'
             minWidth={250}
             maxWidth={500}
           />
@@ -110,7 +110,7 @@ export default function PublicWatchlistList({
   }
 
   const totalPages = data.totalPages;
-  const currentPage = data.currentPage + 1; // Convert to 1-based
+  const currentPage = data.currentPage;
 
   return (
     <>
@@ -129,13 +129,13 @@ export default function PublicWatchlistList({
               description={item.overview}
               imageUrl={item.contentPosterUrl}
               layout='overlay'
-              imageHeight='image-md'
+              imageHeight='image-lg'
               onClick={() => handleCardClick(item)}
               badges={[
                 {
-                  text: item.imdbRate.toFixed(1),
+                  number: Number(item.imdbRate.toFixed(1)),
                   iconName: 'star',
-                  color: 'primary',
+                  color: 'secondary',
                   position: 'top-right',
                 },
               ]}

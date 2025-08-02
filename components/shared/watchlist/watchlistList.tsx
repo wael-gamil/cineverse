@@ -211,23 +211,13 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
           <Card
             key={item.id}
             title={item.title}
-            subtitle={item.contentType}
             imageUrl={item.contentPosterUrl || '/images/placeholder.jpg'}
-            description={item.overview}
-            layout='overlay'
+            layout='below'
             onClick={() => {
               setSelectedId(item.id);
               setSelectedItem(item);
             }}
-            actionButtons={[
-              {
-                iconName: 'trash',
-                onClick: e => handleDeleteClick(item, e),
-                color: 'danger',
-                position: 'top-right',
-                ariaLabel: 'Remove from watchlist',
-              },
-            ]}
+      
             className={
               selectedId === null
                 ? ''
@@ -238,17 +228,34 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
             minWidth={250}
             maxWidth={500}
           >
-            {status === 'TO_WATCH' && (
+            <div className={styles.cardContent}>
+              {' '}
               <Button
-                variant='solid'
+                variant='ghost'
                 onClick={e => {
                   e.stopPropagation();
-                  handleMoveToWatched(item.id);
+                  handleDeleteClick(item, e);
                 }}
+                color='danger'
+                padding='sm'
               >
-                Add to Watched
+                <Icon name='trash' strokeColor='white' />
               </Button>
-            )}
+              {status === 'TO_WATCH' && (
+                <Button
+                  variant='solid'
+                  color='secondary'
+                  size='sm'
+                  padding='md'
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleMoveToWatched(item.id);
+                  }}
+                >
+                  Mark as Watched
+                </Button>
+              )}
+            </div>
           </Card>
         ))}
       </GridContainer>
