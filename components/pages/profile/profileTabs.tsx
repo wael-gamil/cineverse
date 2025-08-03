@@ -20,7 +20,11 @@ export default function ProfileTabs({
   ];
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={styles.wrapper}
+      role='tablist'
+      aria-label='Profile sections'
+    >
       {tabs.map(tab => (
         <button
           key={tab.id}
@@ -28,6 +32,10 @@ export default function ProfileTabs({
             activeTab === tab.id ? styles.active : ''
           }`}
           onClick={() => setActiveTab(tab.id)}
+          role='tab'
+          aria-selected={activeTab === tab.id}
+          aria-controls={`${tab.id}-panel`}
+          type='button'
         >
           {tab.label}
         </button>
