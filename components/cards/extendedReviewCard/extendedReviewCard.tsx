@@ -240,11 +240,10 @@ export default function ExtendedReviewCard({
         {/* Actions */}
         <div className={styles.actions}>
           <div className={styles.reactions}>
-            {' '}
-            <Button
+            {' '}            <Button
               padding='sm'
               variant='ghost'
-              color='neutral'
+              color={review.userReaction === 'LIKE' ? 'primary' : 'neutral'}
               borderRadius='fullRadius'
               onClick={e => {
                 e.stopPropagation();
@@ -253,13 +252,16 @@ export default function ExtendedReviewCard({
                 }, 'Please log in to like reviews');
               }}
             >
-              <Icon name='thumbUp' strokeColor='white' />
+              <Icon 
+                name='thumbUp' 
+                strokeColor={review.userReaction === 'LIKE' ? 'primary' : 'white'} 
+              />
               <span>{review.likeCount}</span>
             </Button>
             <Button
               padding='sm'
               variant='ghost'
-              color='neutral'
+              color={review.userReaction === 'DISLIKE' ? 'danger' : 'neutral'}
               borderRadius='fullRadius'
               onClick={e => {
                 e.stopPropagation();
@@ -268,7 +270,10 @@ export default function ExtendedReviewCard({
                 }, 'Please log in to dislike reviews');
               }}
             >
-              <Icon name='thumbDown' strokeColor='white' />
+              <Icon 
+                name='thumbDown' 
+                strokeColor={review.userReaction === 'DISLIKE' ? 'danger' : 'white'} 
+              />
               <span>{review.dislikeCount}</span>
             </Button>
           </div>
