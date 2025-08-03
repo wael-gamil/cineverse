@@ -13,7 +13,7 @@ import styles from './reviewsTab.module.css';
 import type { UserReview } from '@/constants/types/movie';
 import { useReviewAction } from '@/hooks/useReviewAction';
 import toast from 'react-hot-toast';
-import { useReactToReview } from '@/hooks/useReactToReview';
+import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function ReviewsTab() {
@@ -37,10 +37,13 @@ export default function ReviewsTab() {
     data: reviewsData,
     isLoading: reviewsLoading,
     error: reviewsError,
-    refetch,
-  } = useUserReviews(username ?? '');
+    refetch,  } = useUserReviews(username ?? '');
   const { mutate: handleReviewAction } = useReviewAction();
-  const { mutate: reactToReview } = useReactToReview();
+    // Set up reaction handler with debouncing and optimistic updates
+  const { handleReactToReview, getReviewState } = useReviewReactionHandler({
+    reviews: reviewsData?.reviews || [],
+  });
+  
   const {
     data: summaryData,
     isLoading: summaryLoading,
@@ -156,66 +159,11 @@ export default function ReviewsTab() {
         {
           className: 'toast-default',
         }
-      );
-    } finally {
+      );    } finally {
       setIsSubmitting(false);
     }
   };
-  const handleReactToReview = async (
-    reviewId: number,
-    type: 'LIKE' | 'DISLIKE'
-  ) => {
-    if (!requireAuth(undefined, 'Please log in to react to reviews')) {
-      return;
-    }
-
-    // Find the current review to check existing reaction
-    const currentReview = reviewsData?.reviews.find(
-      review => review.reviewId === reviewId
-    );
-
-    // Determine the actual type to send based on current reaction
-    let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
-
-    if (currentReview?.userReaction === type) {
-      // User is clicking the same reaction again, so undo it
-      actionType = 'UNDO';
-    }
-
-    const reactPromise = new Promise<void>((resolve, reject) => {
-      reactToReview(
-        {
-          reviewId,
-          type: actionType,
-        },
-        {
-          onSuccess: () => {
-            resolve();
-            refetch();
-          },
-          onError: (err: any) => {
-            reject(err);
-          },
-        }
-      );
-    });
-
-    await toast.promise(
-      reactPromise,
-      {
-        loading:
-          actionType === 'UNDO'
-            ? 'Removing reaction...'
-            : `${actionType === 'LIKE' ? 'Liking' : 'Disliking'} review...`,
-        success:
-          actionType === 'UNDO' ? 'Reaction removed!' : 'Reaction recorded!',
-        error: 'Failed to react to review.',
-      },
-      {
-        className: 'toast-default',
-      }
-    );
-  };
+  
   return (
     <>
       <div className={styles.reviewsContainer}>
@@ -226,19 +174,21 @@ export default function ReviewsTab() {
             ))}
           </>
         ) : reviewsError ? (
-          <p>Error loading reviews</p>
-        ) : reviewsData?.reviews.length ? (
-          reviewsData.reviews.map(review => (
-            <ExtendedReviewCard
-              key={review.reviewId}
-              review={review}
-              showUserInfo={false}
-              onContentClick={() => setSelectedReview(review)}
-              onEdit={handleEditReview}
-              onDelete={handleDeleteReview}
-              onReact={handleReactToReview}
-            />
-          ))
+          <p>Error loading reviews</p>        ) : reviewsData?.reviews.length ? (
+          reviewsData.reviews.map(review => {
+            const reviewState = getReviewState(review.reviewId);
+            return (
+              <ExtendedReviewCard
+                key={review.reviewId}
+                review={reviewState || review}
+                showUserInfo={false}
+                onContentClick={() => setSelectedReview(review)}
+                onEdit={handleEditReview}
+                onDelete={handleDeleteReview}
+                onReact={handleReactToReview}
+              />
+            );
+          })
         ) : (
           <p>No reviews found.</p>
         )}

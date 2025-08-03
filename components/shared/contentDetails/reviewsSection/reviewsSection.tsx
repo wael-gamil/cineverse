@@ -10,8 +10,8 @@ import ExtendedReviewCard from '../../../cards/extendedReviewCard/extendedReview
 import AddReviewPopup from './addReviewPopup';
 import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import toast from 'react-hot-toast';
-import { useReactToReview } from '@/hooks/useReactToReview';
 import { useAuth } from '@/hooks/useAuth';
+import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
 
 type ReviewsSectionProps = {
   data: Review[];
@@ -45,14 +45,16 @@ export default function ReviewsSection({
     contentType: 'MOVIE' as const,
     contentTitle: '',
     contentPosterUrl: '',
-  });
-  const handleAddReview = () => {
+  });  const handleAddReview = () => {
     requireAuth(() => {
       setIsPopupOpen(true);
     }, 'Please log in to write a review');
   };
   const { mutate: postReview, isPending } = useAddReviewMutation();
-  const { mutate: reactToReview } = useReactToReview();
+  // Set up reaction handler with debouncing and optimistic updates
+  const { handleReactToReview, getReviewState } = useReviewReactionHandler({
+    reviews: data,
+  });
 
   const handleSubmitReview = async (
     reviewData: {
@@ -89,61 +91,10 @@ export default function ReviewsSection({
           typeof err === 'string' ? err : 'Failed to post review.',
       },
       {
-        className: 'toast-default',
-      }
+        className: 'toast-default',      }
     );
   };
-  const handleReactToReview = async (
-    reviewId: number,
-    type: 'LIKE' | 'DISLIKE'
-  ) => {
-    if (!requireAuth(undefined, 'Please log in to react to reviews')) {
-      return;
-    }
 
-    // Find the current review to check existing reaction
-    const currentReview = data.find(review => review.reviewId === reviewId);
-    // Determine the actual type to send based on current reaction
-    let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
-    if (currentReview?.userReaction === type) {
-      // User is clicking the same reaction again, so undo it
-      actionType = 'UNDO';
-    }
-
-    const reactPromise = new Promise<void>((resolve, reject) => {
-      reactToReview(
-        {
-          reviewId,
-          type: actionType,
-        },
-        {
-          onSuccess: () => {
-            resolve();
-            refetch();
-          },
-          onError: (err: any) => {
-            reject(err);
-          },
-        }
-      );
-    });
-
-    await toast.promise(
-      reactPromise,
-      {
-        loading:
-          actionType === 'UNDO'
-            ? 'Removing reaction...'
-            : `${actionType === 'LIKE' ? 'Liking' : 'Disliking'} review...`,
-        success:
-          actionType === 'UNDO' ? 'Reaction removed!' : 'Reaction recorded!',
-        error: 'Failed to send reaction.',
-      },
-      {
-        className: 'toast-default',
-      }
-    );
-  };
   return (
     <>
       <section className={styles.section}>
@@ -158,13 +109,12 @@ export default function ReviewsSection({
           </Button>
         </div>
 
-        <div className={styles.container}>
-          {/* Most Helpful Review */}
+        <div className={styles.container}>          {/* Most Helpful Review */}
           {mostHelpfulReview && (
             <div className={styles.cardWrapper}>
               <h3>Most Helpful Review</h3>
               <ExtendedReviewCard
-                review={convertToExtendedReview(mostHelpfulReview)}
+                review={convertToExtendedReview(getReviewState(mostHelpfulReview.reviewId) || mostHelpfulReview)}
                 showUserInfo={true}
                 showContentInfo={false}
                 onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
@@ -177,19 +127,21 @@ export default function ReviewsSection({
           {/* Other Reviews */}
           {otherReviews.length > 0 && (
             <div className={styles.cardWrapper}>
-              <h3>All Reviews ({otherReviews.length})</h3>
-              <div className={styles.reviewList}>
-                {otherReviews.map((review, index) => (
-                  <ExtendedReviewCard
-                    review={convertToExtendedReview(review)}
-                    key={index}
-                    showUserInfo={true}
-                    showContentInfo={false}
-                    onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
-                      handleReactToReview(id, type)
-                    }
-                  />
-                ))}
+              <h3>All Reviews ({otherReviews.length})</h3>              <div className={styles.reviewList}>
+                {otherReviews.map((review, index) => {
+                  const reviewState = getReviewState(review.reviewId);
+                  return (
+                    <ExtendedReviewCard
+                      review={convertToExtendedReview(reviewState || review)}
+                      key={index}
+                      showUserInfo={true}
+                      showContentInfo={false}
+                      onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
+                        handleReactToReview(id, type)
+                      }
+                    />
+                  );
+                })}
               </div>
             </div>
           )}

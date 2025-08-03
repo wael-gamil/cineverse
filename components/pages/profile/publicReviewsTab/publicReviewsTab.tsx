@@ -7,9 +7,8 @@ import SkeletonProfileReviewCard from '../reviewsTab/skeletonProfileReviewCard';
 import { Icon } from '@/components/ui/icon/icon';
 import styles from '../reviewsTab/reviewsTab.module.css';
 import type { UserReview } from '@/constants/types/movie';
-import { useReactToReview } from '@/hooks/useReactToReview';
+import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
 import { useAuth } from '@/hooks/useAuth';
-import toast from 'react-hot-toast';
 import { usePublicUserReviews } from '@/hooks/usePublicUserReviews';
 import { useUserReviews } from '@/hooks/useUserReviews';
 
@@ -28,7 +27,6 @@ export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
   });
 
   const userReviewsQuery = useUserReviews(username);
-
   // Choose the appropriate query based on login status
   const {
     data: reviewsData,
@@ -36,8 +34,11 @@ export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
     error: reviewsError,
     refetch,
   } = isAuthenticated ? userReviewsQuery : publicReviewsQuery;
+  // Set up reaction handler with debouncing and optimistic updates
+  const { handleReactToReview, getReviewState } = useReviewReactionHandler({
+    reviews: reviewsData?.reviews || [],
+  });
 
-  const { mutate: reactToReview } = useReactToReview();
   const {
     data: summaryData,
     isLoading: summaryLoading,
@@ -63,57 +64,6 @@ export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
       setSelectedReview(null);
     }
   }, [summaryData, selectedReview, router]);
-
-  const handleReactToReview = async (
-    reviewId: number,
-    type: 'LIKE' | 'DISLIKE'
-  ) => {
-    if (!requireAuth(undefined, 'Please log in to react to reviews')) {
-      return;
-    }
-
-    const currentReview = reviewsData?.reviews.find(
-      review => review.reviewId === reviewId
-    );
-    let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
-    if (currentReview?.userReaction === type) {
-      actionType = 'UNDO';
-    }
-
-    const reactPromise = new Promise<void>((resolve, reject) => {
-      reactToReview(
-        {
-          reviewId,
-          type: actionType,
-        },
-        {
-          onSuccess: () => {
-            refetch();
-            resolve();
-          },
-          onError: (err: any) => {
-            reject(err);
-          },
-        }
-      );
-    });
-
-    await toast.promise(
-      reactPromise,
-      {
-        loading:
-          actionType === 'UNDO'
-            ? 'Removing reaction...'
-            : `${actionType === 'LIKE' ? 'Liking' : 'Disliking'} review...`,
-        success:
-          actionType === 'UNDO' ? 'Reaction removed!' : 'Reaction recorded!',
-        error: 'Failed to react to review.',
-      },
-      {
-        className: 'toast-default',
-      }
-    );
-  };
 
   const handleUserClick = (clickedUsername: string) => {
     router.push(`/profile/${clickedUsername}`);
@@ -150,16 +100,19 @@ export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
   }
   return (
     <div className={styles.reviewsContainer}>
-      {reviewsData.reviews.map((review: UserReview) => (
-        <ExtendedReviewCard
-          key={review.reviewId}
-          review={review}
-          showUserInfo={false} // Don't show user info on profile page
-          onContentClick={() => setSelectedReview(review)}
-          onReact={handleReactToReview}
-          // Don't pass onEdit or onDelete to hide edit/delete actions for public view
-        />
-      ))}
+      {reviewsData.reviews.map((review: UserReview) => {
+        const reviewState = getReviewState(review.reviewId);
+        return (
+          <ExtendedReviewCard
+            key={review.reviewId}
+            review={reviewState || review}
+            showUserInfo={false} // Don't show user info on profile page
+            onContentClick={() => setSelectedReview(review)}
+            onReact={handleReactToReview}
+            // Don't pass onEdit or onDelete to hide edit/delete actions for public view
+          />
+        );
+      })}
     </div>
   );
 }
