@@ -1,38 +1,163 @@
 .wrapper {
   display: flex;
-  border-bottom: 1px solid #1c4c59;
+  background: transparent;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  gap: var(--space-sm);
   overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  justify-content: flex-start;
+}
+
+.wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .tab {
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
   font-size: var(--font-size-base);
-  font-weight: 500;
-  color: var(--color-muted);
-  background: none;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
   border: none;
-  position: relative;
   cursor: pointer;
-  transition: color var(--transition-fast);
+  transition: all 0.3s ease;
   white-space: nowrap;
+  position: relative;
+  min-width: fit-content;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
 }
 
 .tab:hover {
-  color: var(--color-white);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tab:hover::after {
+  width: 60%;
 }
 
 .active {
-  color: var(--color-secondary);
+  color: var(--color-white);
 }
 
 .active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: var(--color-secondary);
-  border-top-left-radius: var(--radius-full);
-  border-top-right-radius: var(--radius-full);
+  width: 100%;
+  background: var(--color-primary);
+}
+
+/* Mobile styles (up to 640px) */
+@media (max-width: 640px) {
+  .wrapper {
+    gap: var(--space-xs);
+    justify-content: flex-start;
+  }
+
+  .tab {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-sm);
+    min-width: auto;
+    flex: 0 0 auto;
+  }
+
+  .tab::after {
+    bottom: -2px;
+  }
+
+  .tab:hover::after {
+    width: 80%;
+  }
+}
+
+/* Tablet styles (641px to 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .wrapper {
+    gap: var(--space-md);
+  }
+
+  .tab {
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--font-size-base);
+    min-width: 100px;
+  }
+}
+
+/* Desktop styles (1025px and above) */
+@media (min-width: 1025px) {
+  .wrapper {
+    gap: var(--space-lg);
+  }
+
+  .tab {
+    padding: var(--space-sm) var(--space-xl);
+    font-size: var(--font-size-lg);
+    min-width: 120px;
+  }
+}
+
+/* High-resolution displays */
+@media (min-width: 1440px) {
+  .tab {
+    padding: var(--space-md) var(--space-2xl);
+    font-size: var(--font-size-xl);
+    min-width: 140px;
+  }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+  .tab {
+    padding: var(--space-md) var(--space-lg);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tab:hover {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .tab:hover::after {
+    width: 0;
+  }
+
+  .tab:active {
+    color: rgba(255, 255, 255, 0.8);
+    transform: scale(0.98);
+  }
+}
+
+/* Extra small screens (up to 480px) */
+@media (max-width: 480px) {
+  .tab {
+    font-size: var(--font-size-xs, 12px);
+    font-weight: 500;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 900px) and (orientation: landscape) {
+  .wrapper {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+  }
+
+  .tab {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-sm);
+  }
 }

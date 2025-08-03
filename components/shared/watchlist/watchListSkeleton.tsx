@@ -14,8 +14,15 @@ export default function WatchlistSkeleton() {
       cardMaxWidth={500}
       cardCount={8}
     >
+      {' '}
       {placeholders.map((_, i) => (
-        <SkeletonCard key={i} />
+        <SkeletonCard
+          key={i}
+          layout='overlay'
+          imageHeight='image-md'
+          minWidth={250}
+          maxWidth={500}
+        />
       ))}
     </GridContainer>
   );

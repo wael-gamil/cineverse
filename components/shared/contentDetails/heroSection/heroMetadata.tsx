@@ -9,9 +9,11 @@ import { Icon } from '@/components/ui/icon/icon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAddToWatchlistMutation } from '@/hooks/useAddToWatchlistMutation';
-import { useRemoveFromWatchlistMutation } from '@/hooks/useRemoveFromWatchlistMutation';
+import { useWatchlistActionMutation } from '@/hooks/useWatchlistActionMutation';
 import { useWatchlistExistsQuery } from '@/hooks/useWatchlistExistsQuery';
+import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
+import { useState, useEffect } from 'react';
 type Props = {
   content: NormalizedContent;
   runtime: string;
@@ -43,18 +45,34 @@ export default function HeroMetadata({
   showExternalLink,
   slug,
 }: Props) {
+  const { isAuthenticated, requireAuth } = useAuth();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Prevent hydration mismatches by only showing loading states after hydration
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const genreList = content.genres || genres || [];
   const { mutate: addToWatchlist, isPending: isAddingToWatchlist } =
     useAddToWatchlistMutation();
   const { mutate: removeFromWatchlist, isPending: isRemovingFromWatchlist } =
-    useRemoveFromWatchlistMutation();
-  const { data: isInWatchlist = false, isLoading: isCheckingWatchlist } =
-    useWatchlistExistsQuery(content.id);
+    useWatchlistActionMutation();
+  const { data: watchlistId = null, isLoading: isCheckingWatchlist } =
+    useWatchlistExistsQuery(content.id, isAuthenticated);
+
+  // Check if content is in watchlist (watchlistId is a number when in watchlist, null when not)
+  const isInWatchlist = watchlistId !== null;
 
   const isPending = isAddingToWatchlist || isRemovingFromWatchlist;
   const handleAddToWatchlist = () => {
+    if (
+      !requireAuth(() => {}, 'Please log in to add items to your watchlist')
+    ) {
+      return;
+    }
+
     const addPromise = new Promise<void>((resolve, reject) => {
-      console.log('id', content.id);
       addToWatchlist(content.id, {
         onSuccess: () => {
           resolve();
@@ -77,18 +95,25 @@ export default function HeroMetadata({
       }
     );
   };
-
   const handleRemoveFromWatchlist = () => {
+    if (!requireAuth(() => {}, 'Please log in to manage your watchlist')) {
+      return;
+    }
+
+    if (!watchlistId) return; // Don't attempt removal if no watchlistId
+
     const removePromise = new Promise<void>((resolve, reject) => {
-      console.log('Removing content id:', content.id);
-      removeFromWatchlist(content.id, {
-        onSuccess: () => {
-          resolve();
-        },
-        onError: (err: any) => {
-          reject(err);
-        },
-      });
+      removeFromWatchlist(
+        { mode: 'delete', id: watchlistId, contentId: content.id },
+        {
+          onSuccess: data => {
+            resolve();
+          },
+          onError: (err: any) => {
+            reject(err);
+          },
+        }
+      );
     });
 
     toast.promise(
@@ -204,15 +229,15 @@ export default function HeroMetadata({
             <Icon name='play' strokeColor='white' />
             Play Trailer
           </Button>
-        )}
+        )}{' '}
         <Button
           color='neutral'
-          disabled={isPending || isCheckingWatchlist}
+          disabled={isPending || (isHydrated && isCheckingWatchlist)}
           onClick={
             isInWatchlist ? handleRemoveFromWatchlist : handleAddToWatchlist
           }
         >
-          {isCheckingWatchlist ? (
+          {isHydrated && isCheckingWatchlist ? (
             <>
               <Icon name='loader' strokeColor='white' />
               Loading...

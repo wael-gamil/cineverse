@@ -9,7 +9,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    const user = await getUserReviews(token, req.nextUrl.searchParams.get('username') ?? '');
+    const user = await getUserReviews(
+      token,
+      req.nextUrl.searchParams.get('username') ?? ''
+    );
     return NextResponse.json({ user });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 401 });

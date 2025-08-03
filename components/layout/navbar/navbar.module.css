@@ -169,10 +169,21 @@
 }
 
 /* Container for logged-in user panel */
-.panelContainer {
+.userPanelContainer {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  min-width: 220px;
+}
+
+/* Panel title (like Sort component) */
+.panelTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-white);
+  margin: 0 0 var(--space-md) 0;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-white-20);
 }
 
 /* Profile section layout */
@@ -185,8 +196,8 @@
 /* Avatar */
 .avatarWrapper {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-full);
   overflow: hidden;
   box-shadow: 0 0 0 2px var(--color-white-10);
@@ -194,27 +205,29 @@
 }
 
 /* User name & email */
-.userInfoText h3 {
-  font-size: var(--font-size-base);
+.userInfoText h4 {
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-white);
   margin: 0;
 }
 
 .userInfoText p {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-white-60);
   margin: 0;
 }
 
-.actions {
+/* Actions using list buttons (like Sort component) */
+.userActions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
-.actions a {
+
+.userActions a {
   text-decoration: none;
-  color: white;
+  color: inherit;
 }
 .spin {
   animation: spin 1s linear infinite;
@@ -225,7 +238,7 @@
     transform: rotate(360deg);
   }
 }
-@media (max-width: 1150px) {
+@media (max-width: 1280px) {
   .navbarDesktop {
     display: none;
   }

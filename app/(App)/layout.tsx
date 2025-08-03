@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer/footer';
 import Providers from '@/lib/providers';
 import { Toaster } from 'react-hot-toast';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'CineVerse',
@@ -53,11 +54,12 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
-  return (
+}>) {  return (
     <html lang='en' className={`${geist.className} ${inter.className}`}>
       <body>
-        <Navbar />
+        <Suspense fallback={<div />}>
+          <Navbar />
+        </Suspense>
         <Providers>{children}</Providers>
         <Footer />
         <Toaster position='bottom-right' />

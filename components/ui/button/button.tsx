@@ -3,7 +3,8 @@ import styles from './button.module.css';
 type ButtonProps = {
   children: React.ReactNode;
   variant?: 'solid' | 'outline' | 'ghost' | 'list';
-  color?: 'primary' | 'neutral' | 'danger';
+  color?: 'primary' | 'secondary' | 'neutral' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   ariaLabel?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
@@ -20,6 +21,7 @@ export default function Button({
   children,
   variant = 'solid',
   color = 'primary',
+  size = 'md',
   onClick,
   disabled = false,
   hide = false,
@@ -37,8 +39,8 @@ export default function Button({
         hide ? styles.hide : ''
       } ${styles[align]} ${disabled ? styles.disabled : ''} ${
         styles[borderRadius]
-      } ${styles[color]} ${styles[padding]} ${
-        active ? styles.active : ''
+      } ${styles[color]} ${styles[padding]} ${active ? styles.active : ''} ${
+        styles[`size-${size}`]
       }`}
       onClick={onClick}
       aria-label={ariaLabel}

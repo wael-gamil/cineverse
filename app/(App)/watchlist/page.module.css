@@ -1,3 +1,18 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xxl);
+  gap: var(--space-lg);
+  flex: 1;
+}
+
+.controls {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .watchlistContainer {
   padding: var(--space-xxl);
   flex: 1;

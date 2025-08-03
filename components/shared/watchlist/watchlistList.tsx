@@ -6,14 +6,18 @@ import { useStore } from '@tanstack/react-store';
 import { userStore } from '@/utils/userStore';
 import { useWatchlistQuery } from '@/hooks/useWatchlistQuery';
 import { useWatchlistActionMutation } from '@/hooks/useWatchlistActionMutation';
+import { useContentSummary } from '@/hooks/useContentSummary';
 import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import Card from '@/components/cards/card/card';
 import Button from '@/components/ui/button/button';
 import Pagination from '@/components/ui/pagination/pagination';
 import { Icon } from '@/components/ui/icon/icon';
+import SkeletonCard from '@/components/cards/card/skeletonCard';
 import toast from 'react-hot-toast';
 import styles from './watchList.module.css';
 import { WatchlistItem } from '@/constants/types/movie';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import EmptyCard from '@/components/cards/card/emptyCard';
 
 type WatchlistItemProp = {
   status: 'TO_WATCH' | 'WATCHED';
@@ -24,11 +28,12 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page') || 1) - 1;
-
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<WatchlistItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null);
+  const isMobile = useResponsiveLayout();
 
   useEffect(() => {
     setIsClient(true);
@@ -43,6 +48,32 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
   );
 
   const { mutate: watchlistAction } = useWatchlistActionMutation();
+  const {
+    data: summaryData,
+    isLoading: summaryLoading,
+    error: summaryError,
+  } = useContentSummary(
+    selectedItem?.contentId ?? 0,
+    selectedItem?.contentType ?? 'MOVIE', // Default to 'MOVIE' to avoid TS error
+    !!selectedItem // only fetch if item is selected
+  );
+
+  // Navigate once we have the summary
+  useEffect(() => {
+    if (summaryData && selectedItem) {
+      const slug = summaryData.slug;
+      let path = `/${slug}`;
+
+      if (summaryData.seasonNumber)
+        path += `/seasons/${summaryData.seasonNumber}`;
+      if (summaryData.episodeNumber)
+        path += `/episodes/${summaryData.episodeNumber}`;
+
+      router.push(path);
+      setSelectedItem(null);
+      setSelectedId(null);
+    }
+  }, [summaryData, selectedItem, router]);
 
   const handleMoveToWatched = async (watchlistId: number) => {
     const updatePromise = new Promise<void>((resolve, reject) => {
@@ -118,20 +149,12 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
     setDeleteModalOpen(false);
     setItemToDelete(null);
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
-  };
-
-  const handleCardClick = (id: number, href: string) => {
-    setSelectedId(id);
-    setTimeout(() => {
-      router.push(href);
-    }, 150);
   };
 
   if (!isClient) return null;
@@ -143,18 +166,28 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
       </p>
     );
   }
-
   if (isLoading) {
-    return <p className={styles.emptyMessage}>Loading...</p>;
-  }
+    const placeholders = Array.from({ length: 8 });
 
-  if (isError || !data?.items?.length) {
     return (
-      <p className={styles.emptyMessage}>
-        {status === 'TO_WATCH'
-          ? 'Your watchlist is empty. Add some content to start tracking!'
-          : 'You have no watched content yet. Start watching something!'}
-      </p>
+      <GridContainer
+        layout='grid'
+        cardGap={26}
+        cardMinWidth={250}
+        cardMaxWidth={500}
+        cardCount={8}
+        scrollRows={isMobile ? 1 : undefined}
+      >
+        {placeholders.map((_, i) => (
+          <SkeletonCard
+            key={i}
+            layout='overlay'
+            imageHeight='image-md'
+            minWidth={250}
+            maxWidth={500}
+          />
+        ))}
+      </GridContainer>
     );
   }
 
@@ -165,25 +198,32 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
         cardGap={26}
         cardMinWidth={250}
         cardMaxWidth={500}
-        cardCount={data.items.length}
+        cardCount={data?.items.length}
+        scrollRows={isMobile ? 1 : undefined}
       >
-        {data.items.map(item => (
+        {isLoading &&
+          Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard
+              key={i}
+              layout='overlay'
+              imageHeight='image-md'
+              minWidth={250}
+              maxWidth={500}
+            />
+          ))}
+        {(isError || !data?.items?.length) && (
+          <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
+        )}
+        {data?.items.map(item => (
           <Card
             key={item.id}
             title={item.title}
-            subtitle={item.contentType}
             imageUrl={item.contentPosterUrl || '/images/placeholder.jpg'}
-            description={item.overview}
-            layout='overlay'
-            actionButtons={[
-              {
-                iconName: 'trash',
-                onClick: e => handleDeleteClick(item, e),
-                color: 'danger',
-                position: 'top-right',
-                ariaLabel: 'Remove from watchlist',
-              },
-            ]}
+            layout='below'
+            onClick={() => {
+              setSelectedId(item.id);
+              setSelectedItem(item);
+            }}
             className={
               selectedId === null
                 ? ''
@@ -194,25 +234,43 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
             minWidth={250}
             maxWidth={500}
           >
-            {status === 'TO_WATCH' && (
+            <div className={styles.cardContent}>
+              {' '}
               <Button
-                variant='solid'
+                variant='ghost'
                 onClick={e => {
                   e.stopPropagation();
-                  handleMoveToWatched(item.id);
+                  handleDeleteClick(item, e);
                 }}
+                color='danger'
+                padding='sm'
               >
-                Add to Watched
+                <Icon name='trash' strokeColor='white' />
               </Button>
-            )}
+              {status === 'TO_WATCH' && (
+                <Button
+                  variant='solid'
+                  color='secondary'
+                  size='sm'
+                  padding='md'
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleMoveToWatched(item.id);
+                  }}
+                >
+                  Mark as Watched
+                </Button>
+              )}
+            </div>
           </Card>
         ))}
       </GridContainer>
-
-      <Pagination
-        currentPage={data.currentPage || 0}
-        totalPages={data.totalPages || 1}
-      />
+      {data?.items.length !== 0 && (
+        <Pagination
+          currentPage={data?.currentPage || 0}
+          totalPages={data?.totalPages || 1}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && itemToDelete && (

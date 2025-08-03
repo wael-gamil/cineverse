@@ -1,14 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import { useReactToReview } from '@/hooks/useReactToReview';
 import { useAllReviews } from '@/hooks/useAllReviews';
 import ExtendedReviewCard from '@/components/cards/extendedReviewCard/extendedReviewCard';
 import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviewsList';
 import type { ExtendedReview } from '@/constants/types/movie';
 import { useContentSummary } from '@/hooks/useContentSummary';
 import { useEffect, useState } from 'react';
+import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
 
 type ReviewsClientWrapperProps = {
   initialReviews: ExtendedReview[];
@@ -30,7 +29,6 @@ export default function ReviewsClientWrapper({
   const sortBy = searchParams['sortBy'] || 'recent';
   const page = parseInt(searchParams['page'] || '1', 10) - 1;
 
-  const { mutate: reactToReview } = useReactToReview();
   const {
     data: reviewsData,
     isLoading,
@@ -76,60 +74,18 @@ export default function ReviewsClientWrapper({
       router.push(path);
       setSelectedReview(null);
     }
-  }, [summaryData, selectedReview, router]);
-  // Use fetched data if available, otherwise fall back to initial data
+  }, [summaryData, selectedReview, router]); // Use fetched data if available, otherwise fall back to initial data
   const reviews = reviewsData?.reviews || initialReviews;
+  // Set up reaction handler with debouncing and optimistic updates
+  const { handleReactToReview, getReviewState } = useReviewReactionHandler({
+    reviews,
+  });
 
-  const handleReactToReview: (
+  const handleReactToReviewWrapper: (
     reviewId: number,
-    type: 'LIKE' | 'DISLIKE' 
+    type: 'LIKE' | 'DISLIKE'
   ) => Promise<void> = async (reviewId, type) => {
-    console.log('Reacting to review:', reviewId, type);
-    // Find the current review to check existing reaction
-    const currentReview = reviews.find(review => review.reviewId === reviewId);
-    console.log('Current review:', currentReview);
-    // Determine the actual type to send based on current reaction
-    let actionType: 'LIKE' | 'DISLIKE' | 'UNDO' = type;
-    console.log('Action type before check:', actionType);
-    if (currentReview?.userReaction === type) {
-      // User is clicking the same reaction again, so undo it
-      actionType = 'UNDO';
-    }
-
-    const reactPromise = new Promise<void>((resolve, reject) => {
-      reactToReview(
-        {
-          reviewId,
-          type: actionType,
-        },
-        {
-          onSuccess: () => {
-            setIsRefetching(true);
-            refetch().finally(() => setIsRefetching(false)); // Refetch and update loading state
-            resolve();
-          },
-          onError: (err: any) => {
-            reject(err);
-          },
-        }
-      );
-    });
-
-    await toast.promise(
-      reactPromise,
-      {
-        loading:
-          actionType === 'UNDO'
-            ? 'Removing reaction...'
-            : `${actionType === 'LIKE' ? 'Liking' : 'Disliking'} review...`,
-        success:
-          actionType === 'UNDO' ? 'Reaction removed!' : 'Reaction recorded!',
-        error: 'Failed to react to review.',
-      },
-      {
-        className: 'toast-default',
-      }
-    );
+    await handleReactToReview(reviewId, type);
   };
 
   const handleUserClick = (username: string) => {
@@ -151,15 +107,18 @@ export default function ReviewsClientWrapper({
           <p>Error loading reviews. Please try again later.</p>
         </div>
       ) : reviews && reviews.length > 0 ? (
-        reviews.map((review: ExtendedReview) => (
-          <ExtendedReviewCard
-            key={review.reviewId}
-            review={review}
-            onReact={handleReactToReview}
-            onUserClick={handleUserClick}
-            onContentClick={() => setSelectedReview(review)}
-          />
-        ))
+        reviews.map((review: ExtendedReview) => {
+          const reviewState = getReviewState(review.reviewId);
+          return (
+            <ExtendedReviewCard
+              key={review.reviewId}
+              review={reviewState || review}
+              onReact={handleReactToReviewWrapper}
+              onUserClick={handleUserClick}
+              onContentClick={() => setSelectedReview(review)}
+            />
+          );
+        })
       ) : (
         <div
           style={{

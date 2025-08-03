@@ -2,7 +2,7 @@
 
 import styles from './profileTabs.module.css';
 
-type TabId = 'reviews' | 'watchlist' | 'friends';
+type TabId = 'reviews' | 'to-watch' | 'watched';
 
 type ProfileTabsProps = {
   activeTab: TabId;
@@ -15,11 +15,16 @@ export default function ProfileTabs({
 }: ProfileTabsProps) {
   const tabs: { id: TabId; label: string }[] = [
     { id: 'reviews', label: 'Reviews' },
-    { id: 'watchlist', label: 'Watchlist' },
+    { id: 'to-watch', label: 'To Watch' },
+    { id: 'watched', label: 'Watched' },
   ];
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={styles.wrapper}
+      role='tablist'
+      aria-label='Profile sections'
+    >
       {tabs.map(tab => (
         <button
           key={tab.id}
@@ -27,6 +32,10 @@ export default function ProfileTabs({
             activeTab === tab.id ? styles.active : ''
           }`}
           onClick={() => setActiveTab(tab.id)}
+          role='tab'
+          aria-selected={activeTab === tab.id}
+          aria-controls={`${tab.id}-panel`}
+          type='button'
         >
           {tab.label}
         </button>

@@ -20,11 +20,9 @@ export async function GET(req: NextRequest) {
 
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    }    const watchlistId = await checkWatchlistExists(token, Number(contentId));
 
-    const exists = await checkWatchlistExists(token, Number(contentId));
-
-    return NextResponse.json({ exists });
+    return NextResponse.json({ watchlistId });
   } catch (error: any) {
     console.error('Error checking watchlist existence:', error);
     return NextResponse.json(

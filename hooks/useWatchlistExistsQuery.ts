@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-export const useWatchlistExistsQuery = (contentId: number, enabled = true) => {
+export const useWatchlistExistsQuery = (
+  contentId: number,
+  isAuthenticated = true,
+  enabled = true
+) => {
   return useQuery({
     queryKey: ['watchlist-exists', contentId],
     queryFn: async () => {
@@ -11,11 +15,10 @@ export const useWatchlistExistsQuery = (contentId: number, enabled = true) => {
       if (!response.ok) {
         throw new Error('Failed to check watchlist existence');
       }
-
       const data = await response.json();
-      return data.exists;
+      return data.watchlistId ?? null; // Returns watchlist ID (number) or null, ensuring we never return undefined
     },
-    enabled: enabled && !!contentId,
+    enabled: enabled && !!contentId && isAuthenticated,
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 2,
   });

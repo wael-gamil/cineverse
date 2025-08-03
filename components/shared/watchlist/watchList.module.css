@@ -93,7 +93,11 @@
   gap: var(--space-md);
   justify-content: flex-end;
 }
-
+.cardContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .modalOverlay {

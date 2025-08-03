@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './mysteryCard.module.css';
 import Card from '@/components/cards/card/card';
 import { Icon } from '@/components/ui/icon/icon';
@@ -9,15 +9,28 @@ import type { IconName } from '@/components/ui/icon/icon';
 
 type MysteryCardProps = {
   item: Content;
+  isRevealed?: boolean;
+  onFlip?: () => void;
 };
 
-export default function MysteryCard({ item }: MysteryCardProps) {
-  const [flipped, setFlipped] = useState(false);
+export default function MysteryCard({ item, isRevealed = false, onFlip }: MysteryCardProps) {
+  const [flipped, setFlipped] = useState(isRevealed);
+
+  // Update local state when prop changes
+  useEffect(() => {
+    setFlipped(isRevealed);
+  }, [isRevealed]);
+  const handleClick = () => {
+    if (!flipped) {
+      setFlipped(true);
+      onFlip?.();
+    }
+  };
 
   return (
     <div
       className={`${styles.card} ${flipped ? styles.flipped : ''}`}
-      onClick={() => setFlipped(true)}
+      onClick={handleClick}
     >
       <div className={styles.cardInner}>
         {/* FRONT SIDE */}

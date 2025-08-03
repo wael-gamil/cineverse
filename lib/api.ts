@@ -259,7 +259,6 @@ export const getContentReviewsClient = async (
 ): Promise<Review[]> => {
   try {
     const url = `reviews/contents/${id}`;
-    console.log('Fetching content reviews from:', url);
     // Build headers with optional Authorization
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
     if (token) {
@@ -308,7 +307,12 @@ export const getPersonContents = async (
   page = 0,
   size = 24,
   type?: 'MOVIE' | 'SERIES'
-): Promise<{ content: Content[]; totalPages: number; currentPage: number }> => {
+): Promise<{
+  content: Content[];
+  totalPages: number;
+  currentPage: number;
+  totalElements: number;
+}> => {
   try {
     const query = new URLSearchParams();
     query.set('page', String(page));
@@ -333,6 +337,7 @@ export const getPersonContents = async (
       content,
       totalPages: rawData.totalPages,
       currentPage: rawData.number,
+      totalElements: rawData.totalElements,
     };
   } catch (error) {
     console.error('Error fetching person content:', error);
@@ -340,12 +345,12 @@ export const getPersonContents = async (
       content: [],
       totalPages: 0,
       currentPage: 0,
+      totalElements: 0,
     };
   }
 };
 
 const postData = async (endpoint: string, body: any, headers?: HeadersInit) => {
-  console.log('POST request to:', `${BASE_URL}${endpoint}`, body);
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: 'POST',
     headers: {
@@ -408,27 +413,88 @@ export const getUserProfile = async (token: string): Promise<UserProfile> => {
   const data = await fetcher('users/profile', 0, headers);
   return data;
 };
-export const getCurrentUser = async (token: string) => {
-  const res = await fetch(`${BASE_URL}auth/me`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
 
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.message || 'Failed to fetch user');
-  }
-
+// Public profile functions
+export const getPublicUserProfile = async (
+  username: string
+): Promise<UserProfile> => {
+  const data = await fetcher(`users/profile/${username}`, 0);
   return data;
 };
+
+export const getPublicUserReviews = async (
+  username: string,
+  page = 0,
+  size = 10
+): Promise<{
+  reviews: UserReview[];
+  totalPages: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `reviews/users/${username}?${query.toString()}`;
+    const rawData = await fetcher(url, 0);
+
+    const reviews: UserReview[] = rawData.content;
+    return {
+      reviews,
+      totalPages: rawData.totalPages,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching public user reviews:', error);
+    return {
+      reviews: [],
+      totalPages: 0,
+      currentPage: 0,
+    };
+  }
+};
+
+export const getPublicUserWatchlist = async (
+  username: string,
+  status: 'TO_WATCH' | 'WATCHED',
+  page = 0,
+  size = 10
+): Promise<{
+  items: WatchlistItem[];
+  totalPages: number;
+  totalElements: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('status', status);
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `watchlist/${username}?${query.toString()}`;
+    const rawData = await fetcher(url, 0);
+
+    return {
+      items: rawData.content,
+      totalPages: rawData.totalPages,
+      totalElements: rawData.totalElements,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching public user watchlist:', error);
+    return {
+      items: [],
+      totalPages: 0,
+      totalElements: 0,
+      currentPage: 0,
+    };
+  }
+};
+
 export const verifyEmail = async (token: string) => {
   return await fetcher(`auth/verify?token=${token}`);
 };
-
 const putData = async (endpoint: string, body: any, headers?: HeadersInit) => {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: 'PUT',
@@ -505,7 +571,6 @@ export const getUserReviews = async (
     });
 
     const reviews: UserReview[] = rawData.content;
-    console.log('Fetched user reviews:', reviews);
     return {
       reviews,
       totalPages: rawData.totalPages,
@@ -550,8 +615,6 @@ export const postUserReview = async (token: string, review: ReviewPayload) => {
   });
 };
 export const deleteUserReview = async (token: string, reviewId: number) => {
-  console.log('Deleting review with ID:', reviewId);
-
   // Try the standard delete endpoint first
   const res = await fetch(`${BASE_URL}reviews/${reviewId}`, {
     method: 'DELETE',
@@ -651,7 +714,6 @@ export const getAllReviewsSSR = async (
     }
 
     const rawData = await fetcher(url, 60, headers);
-    console.log('Fetched all reviews (SSR):', rawData);
     return {
       reviews: rawData.content,
       totalPages: rawData.totalPages,
@@ -793,6 +855,48 @@ export const getUserWatchlist = async (
   }
 };
 
+export const getUserWatchlistSSR = async (
+  token: string,
+  status: 'TO_WATCH' | 'WATCHED',
+  page = 0,
+  size = 10
+): Promise<{
+  items: WatchlistItem[];
+  totalPages: number;
+  totalElements: number;
+  currentPage: number;
+}> => {
+  try {
+    const query = new URLSearchParams();
+    query.set('status', status);
+    query.set('page', String(page));
+    query.set('size', String(size));
+
+    const url = `watchlist?${query.toString()}`;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    const rawData = await fetcher(url, 0, headers);
+
+    return {
+      items: rawData.content,
+      totalPages: rawData.totalPages,
+      totalElements: rawData.totalElements,
+      currentPage: rawData.number,
+    };
+  } catch (error) {
+    console.error('Error fetching user watchlist SSR:', error);
+    return {
+      items: [],
+      totalPages: 0,
+      totalElements: 0,
+      currentPage: 0,
+    };
+  }
+};
+
 export const addToWatchlist = async (
   token: string,
   contentId: number
@@ -809,7 +913,7 @@ export const addToWatchlist = async (
 export const checkWatchlistExists = async (
   token: string,
   contentId: number
-): Promise<boolean> => {
+): Promise<number | null> => {
   try {
     const response = await fetch(
       `${BASE_URL}watchlist/exists?contentId=${contentId}`,
@@ -827,10 +931,10 @@ export const checkWatchlistExists = async (
     }
 
     const result = await response.json();
-    return result.data; // boolean value
+    return result.data; // Returns watchlist ID or null
   } catch (error) {
     console.error('Error checking watchlist existence:', error);
-    return false;
+    return null;
   }
 };
 
@@ -864,26 +968,6 @@ export const removeFromWatchlist = async (
   watchlistId: number
 ): Promise<any> => {
   const res = await fetch(`${BASE_URL}watchlist/${watchlistId}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || 'Failed to remove from watchlist');
-  }
-
-  return await res.json();
-};
-
-export const removeFromWatchlistByContentId = async (
-  token: string,
-  contentId: number
-): Promise<any> => {
-  const res = await fetch(`${BASE_URL}watchlist/content/${contentId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,

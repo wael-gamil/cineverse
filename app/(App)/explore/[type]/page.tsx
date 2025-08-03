@@ -10,6 +10,8 @@ import SkeletonContentList from '@/components/shared/contentList/skeletonContent
 import SectionHeader from '@/components/shared/contentSliderSection/sectionHeader';
 import OrderTabs from '@/components/ui/orderTabs/orderTabs';
 
+export const dynamic = 'force-dynamic';
+
 const validTypes = ['movies', 'tv-series'] as const;
 
 type ContentPageProps = {

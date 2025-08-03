@@ -11,9 +11,9 @@ export type BadgeProps = {
     | 'color-primary'
     | 'color-secondary'
     | 'color-muted'
-    | 'color-white'; 
-  backgroundColor?: 'bg-primary' | 'bg-secondary' | 'bg-muted' | 'bg-white'; 
-  position?: 'top-left' | 'top-right'; 
+    | 'color-white';
+  backgroundColor?: 'bg-primary' | 'bg-secondary' | 'bg-muted' | 'bg-white';
+  position?: 'top-left' | 'top-right';
   borderRadius?: 'border-md' | 'border-full';
   size?: 'size-sm' | 'size-md' | 'size-lg';
   className?: string;

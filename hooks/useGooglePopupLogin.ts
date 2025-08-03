@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
-export function useGooglePopupLogin() {
+export function useGooglePopupLogin(redirectTo?: string | null) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -41,7 +41,6 @@ export function useGooglePopupLogin() {
       }
     }, 500);
   };
-
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (
@@ -59,17 +58,41 @@ export function useGooglePopupLogin() {
 
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
+          const { userStore, setUserWithExpiry } = await import(
+            '@/utils/userStore'
+          );
 
-          const { userStore } = await import('@/utils/userStore');
-          userStore.setState({
-            username: data.user.username,
-            email: data.user.email,
-          });
+          // Fetch user profile to get complete user data
+          try {
+            const profileRes = await fetch('/api/user/profile', {
+              credentials: 'include',
+            });
+            const profileData = await profileRes.json();
 
+            if (profileRes.ok && profileData.user) {
+              setUserWithExpiry(
+                profileData.user.username,
+                profileData.user.email,
+                profileData.user.profilePicture
+              );
+            } else {
+              // Fallback to basic user data if profile fetch fails
+              setUserWithExpiry(data.user.username, data.user.email);
+            }
+          } catch (profileError) {
+            // Fallback to basic user data if profile fetch fails
+            setUserWithExpiry(data.user.username, data.user.email);
+          }
           toast.success('Logged in successfully', {
             className: 'toast-success',
           });
-          router.push('/');
+
+          // Use provided redirect parameter or fall back to URL params or default
+          const finalRedirectTo =
+            redirectTo ||
+            new URLSearchParams(window.location.search).get('redirect') ||
+            '/';
+          router.push(finalRedirectTo);
         } catch (err: any) {
           toast.error(err.message || 'Google login failed', {
             className: 'toast-error',

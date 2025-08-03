@@ -5,9 +5,12 @@ export const useRemoveFromWatchlistMutation = () => {
 
   return useMutation({
     mutationFn: async (contentId: number) => {
-      const response = await fetch(`/api/watchlist/remove?contentId=${contentId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `/api/watchlist/remove?contentId=${contentId}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -18,13 +21,13 @@ export const useRemoveFromWatchlistMutation = () => {
     },
     onSuccess: (_, contentId) => {
       // Invalidate watchlist existence query for this content
-      queryClient.invalidateQueries({ 
-        queryKey: ['watchlist-exists', contentId] 
+      queryClient.invalidateQueries({
+        queryKey: ['watchlist-exists', contentId],
       });
-      
+
       // Invalidate watchlist queries to refresh the data
-      queryClient.invalidateQueries({ 
-        queryKey: ['user-watchlist'] 
+      queryClient.invalidateQueries({
+        queryKey: ['user-watchlist'],
       });
     },
   });

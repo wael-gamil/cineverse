@@ -8,13 +8,15 @@ import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviews
 import { FilterOpt } from '@/constants/types/movie';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 type ReviewsPageProps = {
   searchParams: Promise<{ [key: string]: string }>;
 };
 
 export default async function Reviews({ searchParams }: ReviewsPageProps) {
   const awaitedSearchParams = await searchParams;
-  const sortBy = awaitedSearchParams['sortBy'] || 'recent';
+  const sortBy = awaitedSearchParams['sortBy'] || '';
   const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
 
   // Get token from cookies (optional - for userReaction field)
@@ -25,12 +27,7 @@ export default async function Reviews({ searchParams }: ReviewsPageProps) {
   const reviewSortOptions: FilterOpt = {
     title: 'Sort By',
     key: 'sortBy',
-    options: [
-      { label: 'Most Recent', value: 'recent' },
-      { label: 'Most Liked', value: 'liked' },
-      { label: 'Highest Rated', value: 'rating' },
-      { label: 'Most Controversial', value: 'controversial' },
-    ] as any,
+    options: [{ label: 'Most Liked', value: 'likes' }] as any,
     multiple: false,
   };
 

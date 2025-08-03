@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
       { status: 400 }
     );
   }
-  console.log('OAuth token received:', token);
   try {
     const { username, email } = await getUserProfile(token);
 

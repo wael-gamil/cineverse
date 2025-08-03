@@ -5,9 +5,20 @@ import styles from './communityFloat.module.css';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Button from '@/components/ui/button/button';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function CommunityFloat() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Helper function to generate login URL with current page as redirect parameter
+  const getLoginUrl = () => {
+    const currentPath =
+      pathname +
+      (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+    return `/login?redirect=${encodeURIComponent(currentPath)}`;
+  };
 
   useEffect(() => {
     const timeout = setTimeout(() => setIsVisible(true), 200);
@@ -43,9 +54,9 @@ export default function CommunityFloat() {
                 <Icon name='user' strokeColor='white' />
                 Sign Up Free
               </Link>
-            </Button>
+            </Button>{' '}
             <Button variant='outline'>
-              <Link href='/login' className={styles.link}>
+              <Link href={getLoginUrl()} className={styles.link}>
                 Sign In
               </Link>
             </Button>

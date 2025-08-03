@@ -80,7 +80,6 @@ export default function ContentSliderSection({
     filter,
     enabled
   );
-  console.log(data);
   useEffect(() => {
     if (data) {
       setTotalPages(data.totalPages);

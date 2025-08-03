@@ -8,6 +8,8 @@ import MysterySection from '@/components/shared/homePage/mysterySection';
 import { Icon } from '@/components/ui/icon/icon';
 import MotionSection from '@/components/shared/motionSection';
 
+export const dynamic = 'force-dynamic';
+
 const sectionConfig: Record<
   string,
   {
@@ -184,7 +186,7 @@ const sectionConfig: Record<
 export default async function Home() {
   const { content } = await getContents(
     'MOVIE',
-    { sortBy: 'mostRecent', lang: 'en', genres: ['Action'] },
+    { sortBy: 'mostRecent', lang: 'en', genres: [''] },
     0,
     4
   );

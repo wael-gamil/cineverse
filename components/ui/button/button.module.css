@@ -22,6 +22,16 @@
   box-shadow: var(--shadow-blue-glow);
 }
 
+.solid.secondary {
+  background-color: var(--color-primary-60);
+  color: var(--color-white);
+}
+
+.solid.secondary:hover {
+  background-color: var(--color-primary-20);
+  box-shadow: 0 0 8px rgba(66, 165, 245, 0.3);
+}
+
 .solid.neutral {
   background-color: var(--color-surface-60);
   color: var(--color-white);
@@ -51,6 +61,15 @@
   box-shadow: var(--shadow-blue-glow);
 }
 
+.outline.secondary {
+  background-color: transparent;
+  border: 2px solid var(--color-primary-20);
+}
+.outline.secondary:hover {
+  border: 2px solid var(--color-primary-60);
+  box-shadow: 0 0 8px rgba(66, 165, 245, 0.3);
+}
+
 .outline.neutral {
   background-color: transparent;
   border: 2px solid var(--color-surface);
@@ -70,6 +89,7 @@
 }
 /* === Variant: Ghost === */
 .ghost.primary,
+.ghost.secondary,
 .ghost.neutral,
 .ghost.danger {
   background-color: transparent;
@@ -77,6 +97,11 @@
 .ghost.primary:hover {
   background-color: var(--color-primary-20);
   box-shadow: var(--shadow-blue-glow);
+}
+
+.ghost.secondary:hover {
+  background-color: var(--color-primary-20);
+  box-shadow: 0 0 6px rgba(66, 165, 245, 0.2);
 }
 
 .ghost.neutral:hover {
@@ -156,4 +181,17 @@
 }
 .lg {
   padding: var(--space-md) var(--space-lg);
+}
+
+/* === Size Variants === */
+.size-sm {
+  font-size: var(--font-size-sm);
+}
+
+.size-md {
+  font-size: var(--font-size-base);
+}
+
+.size-lg {
+  font-size: var(--font-size-lg);
 }

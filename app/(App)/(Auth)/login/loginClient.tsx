@@ -8,9 +8,12 @@ import { useLoginMutation } from '@/hooks/useAuthMutations';
 import { setUserWithExpiry } from '@/utils/userStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGooglePopupLogin } from '@/hooks/useGooglePopupLogin';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
+  const { redirectIfAuthenticated } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,12 +25,36 @@ export default function LoginPage() {
   });
   const router = useRouter();
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
+  // User profile query (disabled initially)
+  const { refetch: fetchUserProfile } = useUserProfileQuery();
+
+  // Helper function to fetch and store user profile after login
+  const fetchAndStoreUserProfile = async () => {
+    try {
+      const { data: userProfile } = await fetchUserProfile();
+      if (userProfile) {
+        setUserWithExpiry(
+          userProfile.username,
+          userProfile.email,
+          userProfile.profilePicture
+        );
+      }
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+    }
+  };
+  // Redirect if already authenticated
+  useEffect(() => {
+    const redirectTo = searchParams.get('redirect') || '/';
+    redirectIfAuthenticated(redirectTo);
+  }, [redirectIfAuthenticated, searchParams]);
 
   const {
     loginWithGoogle,
     loading: googleLoading,
     error: googleError,
-  } = useGooglePopupLogin();
+  } = useGooglePopupLogin(redirectTo);
   useEffect(() => {
     if (googleError) {
       toast.error(googleError, {
@@ -46,7 +73,6 @@ export default function LoginPage() {
       );
     }
   }, []);
-
   const { mutate: login } = useLoginMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -62,18 +88,20 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
-
     login(
       { username, password },
       {
-        onSuccess: data => {
-          setUserWithExpiry(data.user.username, data.user.email);
+        onSuccess: async data => {
+          // Fetch and store complete user profile
+          await fetchAndStoreUserProfile();
 
           toast.success('Login successful!', {
             className: 'toast-success',
           });
 
-          router.push('/');
+          // Check if there's a redirect parameter
+          const redirectTo = searchParams.get('redirect') || '/';
+          router.push(redirectTo);
         },
         onError: err => {
           toast.error(err.message || 'Something went wrong', {
