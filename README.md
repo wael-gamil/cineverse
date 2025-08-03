@@ -112,9 +112,6 @@ A modern, feature-rich movie and TV series tracking application built with Next.
 
    ```env
    NEXT_PUBLIC_API_BASE_URL=your_backend_api_url
-   NEXTAUTH_SECRET=your_secret_key
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
    ```
 
 4. **Run the development server**
