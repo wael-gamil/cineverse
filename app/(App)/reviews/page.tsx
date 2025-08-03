@@ -8,6 +8,8 @@ import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviews
 import { FilterOpt } from '@/constants/types/movie';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 type ReviewsPageProps = {
   searchParams: Promise<{ [key: string]: string }>;
 };

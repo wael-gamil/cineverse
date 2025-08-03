@@ -9,6 +9,8 @@ import { Suspense } from 'react';
 import SearchResultSkeleton from '@/components/ui/search/searchResultSkeleton';
 import SearchResultWrapper from '@/components/ui/search/searchResultWrapper';
 
+export const dynamic = 'force-dynamic';
+
 type AwaitedSearchParams = {
   q?: string;
   page?: string;

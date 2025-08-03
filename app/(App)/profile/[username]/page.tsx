@@ -1,4 +1,3 @@
-
 import styles from '../profile.module.css';
 import { getQueryClient } from '@/lib/getQueryClient';
 import { getPublicUserProfile } from '@/lib/api';
@@ -7,6 +6,8 @@ import { UserProfile } from '@/constants/types/movie';
 import { notFound } from 'next/navigation';
 import PublicTabsWrapper from '@/components/pages/profile/publicTabsWrapper';
 import PublicUserInfoPanel from '@/components/pages/profile/publicUserInfoPanel';
+
+export const dynamic = 'force-dynamic';
 
 type PublicProfilePageProps = {
   params: Promise<{ username: string }>;

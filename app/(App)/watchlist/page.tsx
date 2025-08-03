@@ -7,6 +7,8 @@ import WatchlistServerPage from './watchlistServerPage';
 import WatchlistSkeleton from '@/components/shared/watchlist/watchListSkeleton';
 import { WatchlistItem } from '@/constants/types/movie';
 
+export const dynamic = 'force-dynamic';
+
 type SearchParams = {
   status?: 'TO_WATCH' | 'WATCHED';
   page?: string;

@@ -8,6 +8,8 @@ import MysterySection from '@/components/shared/homePage/mysterySection';
 import { Icon } from '@/components/ui/icon/icon';
 import MotionSection from '@/components/shared/motionSection';
 
+export const dynamic = 'force-dynamic';
+
 const sectionConfig: Record<
   string,
   {
