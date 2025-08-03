@@ -2,8 +2,6 @@
 
 A modern, feature-rich movie and TV series tracking application built with Next.js 14. CineVerse allows users to discover, track, and review their favorite movies and TV shows with a beautiful, responsive interface.
 
-![CineVerse Preview](./public/preview.png)
-
 ## ✨ Features
 
 ### 🔍 Content Discovery
@@ -229,19 +227,6 @@ cineverse/
 
 ## 🔧 Configuration
 
-### Environment Variables
-
-```env
-# API Configuration
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/
-
-# Authentication
-NEXTAUTH_SECRET=your-secret-key
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-```
 
 ### Custom Hooks
 
