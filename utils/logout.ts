@@ -10,7 +10,7 @@ export async function logout(router?: any) {
       method: 'POST',
     });
 
-    userStore.setState({ username: null, email: null });
+    userStore.setState({ username: null, email: null, profilePicture: null });
     localStorage.removeItem('cineverse-user');
 
     // Show logout success toast
