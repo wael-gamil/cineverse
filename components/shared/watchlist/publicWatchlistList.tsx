@@ -100,7 +100,6 @@ export default function PublicWatchlistList({
           <div key={item.id} className={styles.cardWrapper}>
             <Card
               title={item.title}
-              description={item.overview}
               imageUrl={item.contentPosterUrl}
               layout='overlay'
               imageHeight='image-lg'
