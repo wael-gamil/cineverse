@@ -18,6 +18,22 @@
   color: var(--color-light);
 }
 
+.contentDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.date {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  gap: var(--space-sm);
+}
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
 .sliderRow {
   display: flex;
   align-items: center;

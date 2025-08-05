@@ -9,6 +9,7 @@ import Card from '@/components/cards/card/card';
 import Button from '@/components/ui/button/button';
 import Pagination from '@/components/ui/pagination/pagination';
 import { Icon } from '@/components/ui/icon/icon';
+import DeleteConfirmationModal from '@/components/ui/deleteConfirmationModal/deleteConfirmationModal';
 import toast from 'react-hot-toast';
 import styles from '../../../components/shared/watchlist/watchList.module.css';
 import { WatchlistItem } from '@/constants/types/movie';
@@ -225,52 +226,21 @@ export default function WatchlistServerList({
           );
         })}
       </GridContainer>
-
       {data.totalPages > 1 && (
         <Pagination
           currentPage={data.currentPage}
           totalPages={data.totalPages}
         />
-      )}
-
+      )}{' '}
       {/* Delete Confirmation Modal */}
-      {deleteModalOpen && itemToDelete && (
-        <div
-          className={styles.modalOverlay}
-          onClick={() => setDeleteModalOpen(false)}
-        >
-          <div
-            className={styles.modalContent}
-            onClick={e => e.stopPropagation()}
-          >
-            <div className={styles.modalHeader}>
-              <Icon name='alertTriangle' className={styles.warningIcon} />
-              <h3>Remove from Watchlist</h3>
-            </div>
-
-            <div className={styles.modalBody}>
-              <p>
-                Are you sure you want to remove{' '}
-                <strong>{itemToDelete.title}</strong> from your watchlist?
-              </p>
-              <p>This action cannot be undone.</p>
-            </div>
-
-            <div className={styles.modalActions}>
-              <Button
-                variant='outline'
-                color='neutral'
-                onClick={() => setDeleteModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button color='danger' onClick={handleConfirmDelete}>
-                Remove
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen && !!itemToDelete}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title='Remove from Watchlist'
+        message={`Are you sure you want to remove "${itemToDelete?.title}" from your watchlist? This action cannot be undone.`}
+        confirmText='Remove'
+      />
     </>
   );
 }
