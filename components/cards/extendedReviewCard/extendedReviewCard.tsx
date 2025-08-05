@@ -15,7 +15,7 @@ import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 import { useAuth } from '@/hooks/useAuth';
 
 type ExtendedReviewCardProps = {
-  review: ExtendedReview | UserReview ;
+  review: ExtendedReview | UserReview;
   onReact?: (reviewId: number, type: 'LIKE' | 'DISLIKE') => void;
   onUserClick?: (username: string) => void;
   onContentClick?: (contentId: number, contentType: string) => void;
@@ -252,6 +252,12 @@ export default function ExtendedReviewCard({
                   onReact?.(review.reviewId, 'LIKE');
                 }, 'Please log in to like reviews');
               }}
+              style={{
+                backgroundColor:
+                  review.userReaction === 'LIKE'
+                    ? 'var(--color-primary-20)'
+                    : 'transparent',
+              }}
             >
               <Icon
                 name='thumbUp'
@@ -259,7 +265,16 @@ export default function ExtendedReviewCard({
                   review.userReaction === 'LIKE' ? 'primary' : 'white'
                 }
               />
-              <span>{review.likeCount}</span>
+              <span
+                style={{
+                  color:
+                    review.userReaction === 'LIKE'
+                      ? 'var(--light-color-primary)'
+                      : 'inherit',
+                }}
+              >
+                {review.likeCount}
+              </span>
             </Button>
             <Button
               padding='sm'
@@ -272,6 +287,12 @@ export default function ExtendedReviewCard({
                   onReact?.(review.reviewId, 'DISLIKE');
                 }, 'Please log in to dislike reviews');
               }}
+              style={{
+                backgroundColor:
+                  review.userReaction === 'DISLIKE'
+                    ? 'var(--color-danger-20)'
+                    : 'transparent',
+              }}
             >
               <Icon
                 name='thumbDown'
@@ -279,7 +300,16 @@ export default function ExtendedReviewCard({
                   review.userReaction === 'DISLIKE' ? 'danger' : 'white'
                 }
               />
-              <span>{review.dislikeCount}</span>
+              <span
+                style={{
+                  color:
+                    review.userReaction === 'DISLIKE'
+                      ? 'var(--light-color-danger)'
+                      : 'inherit',
+                }}
+              >
+                {review.dislikeCount}
+              </span>
             </Button>
           </div>
 
