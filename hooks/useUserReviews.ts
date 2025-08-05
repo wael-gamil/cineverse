@@ -7,11 +7,18 @@ type UserReviewsResponse = {
   currentPage: number;
 };
 
-export const useUserReviews = (username: string) => {
+export const useUserReviews = (
+  username: string,
+  page: number = 0,
+  size: number = 10,
+  enabled: boolean = true
+) => {
   return useQuery<UserReviewsResponse>({
-    queryKey: ['user-reviews', username],
+    queryKey: ['user-reviews', username, page, size],
     queryFn: async () => {
-      const res = await fetch(`/api/user/reviews?username=${username}`);
+      const res = await fetch(
+        `/api/user/reviews?username=${username}&page=${page}&size=${size}`
+      );
       const data = await res.json();
 
       if (!res.ok) {
@@ -20,7 +27,7 @@ export const useUserReviews = (username: string) => {
 
       return data.user; // This is { reviews, totalPages, currentPage }
     },
-    enabled: !!username,
+    enabled: !!username && enabled,
     staleTime: 0,
   });
 };

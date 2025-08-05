@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAllReviews } from '@/hooks/useAllReviews';
 import ExtendedReviewCard from '@/components/cards/extendedReviewCard/extendedReviewCard';
 import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviewsList';
+import Pagination from '@/components/ui/pagination/pagination';
 import type { ExtendedReview } from '@/constants/types/movie';
 import { useContentSummary } from '@/hooks/useContentSummary';
 import { useEffect, useState } from 'react';
@@ -24,17 +25,16 @@ export default function ReviewsClientWrapper({
   );
   const [isRefetching, setIsRefetching] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(false);
-
   // Extract parameters
   const sortBy = searchParams['sortBy'] || 'recent';
-  const page = parseInt(searchParams['page'] || '1', 10) - 1;
+  const page = parseInt(searchParams['page'] || '1', 10) - 1; // Convert to 0-based
 
   const {
     data: reviewsData,
     isLoading,
     error,
     refetch,
-  } = useAllReviews(page, 20, sortBy, shouldFetch);
+  } = useAllReviews(page, 10, sortBy, shouldFetch);
   const {
     data: summaryData,
     isLoading: summaryLoading,
@@ -129,9 +129,28 @@ export default function ReviewsClientWrapper({
             color: 'var(--color-muted)',
           }}
         >
+          {' '}
           <p>No reviews found. Be the first to write a review!</p>
         </div>
-      )}
+      )}{' '}
+      {/* Pagination */}
+      {reviews &&
+        reviews.length > 0 &&
+        reviewsData?.totalPages &&
+        reviewsData.totalPages > 1 && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              margin: 'var(--space-xl) 0',
+            }}
+          >
+            <Pagination
+              currentPage={reviewsData.currentPage}
+              totalPages={reviewsData.totalPages}
+            />
+          </div>
+        )}
     </>
   );
 }

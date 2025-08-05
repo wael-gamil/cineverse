@@ -9,10 +9,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    const user = await getUserReviews(
-      token,
-      req.nextUrl.searchParams.get('username') ?? ''
-    );
+    const searchParams = req.nextUrl.searchParams;
+    const username = searchParams.get('username') ?? '';
+    const page = Number(searchParams.get('page')) || 0;
+    const size = Number(searchParams.get('size')) || 10;
+
+    const user = await getUserReviews(token, username, page, size);
     return NextResponse.json({ user });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 401 });
