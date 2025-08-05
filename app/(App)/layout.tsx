@@ -54,7 +54,8 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {  return (
+}>) {
+  return (
     <html lang='en' className={`${geist.className} ${inter.className}`}>
       <body>
         <Suspense fallback={<div />}>

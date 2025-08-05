@@ -61,6 +61,25 @@
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
+
+  /* === Light Mode Variables (for reviews section) === */
+  --light-color-bg: #f8fafc;
+  --light-color-surface: #ffffff;
+  --light-color-primary: #1f8ef1;
+  --light-color-secondary: #f39c12;
+  --light-color-text-primary: #1e293b;
+  --light-color-text-secondary: #64748b;
+  --light-color-muted: #94a3b8;
+  --light-color-border: #e2e8f0;
+  --light-color-white: #1e293b;
+  --light-color-danger: #e11d48;
+  --light-color-surface-60: rgba(255, 255, 255, 0.9);
+  --light-color-bg-60: rgba(248, 250, 252, 0.9);
+  --light-color-primary-20: rgba(31, 142, 241, 0.1);
+  --light-color-white-20: rgba(30, 41, 59, 0.2);
+  --light-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --light-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --light-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* === Body Defaults === */

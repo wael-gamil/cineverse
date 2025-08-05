@@ -71,7 +71,6 @@ export default function SeasonsSection({
                   layout='overlay'
                   highlight={season.seasonNumber === selectedSeason}
                   onClick={() => setSelectedSeason(season.seasonNumber)}
-                  href={`${pathname}/seasons/${season.seasonNumber}`}
                   badges={[
                     {
                       iconName: 'star' as IconName,

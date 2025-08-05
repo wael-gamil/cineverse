@@ -819,3 +819,206 @@
     font-size: var(--font-size-xs);
   }
 }
+
+/* === Light Mode Support === */
+/* When the parent reviews section is in light mode, apply light theme to cards */
+:global(.lightMode) .cardWrapper {
+  background-color: var(--light-color-surface);
+  border-color: var(--light-color-border);
+  box-shadow: var(--light-shadow-md);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:global(.lightMode) .cardWrapper:hover {
+  box-shadow: 0 8px 25px rgba(31, 142, 241, 0.15);
+  transform: scale(1.02) translateY(-2px);
+}
+
+:global(.lightMode) .contentDetails {
+  background-color: var(--light-color-surface);
+}
+
+:global(.lightMode) .reviewTitle {
+  color: var(--light-color-text-primary);
+  font-weight: 700;
+}
+
+:global(.lightMode) .reviewDescription {
+  color: var(--light-color-text-secondary);
+  font-weight: 500;
+}
+
+:global(.lightMode) .authorName {
+  color: var(--light-color-text-primary);
+  font-weight: 600;
+}
+
+:global(.lightMode) .reviewDate {
+  color: var(--light-color-muted);
+}
+
+:global(.lightMode) .contentTitle {
+  color: var(--light-color-text-primary);
+  font-weight: 600;
+}
+
+:global(.lightMode) .contentMeta {
+  color: var(--light-color-muted);
+}
+
+:global(.lightMode) .authorText {
+  color: var(--light-color-text-secondary);
+}
+
+/* Enhanced spoiler styling for light mode */
+:global(.lightMode) .spoilerOverlay {
+  background: linear-gradient(
+    135deg,
+    rgba(31, 142, 241, 0.05),
+    rgba(31, 142, 241, 0.1)
+  );
+  border: 2px solid rgba(31, 142, 241, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+:global(.lightMode) .spoilerOverlay:hover {
+  border-color: rgba(31, 142, 241, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(31, 142, 241, 0.1),
+    rgba(31, 142, 241, 0.15)
+  );
+}
+
+:global(.lightMode) .spoilerIcon {
+  color: var(--light-color-primary);
+}
+
+:global(.lightMode) .spoilerOverlay:hover .spoilerIcon {
+  color: #3b82f6;
+  transform: scale(1.2);
+}
+
+:global(.lightMode) .spoilerText {
+  color: var(--light-color-text-primary);
+  font-weight: 600;
+}
+
+:global(.lightMode) .spoilerOverlay:hover .spoilerText {
+  color: var(--light-color-primary);
+}
+
+:global(.lightMode) .spoilerText::after {
+  background: var(--light-color-primary);
+}
+
+:global(.lightMode) .spoilerSubtext {
+  color: var(--light-color-muted);
+  font-weight: 500;
+}
+
+:global(.lightMode) .spoilerOverlay:hover .spoilerSubtext {
+  color: var(--light-color-text-secondary);
+}
+
+:global(.lightMode) .spoilerOverlay::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--light-color-primary),
+    transparent
+  );
+}
+
+:global(.lightMode) .contentType {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+  font-weight: 600;
+}
+
+:global(.lightMode) .genres {
+  color: var(--light-color-muted);
+}
+
+:global(.lightMode) .readMoreButton {
+  color: var(--light-color-primary);
+  font-weight: 600;
+}
+
+/* Enhanced avatar and author section in light mode */
+:global(.lightMode) .avatar {
+  border: 2px solid var(--light-color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+:global(.lightMode) .authorSection:hover .avatar {
+  border-color: var(--light-color-primary);
+  box-shadow: 0 4px 12px rgba(31, 142, 241, 0.3);
+}
+
+/* Enhanced read more button in light mode */
+:global(.lightMode) .readMoreButton:hover {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(31, 142, 241, 0.2);
+}
+
+/* Badge enhancements in light mode */
+:global(.lightMode) .badge {
+  background: linear-gradient(
+    135deg,
+    var(--light-color-primary-20),
+    rgba(31, 142, 241, 0.1)
+  );
+  color: var(--light-color-primary);
+  border: 1px solid rgba(31, 142, 241, 0.3);
+  font-weight: 600;
+}
+
+/* Enhanced reaction button styles for light mode */
+:global(.lightMode) .actions :global(.button) {
+  background: var(--light-color-surface);
+  border: 2px solid var(--light-color-border);
+  color: var(--light-color-text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+:global(.lightMode) .actions :global(.button:hover) {
+  border-color: var(--light-color-primary);
+  background: var(--light-color-primary-20);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(31, 142, 241, 0.2);
+}
+
+:global(.lightMode) .actions :global(.button[data-color="primary"]) {
+  background: linear-gradient(135deg, var(--light-color-primary), #3b82f6);
+  border-color: var(--light-color-primary);
+  color: white;
+}
+
+:global(.lightMode) .actions :global(.button[data-color="danger"]) {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-color: #ef4444;
+  color: white;
+}
+
+:global(.lightMode) .actions :global(.button) .icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:global(.lightMode) .actions :global(.button:hover) .icon {
+  transform: scale(1.1);
+}
+
+/* Enhanced star rating in light mode */
+:global(.lightMode) .starRating :global(.star) {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:global(.lightMode) .starRating:hover :global(.star) {
+  transform: scale(1.05);
+}

@@ -13,11 +13,14 @@ export async function GET(req: NextRequest) {
     // Extract token from cookies for authentication
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
-    
+
     // Use Client function with optional token for userReaction field
     const result = await getAllReviewsClient(page, size, sortBy, token);
+
+    // Return the transformed data structure that the frontend expects
     return NextResponse.json(result);
   } catch (error) {
+    console.error('Error in all reviews API route:', error);
     return NextResponse.json(
       { error: 'Failed to fetch all reviews' },
       { status: 500 }

@@ -13,6 +13,7 @@ import EmptyCard from '@/components/cards/card/emptyCard';
 import SectionHeader from './sectionHeader';
 import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import Badge from '@/components/ui/badge/badge';
 
 type FilterType = 'ALL' | 'MOVIE' | 'SERIES';
 
@@ -239,7 +240,25 @@ export default function ContentSliderSection({
                   },
                 ]}
                 {...cardProps}
-              />
+              >
+                <div className={styles.contentDetails}>
+                  <div className={styles.date}>
+                    <Icon name='calendar' strokeColor='muted' width={16} />
+                    <span>{item.releaseDate?.split('-')[0]}</span>
+                  </div>
+                  <div className={styles.genres}>
+                    {item.genres.slice(0, 3).map(genre => (
+                      <Badge
+                        key={genre}
+                        text={genre}
+                        color='color-white'
+                        backgroundColor='bg-muted'
+                        className={styles.genreBadge}
+                      />
+                    ))}
+                  </div>
+                </div>{' '}
+              </Card>
             ))}
         </GridContainer>
 

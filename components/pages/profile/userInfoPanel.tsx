@@ -10,7 +10,7 @@ import Icon from '@/components/ui/icon/icon';
 import { useUpdateProfilePictureMutation } from '@/hooks/useUpdateProfilePictureMutation';
 import { UserProfile } from '@/constants/types/movie';
 import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
-
+import avatarFallback from '@/public/avatar_fallback.png';
 type UserInfoPanelProps = {
   initialUser: UserProfile;
 };
@@ -46,11 +46,10 @@ export default function UserInfoPanel({ initialUser }: UserInfoPanelProps) {
       <ContentHeroSimple
         title={user.name || user.username}
         image={
-          user.profilePicture || 'https://placehold.co/275x400?text=Avatar'
+          user.profilePicture || (avatarFallback as { src: string }).src
         }
         bio={user.bio || 'No bio provided yet.'}
         infoCards={infoCards}
-        badges={['User']} // You can map this dynamically if needed
         actionButton={
           <Button
             onClick={() => setIsEditModalOpen(true)}

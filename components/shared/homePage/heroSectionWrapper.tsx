@@ -64,7 +64,7 @@ export default function HeroSectionWrapper({
     if (stillInView && !isTrailerFocusMode) {
       intervalRef.current = setInterval(() => {
         setActiveIndex(prev => (prev + 1) % contents.length);
-      }, 20000);
+      }, 15000);
     }
 
     return () => {

@@ -240,7 +240,8 @@ export default function ExtendedReviewCard({
         {/* Actions */}
         <div className={styles.actions}>
           <div className={styles.reactions}>
-            {' '}            <Button
+            {' '}
+            <Button
               padding='sm'
               variant='ghost'
               color={review.userReaction === 'LIKE' ? 'primary' : 'neutral'}
@@ -251,12 +252,29 @@ export default function ExtendedReviewCard({
                   onReact?.(review.reviewId, 'LIKE');
                 }, 'Please log in to like reviews');
               }}
+              style={{
+                backgroundColor:
+                  review.userReaction === 'LIKE'
+                    ? 'var(--color-primary-20)'
+                    : 'transparent',
+              }}
             >
-              <Icon 
-                name='thumbUp' 
-                strokeColor={review.userReaction === 'LIKE' ? 'primary' : 'white'} 
+              <Icon
+                name='thumbUp'
+                strokeColor={
+                  review.userReaction === 'LIKE' ? 'primary' : 'white'
+                }
               />
-              <span>{review.likeCount}</span>
+              <span
+                style={{
+                  color:
+                    review.userReaction === 'LIKE'
+                      ? 'var(--light-color-primary)'
+                      : 'inherit',
+                }}
+              >
+                {review.likeCount}
+              </span>
             </Button>
             <Button
               padding='sm'
@@ -269,12 +287,29 @@ export default function ExtendedReviewCard({
                   onReact?.(review.reviewId, 'DISLIKE');
                 }, 'Please log in to dislike reviews');
               }}
+              style={{
+                backgroundColor:
+                  review.userReaction === 'DISLIKE'
+                    ? 'var(--color-danger-20)'
+                    : 'transparent',
+              }}
             >
-              <Icon 
-                name='thumbDown' 
-                strokeColor={review.userReaction === 'DISLIKE' ? 'danger' : 'white'} 
+              <Icon
+                name='thumbDown'
+                strokeColor={
+                  review.userReaction === 'DISLIKE' ? 'danger' : 'white'
+                }
               />
-              <span>{review.dislikeCount}</span>
+              <span
+                style={{
+                  color:
+                    review.userReaction === 'DISLIKE'
+                      ? 'var(--light-color-danger)'
+                      : 'inherit',
+                }}
+              >
+                {review.dislikeCount}
+              </span>
             </Button>
           </div>
 

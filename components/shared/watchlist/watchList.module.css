@@ -1,120 +1,80 @@
-/* === MODAL STYLES (add to watchList.module.css and reviewsTab.module.css) === */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: var(--space-lg);
-}
-
-.deleteModalContent {
-  background: var(--color-surface);
-  border: 2px solid var(--color-surface-40);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  max-width: 400px;
+/* Card and layout styles */
+.cardWrapper {
+  position: relative;
   width: 100%;
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(20px);
-  animation: modalSlideIn 0.2s ease-out;
 }
 
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.deleteModalHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
-}
-
-.warningIcon {
-  color: var(--color-warning, #f59e0b);
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-.deleteModalTitle {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  margin: 0;
-  color: var(--color-white);
-}
-
-.deleteModalBody {
-  margin-bottom: var(--space-xl);
-}
-
-.deleteModalText {
-  color: var(--color-muted);
-  margin-bottom: var(--space-lg);
-  line-height: 1.5;
-  font-size: var(--font-size-base);
-}
-
-.reviewPreview {
-  padding: var(--space-md);
-  background-color: var(--color-surface-40);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--color-warning, #f59e0b);
-}
-
-.reviewPreview strong {
-  display: block;
-  color: var(--color-white);
-  margin-bottom: var(--space-xs);
-  font-weight: 600;
-}
-
-.reviewMeta {
-  font-size: var(--font-size-sm);
-  color: var(--color-muted);
-}
-
-.deleteModalActions {
-  display: flex;
-  gap: var(--space-md);
-  justify-content: flex-end;
-}
 .cardContent {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
 }
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .modalOverlay {
-    padding: var(--space-md);
-  }
 
-  .deleteModalContent {
-    padding: var(--space-lg);
-    max-width: none;
-  }
+.activeCard {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s ease;
+}
 
-  .deleteModalActions {
-    flex-direction: column-reverse;
-    gap: var(--space-sm);
-  }
+.inactiveCard {
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
 
-  .deleteModalActions button {
-    width: 100%;
-  }
+.emptyMessage {
+  text-align: center;
+  color: var(--color-muted);
+  font-size: var(--font-size-lg);
+  padding: var(--space-xl);
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-xl);
+}
+
+/* Review preview styles for delete modal item preview */
+.reviewPreview {
+  background: var(--color-surface-60);
+  border: 1px solid var(--color-surface-40);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.reviewPreview strong {
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.reviewMeta {
+  color: var(--color-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Error and empty states */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-white-20);
+  border-radius: var(--radius-lg);
+  color: var(--color-muted);
+}
+
+.emptyContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-xl);
 }

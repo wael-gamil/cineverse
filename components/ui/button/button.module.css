@@ -195,3 +195,108 @@
 .size-lg {
   font-size: var(--font-size-lg);
 }
+
+/* === Light Mode Support === */
+/* When button is inside an element with .lightMode class */
+:global(.lightMode) .button {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Solid variant light mode styles */
+:global(.lightMode) .solid.primary {
+  background: linear-gradient(135deg, var(--light-color-primary), #3b82f6);
+  color: white;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 15px rgba(31, 142, 241, 0.3);
+  font-weight: 600;
+}
+
+:global(.lightMode) .solid.primary:hover {
+  background: linear-gradient(135deg, #3b82f6, var(--light-color-primary));
+  box-shadow: 0 6px 20px rgba(31, 142, 241, 0.4);
+  transform: translateY(-2px);
+  color: white;
+}
+
+:global(.lightMode) .solid.secondary {
+  background: var(--light-color-surface);
+  color: var(--light-color-text-primary);
+  border: 2px solid var(--light-color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+:global(.lightMode) .solid.secondary:hover {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+  border-color: var(--light-color-primary);
+  box-shadow: 0 4px 15px rgba(31, 142, 241, 0.2);
+  transform: translateY(-1px);
+}
+
+:global(.lightMode) .solid.neutral {
+  background: var(--light-color-surface);
+  color: var(--light-color-text-primary);
+  border: 1px solid var(--light-color-border);
+}
+
+:global(.lightMode) .solid.neutral:hover {
+  background: var(--light-color-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Outline variant light mode styles */
+:global(.lightMode) .outline.primary {
+  background: transparent;
+  border: 2px solid var(--light-color-primary);
+  color: var(--light-color-primary);
+}
+
+:global(.lightMode) .outline.primary:hover {
+  background: var(--light-color-primary-20);
+  box-shadow: 0 4px 15px rgba(31, 142, 241, 0.2);
+}
+
+:global(.lightMode) .outline.secondary {
+  border: 2px solid var(--light-color-border);
+  color: var(--light-color-text-primary);
+}
+
+:global(.lightMode) .outline.secondary:hover {
+  border-color: var(--light-color-primary);
+  color: var(--light-color-primary);
+  background: var(--light-color-primary-20);
+}
+
+/* Ghost variant light mode styles */
+/* :global(.lightMode) .ghost.primary {
+  color: var(--light-color-primary);
+}
+
+:global(.lightMode) .ghost.primary:hover {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+}
+
+:global(.lightMode) .ghost.secondary {
+  color: var(--light-color-text-primary);
+}
+
+:global(.lightMode) .ghost.secondary:hover {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+} */
+
+/* List variant light mode styles */
+:global(.lightMode) .list {
+  color: var(--light-color-muted);
+}
+
+:global(.lightMode) .list:hover {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+}
+
+:global(.lightMode) .list.active {
+  background: var(--light-color-primary-20);
+  color: var(--light-color-primary);
+}

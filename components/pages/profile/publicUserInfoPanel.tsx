@@ -3,7 +3,7 @@
 import ContentHeroSimple from '@/components/shared/contentDetails/heroSection/contentHeroSimple';
 import { UserProfile } from '@/constants/types/movie';
 import { usePublicUserProfileQuery } from '@/hooks/usePublicUserProfileQuery';
-
+import avatarFallback from '@/public/avatar_fallback.png';
 type PublicUserInfoPanelProps = {
   initialUser: UserProfile;
   username: string;
@@ -37,7 +37,7 @@ export default function PublicUserInfoPanel({
   return (
     <ContentHeroSimple
       title={user.name || user.username}
-      image={user.profilePicture || 'https://placehold.co/275x400?text=Avatar'}
+      image={user.profilePicture || (avatarFallback as { src: string }).src}
       infoCards={infoCards}
       bio={user.bio || `${user.username}'s profile`}
     />

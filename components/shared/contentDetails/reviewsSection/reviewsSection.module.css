@@ -76,3 +76,139 @@
     transform: translateY(0);
   }
 }
+
+/* === Light Mode Styles === */
+.section:global(.lightMode) {
+  --color-bg: var(--light-color-bg);
+  --color-surface: var(--light-color-surface);
+  --color-primary: var(--light-color-primary);
+  --color-secondary: var(--light-color-secondary);
+  --color-white: var(--light-color-text-primary);
+  --color-muted: var(--light-color-muted);
+  --color-surface-60: var(--light-color-surface-60);
+  --color-bg-60: var(--light-color-bg-60);
+  --color-primary-20: var(--light-color-primary-20);
+  --color-white-20: var(--light-color-white-20);
+  --shadow-sm: var(--light-shadow-sm);
+  --shadow-md: var(--light-shadow-md);
+  --shadow-lg: var(--light-shadow-lg);
+
+  background: linear-gradient(
+    135deg,
+    var(--light-color-bg) 0%,
+    var(--light-color-surface) 100%
+  );
+  border-radius: var(--radius-lg);
+  box-shadow: var(--light-shadow-lg);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+/* Ensure content is above any effects */
+.section:global(.lightMode) > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Enhanced light mode text styles */
+.section:global(.lightMode) .heading h2 {
+  color: var(--light-color-text-primary);
+  text-shadow: none;
+  font-weight: 800;
+  background: linear-gradient(
+    135deg,
+    var(--light-color-text-primary),
+    var(--light-color-primary)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all var(--transition-normal);
+}
+
+.section:global(.lightMode) .heading p {
+  color: var(--light-color-text-secondary);
+  font-weight: 500;
+}
+
+.section:global(.lightMode) .cardWrapper h3 {
+  color: var(--light-color-text-primary);
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.section:global(.lightMode) .text h3 {
+  color: var(--light-color-text-primary);
+  font-weight: 700;
+}
+
+.section:global(.lightMode) .text p {
+  color: var(--light-color-text-secondary);
+  font-weight: 500;
+}
+
+/* Smooth transition for all nested elements */
+.section {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.section * {
+  transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced light mode empty state */
+.section:global(.lightMode) .empty {
+  background: linear-gradient(
+    135deg,
+    var(--light-color-bg-60),
+    var(--light-color-surface)
+  );
+  border: 2px dashed var(--light-color-border);
+  backdrop-filter: blur(15px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section:global(.lightMode) .empty:hover {
+  background: linear-gradient(
+    135deg,
+    var(--light-color-surface),
+    var(--light-color-bg)
+  );
+  border-color: var(--light-color-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(31, 142, 241, 0.15);
+}
+
+/* Add a subtle glow effect to headings in light mode */
+.section:global(.lightMode) .heading h2 {
+  position: relative;
+}
+
+.section:global(.lightMode) .heading h2::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--light-color-primary), #3b82f6);
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section:global(.lightMode) .heading h2:hover::after {
+  width: 60%;
+}
+
+/* Responsive enhancements for light mode */
+@media (max-width: 768px) {
+  .section:global(.lightMode) .heading h2 {
+    font-size: var(--font-size-lg);
+  }
+}

@@ -101,6 +101,7 @@ export type ReviewWithUser = BaseReview & {
   user: {
     id: number;
     name: string;
+    username: string;
     imageUrl: string;
   };
 };

@@ -61,6 +61,7 @@ export default async function Season({ params }: SeasonProps) {
         id={details.id}
         contentTitle={details.title}
         contentPoster={details.posterUrl}
+        sortBy='likes'
       />
     </HydrationBoundary>
   );

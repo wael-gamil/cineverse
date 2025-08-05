@@ -101,6 +101,7 @@ export default function PublicWatchlistList({
             <Card
               title={item.title}
               imageUrl={item.contentPosterUrl}
+              description={item.overview}
               layout='overlay'
               imageHeight='image-lg'
               onClick={() => handleCardClick(item)}

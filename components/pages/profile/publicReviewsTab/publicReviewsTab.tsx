@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useContentSummary } from '@/hooks/useContentSummary';
 import ExtendedReviewCard from '@/components/cards/extendedReviewCard/extendedReviewCard';
 import SkeletonProfileReviewCard from '../reviewsTab/skeletonProfileReviewCard';
 import { Icon } from '@/components/ui/icon/icon';
+import Pagination from '@/components/ui/pagination/pagination';
 import styles from '../reviewsTab/reviewsTab.module.css';
 import type { UserReview } from '@/constants/types/movie';
 import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
@@ -18,15 +19,19 @@ type PublicReviewsTabProps = {
 
 export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get('page') || 1) - 1; // Convert to 0-based index
   const { requireAuth, isAuthenticated } = useAuth();
   const [selectedReview, setSelectedReview] = useState<UserReview | null>(null);
 
   // Use different hooks based on login status
   const publicReviewsQuery = usePublicUserReviews({
     username,
+    page,
+    size: 10,
   });
 
-  const userReviewsQuery = useUserReviews(username);
+  const userReviewsQuery = useUserReviews(username, page, 10, !!username);
   // Choose the appropriate query based on login status
   const {
     data: reviewsData,
@@ -99,20 +104,34 @@ export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
     );
   }
   return (
-    <div className={styles.reviewsContainer}>
-      {reviewsData.reviews.map((review: UserReview) => {
-        const reviewState = getReviewState(review.reviewId);
-        return (
-          <ExtendedReviewCard
-            key={review.reviewId}
-            review={reviewState || review}
-            showUserInfo={false} // Don't show user info on profile page
-            onContentClick={() => setSelectedReview(review)}
-            onReact={handleReactToReview}
-            // Don't pass onEdit or onDelete to hide edit/delete actions for public view
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className={styles.reviewsContainer}>
+        {reviewsData.reviews.map((review: UserReview) => {
+          const reviewState = getReviewState(review.reviewId);
+          return (
+            <ExtendedReviewCard
+              key={review.reviewId}
+              review={reviewState || review}
+              showUserInfo={false} // Don't show user info on profile page
+              onContentClick={() => setSelectedReview(review)}
+              onReact={handleReactToReview}
+              // Don't pass onEdit or onDelete to hide edit/delete actions for public view
+            />
+          );
+        })}
+      </div>
+
+      {/* Pagination */}
+      {reviewsData?.reviews.length !== 0 &&
+        reviewsData?.totalPages &&
+        reviewsData.totalPages > 1 && (
+          <div className={styles.paginationWrapper}>
+            <Pagination
+              currentPage={reviewsData.currentPage}
+              totalPages={reviewsData.totalPages}
+            />
+          </div>
+        )}
+    </>
   );
 }

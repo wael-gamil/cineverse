@@ -13,6 +13,7 @@ import Button from '@/components/ui/button/button';
 import Pagination from '@/components/ui/pagination/pagination';
 import { Icon } from '@/components/ui/icon/icon';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
+import DeleteConfirmationModal from '@/components/ui/deleteConfirmationModal/deleteConfirmationModal';
 import toast from 'react-hot-toast';
 import styles from './watchList.module.css';
 import { WatchlistItem } from '@/constants/types/movie';
@@ -235,30 +236,45 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
             maxWidth={500}
           >
             <div className={styles.cardContent}>
-              {' '}
-              <Button
-                variant='ghost'
-                onClick={e => {
-                  e.stopPropagation();
-                  handleDeleteClick(item, e);
-                }}
-                color='danger'
-                padding='sm'
-              >
-                <Icon name='trash' strokeColor='white' />
-              </Button>
-              {status === 'TO_WATCH' && (
+              {status === 'TO_WATCH' ? (
+                <>
+                  <Button
+                    variant='solid'
+                    color='secondary'
+                    size='sm'
+                    padding='md'
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleMoveToWatched(item.id);
+                    }}
+                  >
+                    Mark as Watched
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleDeleteClick(item, e);
+                    }}
+                    color='danger'
+                    padding='sm'
+                  >
+                    <Icon name='trash' strokeColor='white' />
+                  </Button>
+                </>
+              ) : (
                 <Button
                   variant='solid'
-                  color='secondary'
-                  size='sm'
-                  padding='md'
                   onClick={e => {
                     e.stopPropagation();
-                    handleMoveToWatched(item.id);
+                    handleDeleteClick(item, e);
                   }}
+                  color='danger'
+                  padding='sm'
+                  width='100%'
                 >
-                  Mark as Watched
+                  <Icon name='trash' strokeColor='white' />
+                  delete
                 </Button>
               )}
             </div>
@@ -270,55 +286,33 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
           currentPage={data?.currentPage || 0}
           totalPages={data?.totalPages || 1}
         />
-      )}
-
+      )}{' '}
       {/* Delete Confirmation Modal */}
-      {deleteModalOpen && itemToDelete && (
-        <div className={styles.modalOverlay} onClick={handleCancelDelete}>
-          <div
-            className={styles.deleteModalContent}
-            onClick={e => e.stopPropagation()}
-          >
-            <div className={styles.deleteModalHeader}>
-              <Icon name='alertTriangle' className={styles.warningIcon} />
-              <h2 className={styles.deleteModalTitle}>Remove from Watchlist</h2>
-            </div>
-
-            <div className={styles.deleteModalBody}>
-              <p className={styles.deleteModalText}>
-                Are you sure you want to remove this item from your watchlist?
-                This action cannot be undone.
-              </p>
-              <div className={styles.reviewPreview}>
-                <strong>"{itemToDelete.title}"</strong>
-                <span className={styles.reviewMeta}>
-                  {itemToDelete.contentType} • Added{' '}
-                  {formatDate(itemToDelete.createdAt)}
-                </span>
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen && !!itemToDelete}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title='Remove from Watchlist'
+        message='Are you sure you want to remove this item from your watchlist? This action cannot be undone.'
+        itemPreview={
+          itemToDelete ? (
+            <div>
+              <strong>"{itemToDelete.title}"</strong>
+              <div
+                style={{
+                  color: 'var(--color-muted)',
+                  fontSize: 'var(--font-size-sm)',
+                  marginTop: 'var(--space-xs)',
+                }}
+              >
+                {itemToDelete.contentType} • Added{' '}
+                {formatDate(itemToDelete.createdAt)}
               </div>
             </div>
-
-            <div className={styles.deleteModalActions}>
-              <Button
-                type='button'
-                variant='ghost'
-                color='neutral'
-                onClick={handleCancelDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                type='button'
-                variant='solid'
-                color='danger'
-                onClick={handleConfirmDelete}
-              >
-                Remove Item
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+          ) : null
+        }
+        confirmText='Remove Item'
+      />
     </>
   );
 }

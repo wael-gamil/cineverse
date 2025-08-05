@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styles from './reviewsSection.module.css';
 import { Review, ExtendedReview } from '@/constants/types/movie';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
+import { useIsInView } from '@/hooks/useIsInView';
 
 type ReviewsSectionProps = {
   data: Review[];
@@ -30,22 +31,26 @@ export default function ReviewsSection({
 }: ReviewsSectionProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { requireAuth } = useAuth();
+  const reviewsRef = useRef<HTMLElement>(null);
+  const isInView = useIsInView(reviewsRef, '100px', 0.4);
+
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
-
   // Convert Review to ExtendedReview format for ExtendedReviewCard
   const convertToExtendedReview = (review: Review): ExtendedReview => ({
     ...review,
     user: {
       ...review.user,
-      username: review.user.name.toLowerCase().replace(/\s+/g, ''), // Generate username from name
+      username:
+        review.user.name.toLowerCase().replace(/\s+/g, '') ||
+        review.user.username,
     },
-    // Add dummy content info (will be hidden with showContentInfo={false})
     contentId: 0,
     contentType: 'MOVIE' as const,
     contentTitle: '',
     contentPosterUrl: '',
-  });  const handleAddReview = () => {
+  });
+  const handleAddReview = () => {
     requireAuth(() => {
       setIsPopupOpen(true);
     }, 'Please log in to write a review');
@@ -91,13 +96,16 @@ export default function ReviewsSection({
           typeof err === 'string' ? err : 'Failed to post review.',
       },
       {
-        className: 'toast-default',      }
+        className: 'toast-default',
+      }
     );
   };
-
   return (
     <>
-      <section className={styles.section}>
+      <section
+        ref={reviewsRef}
+        className={`${styles.section} ${isInView ? 'lightMode' : ''}`}
+      >
         <div className={styles.sectionHeader}>
           <div className={styles.heading}>
             <h2>Reviews</h2>
@@ -109,12 +117,17 @@ export default function ReviewsSection({
           </Button>
         </div>
 
-        <div className={styles.container}>          {/* Most Helpful Review */}
+        <div className={styles.container}>
+          {' '}
+          {/* Most Helpful Review */}
           {mostHelpfulReview && (
             <div className={styles.cardWrapper}>
               <h3>Most Helpful Review</h3>
               <ExtendedReviewCard
-                review={convertToExtendedReview(getReviewState(mostHelpfulReview.reviewId) || mostHelpfulReview)}
+                review={convertToExtendedReview(
+                  getReviewState(mostHelpfulReview.reviewId) ||
+                    mostHelpfulReview
+                )}
                 showUserInfo={true}
                 showContentInfo={false}
                 onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
@@ -123,11 +136,11 @@ export default function ReviewsSection({
               />
             </div>
           )}
-
           {/* Other Reviews */}
           {otherReviews.length > 0 && (
             <div className={styles.cardWrapper}>
-              <h3>All Reviews ({otherReviews.length})</h3>              <div className={styles.reviewList}>
+              <h3>All Reviews ({otherReviews.length})</h3>{' '}
+              <div className={styles.reviewList}>
                 {otherReviews.map((review, index) => {
                   const reviewState = getReviewState(review.reviewId);
                   return (
@@ -145,7 +158,6 @@ export default function ReviewsSection({
               </div>
             </div>
           )}
-
           {/* Empty State */}
           {data.length === 0 && (
             <div className={styles.empty}>

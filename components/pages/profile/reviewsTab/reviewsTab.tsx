@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useStore } from '@tanstack/react-store';
 import { userStore } from '@/utils/userStore';
 import { useUserReviews } from '@/hooks/useUserReviews';
@@ -9,6 +9,8 @@ import ExtendedReviewCard from '@/components/cards/extendedReviewCard/extendedRe
 import SkeletonProfileReviewCard from './skeletonProfileReviewCard';
 import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
+import Pagination from '@/components/ui/pagination/pagination';
+import DeleteConfirmationModal from '@/components/ui/deleteConfirmationModal/deleteConfirmationModal';
 import styles from './reviewsTab.module.css';
 import type { UserReview } from '@/constants/types/movie';
 import { useReviewAction } from '@/hooks/useReviewAction';
@@ -18,6 +20,8 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function ReviewsTab() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get('page') || 1) - 1; // Convert to 0-based index
   const { username } = useStore(userStore);
   const { requireAuth } = useAuth();
   const [selectedReview, setSelectedReview] = useState<UserReview | null>(null);
@@ -37,13 +41,15 @@ export default function ReviewsTab() {
     data: reviewsData,
     isLoading: reviewsLoading,
     error: reviewsError,
-    refetch,  } = useUserReviews(username ?? '');
+    refetch,
+  } = useUserReviews(username ?? '', page, 5, !!username);
+
   const { mutate: handleReviewAction } = useReviewAction();
-    // Set up reaction handler with debouncing and optimistic updates
+  // Set up reaction handler with debouncing and optimistic updates
   const { handleReactToReview, getReviewState } = useReviewReactionHandler({
     reviews: reviewsData?.reviews || [],
   });
-  
+
   const {
     data: summaryData,
     isLoading: summaryLoading,
@@ -159,11 +165,12 @@ export default function ReviewsTab() {
         {
           className: 'toast-default',
         }
-      );    } finally {
+      );
+    } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <>
       <div className={styles.reviewsContainer}>
@@ -174,7 +181,17 @@ export default function ReviewsTab() {
             ))}
           </>
         ) : reviewsError ? (
-          <p>Error loading reviews</p>        ) : reviewsData?.reviews.length ? (
+          <div className={styles.errorContainer}>
+            <Icon
+              name='alertTriangle'
+              strokeColor='danger'
+              width={48}
+              height={48}
+            />
+            <h3>Error loading reviews</h3>
+            <p>Please try again later.</p>
+          </div>
+        ) : reviewsData?.reviews.length ? (
           reviewsData.reviews.map(review => {
             const reviewState = getReviewState(review.reviewId);
             return (
@@ -190,10 +207,27 @@ export default function ReviewsTab() {
             );
           })
         ) : (
-          <p>No reviews found.</p>
+          <div className={styles.emptyContainer}>
+            <Icon name='star' strokeColor='muted' width={48} height={48} />
+            <h3>No reviews yet</h3>
+            <p>
+              You haven't written any reviews yet. Start sharing your thoughts
+              about movies and TV shows!
+            </p>
+          </div>
         )}
       </div>
-
+      {/* Pagination */}
+      {reviewsData?.reviews.length !== 0 &&
+        reviewsData?.totalPages &&
+        reviewsData.totalPages > 1 && (
+          <div className={styles.paginationWrapper}>
+            <Pagination
+              currentPage={reviewsData.currentPage}
+              totalPages={reviewsData.totalPages}
+            />
+          </div>
+        )}
       {/* Edit Modal */}
       {isEditModalOpen && editingReview && (
         <div
@@ -338,72 +372,37 @@ export default function ReviewsTab() {
             </form>
           </div>
         </div>
-      )}
-
+      )}{' '}
       {/* Delete Confirmation Modal */}
-      {isDeleteModalOpen && deletingReviewId && (
-        <div
-          className={styles.modalOverlay}
-          onClick={() => setIsDeleteModalOpen(false)}
-        >
-          <div
-            className={styles.deleteModalContent}
-            onClick={e => e.stopPropagation()}
-          >
-            <div className={styles.deleteModalHeader}>
-              <Icon name='alertTriangle' className={styles.warningIcon} />
-              <h2 className={styles.deleteModalTitle}>Delete Review</h2>
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen && !!deletingReviewId}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title='Delete Review'
+        message='Are you sure you want to delete this review? This action cannot be undone.'
+        itemPreview={(() => {
+          const reviewToDelete = reviewsData?.reviews.find(
+            r => r.reviewId === deletingReviewId
+          );
+          return reviewToDelete ? (
+            <div className={styles.reviewPreview}>
+              <strong>"{reviewToDelete.title}"</strong>
+              <span className={styles.reviewMeta}>
+                for {reviewToDelete.contentTitle} •{' '}
+                {new Date(reviewToDelete.createdAt).toLocaleDateString(
+                  'en-US',
+                  {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  }
+                )}
+              </span>
             </div>
-
-            <div className={styles.deleteModalBody}>
-              <p className={styles.deleteModalText}>
-                Are you sure you want to delete this review? This action cannot
-                be undone.
-              </p>
-              {(() => {
-                const reviewToDelete = reviewsData?.reviews.find(
-                  r => r.reviewId === deletingReviewId
-                );
-                return reviewToDelete ? (
-                  <div className={styles.reviewPreview}>
-                    <strong>"{reviewToDelete.title}"</strong>
-                    <span className={styles.reviewMeta}>
-                      for {reviewToDelete.contentTitle} •{' '}
-                      {new Date(reviewToDelete.createdAt).toLocaleDateString(
-                        'en-US',
-                        {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        }
-                      )}
-                    </span>
-                  </div>
-                ) : null;
-              })()}
-            </div>
-
-            <div className={styles.deleteModalActions}>
-              <Button
-                type='button'
-                variant='ghost'
-                color='neutral'
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                type='button'
-                variant='solid'
-                color='danger'
-                onClick={handleConfirmDelete}
-              >
-                Delete Review
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+          ) : null;
+        })()}
+        confirmText='Delete Review'
+      />
     </>
   );
 }
