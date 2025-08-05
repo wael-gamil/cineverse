@@ -126,6 +126,19 @@ export default function ContentHero({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
+        // Don't prevent default if user is typing in an input field
+        const target = e.target as HTMLElement;
+        if (
+          target &&
+          (target.tagName === 'INPUT' ||
+            target.tagName === 'TEXTAREA' ||
+            target.isContentEditable ||
+            target.closest('input') ||
+            target.closest('textarea'))
+        ) {
+          return;
+        }
+
         e.preventDefault();
         togglePlayPause();
       }
