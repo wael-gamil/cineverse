@@ -15,6 +15,7 @@ type ButtonProps = {
   borderRadius?: 'smallRadius' | 'fullRadius';
   padding?: 'none' | 'sm' | 'md' | 'lg';
   active?: boolean;
+  style?: React.CSSProperties;
 };
 
 export default function Button({
@@ -32,6 +33,7 @@ export default function Button({
   borderRadius = 'smallRadius',
   padding = 'md',
   active = false,
+  style,
 }: ButtonProps) {
   return (
     <button
@@ -45,7 +47,7 @@ export default function Button({
       onClick={onClick}
       aria-label={ariaLabel}
       type={type}
-      style={{ width }}
+      style={{ width, ...style }}
     >
       {children}
     </button>
