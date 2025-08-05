@@ -15,7 +15,7 @@ import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 import { useAuth } from '@/hooks/useAuth';
 
 type ExtendedReviewCardProps = {
-  review: ExtendedReview | UserReview;
+  review: ExtendedReview | UserReview ;
   onReact?: (reviewId: number, type: 'LIKE' | 'DISLIKE') => void;
   onUserClick?: (username: string) => void;
   onContentClick?: (contentId: number, contentType: string) => void;
@@ -240,7 +240,8 @@ export default function ExtendedReviewCard({
         {/* Actions */}
         <div className={styles.actions}>
           <div className={styles.reactions}>
-            {' '}            <Button
+            {' '}
+            <Button
               padding='sm'
               variant='ghost'
               color={review.userReaction === 'LIKE' ? 'primary' : 'neutral'}
@@ -252,9 +253,11 @@ export default function ExtendedReviewCard({
                 }, 'Please log in to like reviews');
               }}
             >
-              <Icon 
-                name='thumbUp' 
-                strokeColor={review.userReaction === 'LIKE' ? 'primary' : 'white'} 
+              <Icon
+                name='thumbUp'
+                strokeColor={
+                  review.userReaction === 'LIKE' ? 'primary' : 'white'
+                }
               />
               <span>{review.likeCount}</span>
             </Button>
@@ -270,9 +273,11 @@ export default function ExtendedReviewCard({
                 }, 'Please log in to dislike reviews');
               }}
             >
-              <Icon 
-                name='thumbDown' 
-                strokeColor={review.userReaction === 'DISLIKE' ? 'danger' : 'white'} 
+              <Icon
+                name='thumbDown'
+                strokeColor={
+                  review.userReaction === 'DISLIKE' ? 'danger' : 'white'
+                }
               />
               <span>{review.dislikeCount}</span>
             </Button>
