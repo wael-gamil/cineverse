@@ -25,6 +25,7 @@ type ContentSectionWrapperProps = {
   seasonsData?: Season[];
   contentTitle?: string;
   contentPoster?: string;
+  sortBy?: string;
 };
 
 export default function ContentSectionWrapper({
@@ -35,6 +36,7 @@ export default function ContentSectionWrapper({
   seasonsData,
   contentTitle,
   contentPoster,
+  sortBy,
 }: ContentSectionWrapperProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useIsInViewOnce(ref, '300px', 0.6);
@@ -42,7 +44,8 @@ export default function ContentSectionWrapper({
     section,
     id,
     isVisible,
-    seasonNumber
+    seasonNumber,
+    sortBy
   );
   if (!isVisible) {
     return <div ref={ref} className={styles.fakeContainer} />;

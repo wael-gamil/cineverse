@@ -255,10 +255,15 @@ export const getContentReviews = async (id: number): Promise<Review[]> => {
 
 export const getContentReviewsClient = async (
   id: number,
-  token?: string
+  token?: string,
+  sortBy = 'likes'
 ): Promise<Review[]> => {
   try {
-    const url = `reviews/contents/${id}`;
+    const query = new URLSearchParams();
+    query.set('sortBy', sortBy);
+
+    const url = `reviews/contents/${id}?${query.toString()}`;
+    console.log('Fetching content reviews from:', url);
     // Build headers with optional Authorization
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
     if (token) {

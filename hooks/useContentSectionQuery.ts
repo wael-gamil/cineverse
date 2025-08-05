@@ -6,10 +6,11 @@ export function useContentSectionQuery(
   section: SectionType,
   id: number,
   enabled: boolean,
-  seasonNumber?: number
+  seasonNumber?: number,
+  sortBy?: string
 ) {
   return useQuery({
-    queryKey: ['content-section', section, id, seasonNumber],
+    queryKey: ['content-section', section, id, seasonNumber, sortBy],
     queryFn: async () => {
       let url = '';
       switch (section) {
@@ -17,7 +18,7 @@ export function useContentSectionQuery(
           url = `/api/proxy/credits?id=${id}`;
           break;
         case 'reviews':
-          url = `/api/proxy/reviews?id=${id}`;
+          url = `/api/proxy/reviews?id=${id}&sortBy=${sortBy || 'likes'}`;
           break;
         case 'seasons':
           url = `/api/proxy/seasons?id=${id}`;

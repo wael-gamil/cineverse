@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
+  const sortBy = searchParams.get('sortBy') || 'likes';
 
   if (!id) return new Response('Missing id', { status: 400 });
 
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
     const token = cookieStore.get('token')?.value;
 
     // Use Client function with optional token for userReaction field
-    const data: Review[] = await getContentReviewsClient(Number(id), token);
+    const data: Review[] = await getContentReviewsClient(Number(id), token, sortBy);
 
     return NextResponse.json(data);
   } catch (error) {

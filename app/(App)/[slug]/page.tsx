@@ -36,12 +36,13 @@ export default async function MovieOrSeriesPage({
           <SetSeriesStore data={details} />
           <ContentSectionWrapper section='seasons' id={details.id} />
         </>
-      )}
+      )}{' '}
       <ContentSectionWrapper
         section='reviews'
         id={details.id}
         contentTitle={details.title}
         contentPoster={details.posterUrl}
+        sortBy='likes'
       />
     </HydrationBoundary>
   );
