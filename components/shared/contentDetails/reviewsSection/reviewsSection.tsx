@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styles from './reviewsSection.module.css';
 import { Review, ExtendedReview } from '@/constants/types/movie';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
+import { useIsInView } from '@/hooks/useIsInView';
 
 type ReviewsSectionProps = {
   data: Review[];
@@ -30,6 +31,9 @@ export default function ReviewsSection({
 }: ReviewsSectionProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { requireAuth } = useAuth();
+  const reviewsRef = useRef<HTMLElement>(null);
+  const isInView = useIsInView(reviewsRef, '100px', 0.4);
+
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
   // Convert Review to ExtendedReview format for ExtendedReviewCard
@@ -96,10 +100,12 @@ export default function ReviewsSection({
       }
     );
   };
-
   return (
     <>
-      <section className={styles.section}>
+      <section
+        ref={reviewsRef}
+        className={`${styles.section} ${isInView ? 'lightMode' : ''}`}
+      >
         <div className={styles.sectionHeader}>
           <div className={styles.heading}>
             <h2>Reviews</h2>
