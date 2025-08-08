@@ -10,13 +10,11 @@ export function useShowSpacer(isMobile: boolean, trailerFocusMode: boolean) {
   const [shouldShowSpacer, setShouldShowSpacer] = useState(true);
 
   useEffect(() => {
-    // Don't show spacer in trailer focus mode
     if (trailerFocusMode) {
       setShouldShowSpacer(false);
       return;
     }
 
-    // Paths that explicitly need spacer
     const allowedPathsWithSpacer = [
       '/explore',
       '/reviews',
@@ -33,10 +31,16 @@ export function useShowSpacer(isMobile: boolean, trailerFocusMode: boolean) {
       ...(isMobile ? ['/'] : []),
     ];
 
-    // Check if current path matches any allowed paths
     const matchesAllowedPath = allowedPathsWithSpacer.some(
       path => pathname === path || pathname.startsWith(`${path}/`)
     );
+
+    // Detect not-found pages for [slug] (e.g. /something-not-found)
+    const isSlugNotFound =
+      pathname.startsWith('/') &&
+      pathname.split('/').length === 2 &&
+      typeof window !== 'undefined' &&
+      document.body?.dataset?.notfound === 'true';
 
     // For mobile: single slug pages (like /movie-name) should show spacer
     const isSingleSlugPage =
@@ -48,16 +52,18 @@ export function useShowSpacer(isMobile: boolean, trailerFocusMode: boolean) {
     const isHomePage = pathname === '/';
     const shouldHideOnDesktopHome = !isMobile && isHomePage;
 
-    // Show spacer if:
-    // 1. Matches allowed paths, OR
-    // 2. Is a single slug page on mobile, OR
-    // 3. Any other page (including not-found scenarios)
-    // BUT NOT on desktop home page
+    // Hide spacer on working [slug] pages, show on not-found [slug] pages
+    const isWorkingSlugPage =
+      pathname.startsWith('/') &&
+      pathname.split('/').length === 2 &&
+      !isSlugNotFound;
+
     const shouldShow =
       !shouldHideOnDesktopHome &&
       (matchesAllowedPath ||
         isSingleSlugPage ||
-        (!matchesAllowedPath && !isHomePage));
+        (!matchesAllowedPath && !isHomePage && !isWorkingSlugPage) ||
+        isSlugNotFound);
 
     setShouldShowSpacer(shouldShow);
   }, [pathname, isMobile, trailerFocusMode]);
