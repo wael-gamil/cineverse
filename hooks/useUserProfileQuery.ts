@@ -1,3 +1,4 @@
+import { updateUserProfilePicture } from '@/utils/userStore';
 import { useQuery } from '@tanstack/react-query';
 
 type UserProfile = {
@@ -20,6 +21,7 @@ export const useUserProfileQuery = () => {
 
       if (!res.ok) throw new Error(data.message || 'Failed to fetch profile');
 
+      updateUserProfilePicture(data.user?.profilePicture || null);
       return data.user;
     },
     staleTime: 1000 * 60 * 5,
