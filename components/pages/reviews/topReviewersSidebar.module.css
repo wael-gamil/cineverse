@@ -38,6 +38,19 @@
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.trendingItem:hover {
+  background: var(--color-white-5);
+  transform: scale(1.02);
+  box-shadow: var(--shadow-blue-glow);
+}
+
+.trendingItem:active {
+  transform: scale(0.98);
 }
 .trendingContent {
   flex: 1;
@@ -50,6 +63,15 @@
   font-size: var(--font-size-base);
   margin: 0;
   line-height: 1.4;
+  transition: color var(--transition-normal), transform var(--transition-normal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trendingItem:hover .trendingTitle {
+  color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .trendingMeta {
@@ -118,6 +140,9 @@
   font-size: var(--font-size-base);
   margin: 0;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .reviewerStats {

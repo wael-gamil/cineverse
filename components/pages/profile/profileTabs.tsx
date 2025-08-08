@@ -6,7 +6,8 @@ type TabId = 'reviews' | 'to-watch' | 'watched';
 
 type ProfileTabsProps = {
   activeTab: TabId;
-  setActiveTab: React.Dispatch<React.SetStateAction<TabId>>;
+  // Updated to accept a custom function instead of React state setter
+  setActiveTab: (tab: TabId) => void;
 };
 
 export default function ProfileTabs({

@@ -426,7 +426,13 @@ export const getPublicUserProfile = async (
   const data = await fetcher(`users/profile/${username}`, 0);
   return data;
 };
-
+// Public user stats function
+export const getPublicUserStats = async (
+  username: string
+): Promise<{ reviewCount: number; watchlistCount: number }> => {
+  const data = await fetcher(`users/${username}/stats`, 0);
+  return data;
+};
 export const getPublicUserReviews = async (
   username: string,
   page = 0,

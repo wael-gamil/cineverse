@@ -26,6 +26,7 @@
   }
 }
 
+/* Modal Content */
 .modalContent {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -33,12 +34,14 @@
   width: 100%;
   max-width: 700px;
   max-height: 90vh;
+  flex-shrink: 0;
   overflow: hidden;
   box-shadow: var(--shadow-xl);
   animation: modalSlideIn 0.2s ease-out;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
-
 @keyframes modalSlideIn {
   from {
     opacity: 0;
@@ -58,9 +61,10 @@
   right: 0;
   background: linear-gradient(135deg, #10b981, #059669);
   padding: var(--space-lg);
-  z-index: 10;
-  animation: successSlideDown 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  flex-shrink: 0;
 }
 
 @keyframes successSlideDown {
@@ -317,7 +321,7 @@
 }
 
 .textarea {
-  resize: vertical;
+  resize: none;
   min-height: 120px;
 }
 
@@ -343,10 +347,16 @@
   padding: var(--space-lg);
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(59, 130, 246, 0.1);
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  max-height: 120px;
+}
+
+.spoilerSection--hidden {
+  opacity: 0;
+  max-height: 0;
+  pointer-events: none;
 }
 
 .spoilerSection:hover {

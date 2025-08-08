@@ -27,10 +27,10 @@
 }
 
 .searchBarDesktop {
-  display: flex;
+  display: none;
 }
 .searchBarMobile {
-  display: none;
+  display: flex;
   position: relative;
 }
 

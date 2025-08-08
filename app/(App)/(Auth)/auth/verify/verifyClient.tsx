@@ -5,11 +5,17 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useEmailVerification } from '@/hooks/useEmailVerification';
 import Button from '@/components/ui/button/button'; // reuse your styled button
 import { useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function VerifyPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const router = useRouter();
+  const { redirectIfAuthenticated } = useAuth();
+  useEffect(() => {
+    const redirectTo = searchParams.get('redirect') || '/';
+    redirectIfAuthenticated(redirectTo);
+  }, [redirectIfAuthenticated, searchParams]);
 
   const {
     data: message,

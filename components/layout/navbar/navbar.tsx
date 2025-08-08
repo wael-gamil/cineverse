@@ -13,6 +13,7 @@ import { userStore } from '@/utils/userStore';
 import UserPanel from './userPanel';
 import Button from '@/components/ui/button/button';
 import { uiStore } from '@/utils/uiStore';
+import { useShowSpacer } from '@/hooks/useShowSpacer';
 
 export default function Navbar() {
   const [hasMounted, setHasMounted] = useState(false);
@@ -28,6 +29,7 @@ export default function Navbar() {
   const searchParams = useSearchParams();
   const isMobile = useResponsiveLayout();
   const { trailerFocusMode } = useStore(uiStore);
+  const showSpacer = useShowSpacer(isMobile ?? false, trailerFocusMode);
 
   // Helper function to generate login URL with current page as redirect parameter
   const getLoginUrl = () => {
@@ -36,32 +38,6 @@ export default function Navbar() {
       (searchParams?.toString() ? `?${searchParams.toString()}` : '');
     return `/login?redirect=${encodeURIComponent(currentPath)}`;
   };
-  const allowedPathsWithSpacer = [
-    '/explore',
-    '/reviews',
-    '/search',
-    '/watchlist',
-    '/crew',
-    '/profile',
-    '/login',
-    '/register',
-    '/verify',
-    '/forget-password',
-    '/reset-password',
-    '/oauth2/success',
-    ...(isMobile ? ['/', '/dynamic-slug'] : []),
-  ];
-  const isSingleSlugPage =
-    isMobile &&
-    /^\/[^/]+$/.test(pathname) &&
-    !allowedPathsWithSpacer.includes(pathname);
-
-  const showSpacer =
-    !trailerFocusMode &&
-    (allowedPathsWithSpacer.some(
-      path => pathname === path || pathname.startsWith(`${path}/`)
-    ) ||
-      isSingleSlugPage);
 
   useEffect(() => {
     const handleScroll = () => setIsShrunk(window.scrollY > 0);
@@ -179,7 +155,7 @@ export default function Navbar() {
                 </Button>
               </Link>
             )}
-          </div>{' '}
+          </div>
           <div className={styles.navbarMobile}>
             <SearchBar />
             <PanelWrapper

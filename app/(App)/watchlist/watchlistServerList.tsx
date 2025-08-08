@@ -195,30 +195,45 @@ export default function WatchlistServerList({
               maxWidth={500}
             >
               <div className={styles.cardContent}>
-                {' '}
-                <Button
-                  variant='ghost'
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteClick(item, e);
-                  }}
-                  color='danger'
-                  padding='sm'
-                >
-                  <Icon name='trash' strokeColor='white' />
-                </Button>
-                {status === 'TO_WATCH' && (
+                {status === 'TO_WATCH' ? (
+                  <>
+                    <Button
+                      variant='solid'
+                      color='secondary'
+                      size='sm'
+                      padding='md'
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleMoveToWatched(item.id);
+                      }}
+                    >
+                      Mark as Watched
+                    </Button>
+                    <Button
+                      variant='ghost'
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleDeleteClick(item, e);
+                      }}
+                      color='danger'
+                      padding='sm'
+                    >
+                      <Icon name='trash' strokeColor='white' />
+                    </Button>
+                  </>
+                ) : (
                   <Button
                     variant='solid'
-                    color='secondary'
-                    size='sm'
-                    padding='md'
                     onClick={e => {
                       e.stopPropagation();
-                      handleMoveToWatched(item.id);
+                      handleDeleteClick(item, e);
                     }}
+                    color='danger'
+                    padding='sm'
+                    width='100%'
                   >
-                    Mark as Watched
+                    <Icon name='trash' strokeColor='white' />
+                    delete
                   </Button>
                 )}
               </div>

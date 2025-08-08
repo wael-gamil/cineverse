@@ -17,6 +17,7 @@ import { useReviewAction } from '@/hooks/useReviewAction';
 import toast from 'react-hot-toast';
 import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
 import { useAuth } from '@/hooks/useAuth';
+import AddReviewPopup from '@/components/shared/contentDetails/reviewsSection/addReviewPopup';
 
 export default function ReviewsTab() {
   const router = useRouter();
@@ -27,13 +28,6 @@ export default function ReviewsTab() {
   const [selectedReview, setSelectedReview] = useState<UserReview | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<UserReview | null>(null);
-  const [editFormData, setEditFormData] = useState({
-    title: '',
-    description: '',
-    rate: 1,
-    spoiler: false,
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingReviewId, setDeletingReviewId] = useState<number | null>(null);
 
@@ -113,6 +107,7 @@ export default function ReviewsTab() {
       }
     );
   };
+
   const handleEditReview = (
     reviewId: number,
     currentReview: {
@@ -125,26 +120,27 @@ export default function ReviewsTab() {
     const review = reviewsData?.reviews.find(r => r.reviewId === reviewId);
     if (review) {
       setEditingReview(review);
-      setEditFormData(currentReview);
       setIsEditModalOpen(true);
     }
   };
 
-  const handleSubmitEdit = async () => {
-    if (!editingReview) return;
-
-    setIsSubmitting(true);
+  // Updated submit handler to work with the unified modal
+  const handleReviewSubmit = async (
+    reviewData: any,
+    onClose: () => void,
+    resetForm: () => void
+  ) => {
     const updatePromise = new Promise<void>((resolve, reject) => {
       handleReviewAction(
         {
           mode: 'update',
-          review: { reviewId: editingReview.reviewId, ...editFormData },
+          review: reviewData,
         },
         {
           onSuccess: () => {
             resolve();
             refetch();
-            setIsEditModalOpen(false);
+            onClose();
             setEditingReview(null);
           },
           onError: (err: any) => {
@@ -154,32 +150,28 @@ export default function ReviewsTab() {
       );
     });
 
-    try {
-      await toast.promise(
-        updatePromise,
-        {
-          loading: 'Updating review...',
-          success: 'Review updated!',
-          error: 'Failed to update review.',
-        },
-        {
-          className: 'toast-default',
-        }
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+    await toast.promise(
+      updatePromise,
+      {
+        loading: 'Updating review...',
+        success: 'Review updated!',
+        error: 'Failed to update review.',
+      },
+      {
+        className: 'toast-default',
+      }
+    );
   };
 
   return (
     <>
       <div className={styles.reviewsContainer}>
         {reviewsLoading || !username ? (
-          <>
+          <div className={styles.profileReviewsList}>
             {Array.from({ length: 4 }).map((_, index) => (
               <SkeletonProfileReviewCard key={index} />
             ))}
-          </>
+          </div>
         ) : reviewsError ? (
           <div className={styles.errorContainer}>
             <Icon
@@ -217,6 +209,7 @@ export default function ReviewsTab() {
           </div>
         )}
       </div>
+
       {/* Pagination */}
       {reviewsData?.reviews.length !== 0 &&
         reviewsData?.totalPages &&
@@ -228,151 +221,29 @@ export default function ReviewsTab() {
             />
           </div>
         )}
-      {/* Edit Modal */}
+
+      {/* Unified Edit Modal using AddReviewPopup */}
       {isEditModalOpen && editingReview && (
-        <div
-          className={styles.modalOverlay}
-          onClick={() => setIsEditModalOpen(false)}
-        >
-          <div
-            className={styles.modalContent}
-            onClick={e => e.stopPropagation()}
-          >
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Edit Review</h2>
-              <Button
-                variant='ghost'
-                color='neutral'
-                padding='sm'
-                borderRadius='fullRadius'
-                onClick={() => setIsEditModalOpen(false)}
-              >
-                <Icon name='close' strokeColor='white' />
-              </Button>
-            </div>
+        <AddReviewPopup
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setEditingReview(null);
+          }}
+          contentId={editingReview.contentId}
+          contentTitle={editingReview.contentTitle}
+          onSubmit={handleReviewSubmit}
+          mode='edit'
+          initialData={{
+            reviewId: editingReview.reviewId,
+            title: editingReview.title,
+            description: editingReview.description,
+            rate: editingReview.rate,
+            spoiler: editingReview.spoiler,
+          }}
+        />
+      )}
 
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                handleSubmitEdit();
-              }}
-              className={styles.editForm}
-            >
-              <div className={styles.formGroup}>
-                <label htmlFor='reviewTitle' className={styles.formLabel}>
-                  Review Title
-                </label>
-                <input
-                  id='reviewTitle'
-                  type='text'
-                  value={editFormData.title}
-                  onChange={e =>
-                    setEditFormData(prev => ({
-                      ...prev,
-                      title: e.target.value,
-                    }))
-                  }
-                  className={styles.formInput}
-                  required
-                  maxLength={100}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor='reviewDescription' className={styles.formLabel}>
-                  Review Description
-                </label>
-                <textarea
-                  id='reviewDescription'
-                  value={editFormData.description}
-                  onChange={e =>
-                    setEditFormData(prev => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  className={styles.formTextarea}
-                  required
-                  maxLength={1000}
-                  rows={4}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Rating</label>
-                <div className={styles.ratingInput}>
-                  <div className={styles.interactiveStars}>
-                    {Array.from({ length: 10 }).map((_, i) => {
-                      const starValue = i + 1;
-                      return (
-                        <span
-                          key={i}
-                          onClick={() =>
-                            setEditFormData(prev => ({
-                              ...prev,
-                              rate: starValue,
-                            }))
-                          }
-                          className={styles.starWrapperInteractive}
-                        >
-                          <Icon
-                            name='starFilled'
-                            className={
-                              editFormData.rate >= starValue
-                                ? styles.starFilledInteractive
-                                : styles.starEmptyInteractive
-                            }
-                          />
-                        </span>
-                      );
-                    })}
-                  </div>
-                  <span className={styles.rateNumber}>
-                    {editFormData.rate}/10
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type='checkbox'
-                    checked={editFormData.spoiler}
-                    onChange={e =>
-                      setEditFormData(prev => ({
-                        ...prev,
-                        spoiler: e.target.checked,
-                      }))
-                    }
-                    className={styles.checkbox}
-                  />
-                  <span className={styles.checkboxText}>Contains Spoilers</span>
-                </label>
-              </div>
-
-              <div className={styles.modalActions}>
-                <Button
-                  type='button'
-                  variant='ghost'
-                  color='neutral'
-                  onClick={() => setIsEditModalOpen(false)}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type='submit'
-                  variant='solid'
-                  color='primary'
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}{' '}
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen && !!deletingReviewId}
@@ -386,7 +257,7 @@ export default function ReviewsTab() {
           );
           return reviewToDelete ? (
             <div className={styles.reviewPreview}>
-              <strong>"{reviewToDelete.title}"</strong>
+              <strong>"{reviewToDelete.title}" </strong>
               <span className={styles.reviewMeta}>
                 for {reviewToDelete.contentTitle} •{' '}
                 {new Date(reviewToDelete.createdAt).toLocaleDateString(

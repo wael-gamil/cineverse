@@ -6,6 +6,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import WatchlistServerPage from './watchlistServerPage';
 import WatchlistSkeleton from '@/components/shared/watchlist/watchListSkeleton';
 import { WatchlistItem } from '@/constants/types/movie';
+import NotFoundClient from '@/components/shared/notFound/notFoundClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,7 @@ export default async function WatchlistPage({
   const token = cookieStore.get('token')?.value;
 
   if (!token) {
-    throw new Error('User token not found');
+    return <NotFoundClient type='user' />;
   }
 
   const awaitedSearchParams = await searchParams;

@@ -142,7 +142,12 @@
 .disabled {
   box-shadow: none;
   pointer-events: none;
-  padding: 0;
+  opacity: 0.5;
+  filter: grayscale(0.2);
+  background-color: var(--color-surface-40) !important;
+  color: var(--color-muted) !important;
+  border-color: var(--color-surface-40) !important;
+  cursor: not-allowed;
 }
 
 /* === Visibility === */

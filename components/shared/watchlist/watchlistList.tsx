@@ -44,7 +44,7 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
     username ?? '',
     status,
     page,
-    20,
+    24,
     !!username
   );
 
@@ -221,6 +221,21 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
             title={item.title}
             imageUrl={item.contentPosterUrl || '/images/placeholder.jpg'}
             layout='below'
+            badges={[
+              {
+                iconName: 'star',
+                color: 'secondary',
+                number: Number(item.imdbRate.toFixed(1)),
+                position: 'top-left',
+              },
+              {
+                color: 'secondary',
+                position: 'top-right',
+                text:
+                  item.contentType.charAt(0).toUpperCase() +
+                  item.contentType.slice(1).toLowerCase(),
+              },
+            ]}
             onClick={() => {
               setSelectedId(item.id);
               setSelectedItem(item);

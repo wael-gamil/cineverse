@@ -1,11 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type React from 'react';
 import Image from 'next/image';
 import Button from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import styles from './addReviewPopup.module.css';
+
+type ReviewData = {
+  contentId: number;
+  rate: number;
+  title: string;
+  description: string;
+  spoiler: boolean;
+};
 
 type AddReviewPopupProps = {
   isOpen: boolean;
@@ -13,17 +21,21 @@ type AddReviewPopupProps = {
   contentId: number;
   contentTitle: string;
   contentPoster?: string;
+  // Updated to handle both add and edit modes
   onSubmit: (
-    reviewData: {
-      contentId: number;
-      rate: number;
-      title: string;
-      description: string;
-      spoiler: boolean;
-    },
+    reviewData: ReviewData,
     onClose: () => void,
     resetForm: () => void
   ) => void;
+  // New props for edit mode
+  mode?: 'add' | 'edit';
+  initialData?: {
+    reviewId?: number;
+    title: string;
+    description: string;
+    rate: number;
+    spoiler: boolean;
+  };
 };
 
 export default function AddReviewPopup({
@@ -33,6 +45,8 @@ export default function AddReviewPopup({
   contentTitle,
   contentPoster,
   onSubmit,
+  mode = 'add',
+  initialData,
 }: AddReviewPopupProps) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -41,6 +55,18 @@ export default function AddReviewPopup({
   const [spoiler, setSpoiler] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Initialize form with data when in edit mode or reset when in add mode
+  useEffect(() => {
+    if (mode === 'edit' && initialData) {
+      setRating(initialData.rate);
+      setTitle(initialData.title);
+      setDescription(initialData.description);
+      setSpoiler(initialData.spoiler);
+    } else {
+      resetForm();
+    }
+  }, [mode, initialData, isOpen]);
 
   const resetForm = () => {
     setRating(0);
@@ -53,23 +79,23 @@ export default function AddReviewPopup({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim() || rating === 0) {
+    if (!title.trim() || rating === 0) {
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await onSubmit(
-        {
-          contentId,
-          rate: rating,
-          title: title.trim(),
-          description: description.trim(),
-          spoiler,
-        },
-        onClose,
-        resetForm
-      );
+      const reviewData: ReviewData & { reviewId?: number } = {
+        contentId,
+        rate: rating,
+        title: title.trim(),
+        description: description.trim(),
+        spoiler,
+        ...(mode === 'edit' &&
+          initialData?.reviewId && { reviewId: initialData.reviewId }),
+      };
+
+      await onSubmit(reviewData, onClose, resetForm);
 
       setShowSuccess(true);
       setTimeout(() => {
@@ -78,7 +104,10 @@ export default function AddReviewPopup({
         onClose();
       }, 2000);
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error(
+        `Error ${mode === 'edit' ? 'updating' : 'submitting'} review:`,
+        error
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -89,6 +118,7 @@ export default function AddReviewPopup({
     resetForm();
     onClose();
   };
+
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       handleClose();
@@ -110,7 +140,24 @@ export default function AddReviewPopup({
     return 'Perfect';
   };
 
+  // Dynamic text based on mode
+  const modalTitle = mode === 'edit' ? 'Edit Review' : 'Write a Review';
+  const submitButtonText = isSubmitting
+    ? mode === 'edit'
+      ? 'Updating...'
+      : 'Submitting...'
+    : mode === 'edit'
+    ? 'Update Review'
+    : 'Submit Review';
+  const successTitle =
+    mode === 'edit' ? 'Review Updated!' : 'Review Submitted!';
+  const successMessage =
+    mode === 'edit'
+      ? 'Your review has been updated successfully.'
+      : 'Thank you for sharing your thoughts.';
+
   if (!isOpen) return null;
+
   return (
     <div
       className={styles.modalOverlay}
@@ -118,8 +165,8 @@ export default function AddReviewPopup({
       onKeyDown={handleKeyDown}
       tabIndex={-1}
       role='dialog'
-      aria-labelledby='add-review-modal-title'
-      aria-describedby='add-review-modal-description'
+      aria-labelledby='review-modal-title'
+      aria-describedby='review-modal-description'
     >
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
         {/* Success Message */}
@@ -128,10 +175,8 @@ export default function AddReviewPopup({
             <div className={styles.successContent}>
               <Icon name='trust-badge' className={styles.successIcon} />
               <div className={styles.successText}>
-                <h3 className={styles.successTitle}>Review Submitted!</h3>
-                <p className={styles.successMessage}>
-                  Thank you for sharing your thoughts.
-                </p>
+                <h3 className={styles.successTitle}>{successTitle}</h3>
+                <p className={styles.successMessage}>{successMessage}</p>
               </div>
             </div>
           </div>
@@ -139,9 +184,12 @@ export default function AddReviewPopup({
 
         {/* Header */}
         <div className={styles.modalHeader}>
-          <Icon name='edit' className={styles.headerIcon} />
-          <h2 id='add-review-modal-title' className={styles.modalTitle}>
-            Write a Review
+          <Icon
+            name={mode === 'edit' ? 'edit' : 'edit'}
+            className={styles.headerIcon}
+          />
+          <h2 id='review-modal-title' className={styles.modalTitle}>
+            {modalTitle}
           </h2>
           <Button
             variant='ghost'
@@ -172,7 +220,9 @@ export default function AddReviewPopup({
               <div className={styles.contentDetails}>
                 <h3 className={styles.contentTitle}>{contentTitle}</h3>
                 <p className={styles.contentSubtitle}>
-                  Share your thoughts about this content
+                  {mode === 'edit'
+                    ? 'Update your thoughts about this content'
+                    : 'Share your thoughts about this content'}
                 </p>
               </div>
             </div>
@@ -180,9 +230,7 @@ export default function AddReviewPopup({
 
           {/* Form Content */}
           <form onSubmit={handleSubmit} className={styles.form}>
-            {' '}
             <div className={styles.formContent}>
-              {' '}
               {/* Rating Section */}
               <div className={styles.section}>
                 <div className={styles.sectionHeader}>
@@ -227,7 +275,8 @@ export default function AddReviewPopup({
                     );
                   })}
                 </div>
-              </div>{' '}
+              </div>
+
               {/* Title Section */}
               <div className={styles.section}>
                 <div className={styles.sectionHeader}>
@@ -257,7 +306,8 @@ export default function AddReviewPopup({
                   disabled={isSubmitting}
                   autoComplete='off'
                 />
-              </div>{' '}
+              </div>
+
               {/* Description Section */}
               <div className={styles.section}>
                 <div className={styles.sectionHeader}>
@@ -288,9 +338,17 @@ export default function AddReviewPopup({
                   rows={6}
                   disabled={isSubmitting}
                 />
-              </div>{' '}
-              {/* Spoiler Warning */}
-              <div className={styles.spoilerSection}>
+              </div>
+
+              {/* Spoiler Warning - only show if description is not empty, with transition */}
+              <div
+                className={
+                  description.trim()
+                    ? styles.spoilerSection
+                    : `${styles.spoilerSection} ${styles['spoilerSection--hidden']}`
+                }
+                aria-hidden={!description.trim()}
+              >
                 <label className={styles.checkboxLabel}>
                   <input
                     type='checkbox'
@@ -326,12 +384,13 @@ export default function AddReviewPopup({
                 )}
               </div>
             </div>
+
             {/* Footer */}
             <div className={styles.modalActions}>
               <Button
                 type='button'
                 variant='ghost'
-                color='neutral'
+                color='danger'
                 onClick={handleClose}
                 disabled={isSubmitting}
               >
@@ -341,14 +400,9 @@ export default function AddReviewPopup({
                 type='submit'
                 variant='solid'
                 color='primary'
-                disabled={
-                  !title.trim() ||
-                  !description.trim() ||
-                  rating === 0 ||
-                  isSubmitting
-                }
+                disabled={!title.trim() || rating === 0 || isSubmitting}
               >
-                {isSubmitting ? 'Submitting...' : 'Submit Review'}
+                {submitButtonText}
               </Button>
             </div>
           </form>
