@@ -3,6 +3,7 @@
 import ContentHeroSimple from '@/components/shared/contentDetails/heroSection/contentHeroSimple';
 import { UserProfile } from '@/constants/types/movie';
 import { usePublicUserProfileQuery } from '@/hooks/usePublicUserProfileQuery';
+import { usePublicUserStatsQuery } from '@/hooks/usePublicUserStatsQuery';
 import avatarFallback from '@/public/avatar_fallback.png';
 type PublicUserInfoPanelProps = {
   initialUser: UserProfile;
@@ -14,6 +15,7 @@ export default function PublicUserInfoPanel({
   username,
 }: PublicUserInfoPanelProps) {
   const { data: user = initialUser } = usePublicUserProfileQuery(username);
+  const { data: stats } = usePublicUserStatsQuery(username);
   const infoCards = [
     {
       iconName: 'calendar' as const,
@@ -26,12 +28,12 @@ export default function PublicUserInfoPanel({
     {
       iconName: 'bookmark' as const,
       title: 'Watchlist',
-      description: '0',
+      description: stats ? stats.watchlistCount.toString() : '0',
     },
     {
       iconName: 'star' as const,
       title: 'Reviews',
-      description: '0',
+      description: stats ? stats.reviewCount.toString() : '0',
     },
   ];
   return (

@@ -10,13 +10,18 @@ import Icon from '@/components/ui/icon/icon';
 import { useUpdateProfilePictureMutation } from '@/hooks/useUpdateProfilePictureMutation';
 import { UserProfile } from '@/constants/types/movie';
 import { useUserProfileQuery } from '@/hooks/useUserProfileQuery';
+import { usePublicUserStatsQuery } from '@/hooks/usePublicUserStatsQuery';
 import avatarFallback from '@/public/avatar_fallback.png';
+import styles from './userInfoPanel.module.css';
 type UserInfoPanelProps = {
   initialUser: UserProfile;
 };
 export default function UserInfoPanel({ initialUser }: UserInfoPanelProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { data: user = initialUser, refetch } = useUserProfileQuery();
+  const { data: stats, isLoading: statsLoading } = usePublicUserStatsQuery(
+    user.username
+  );
   const updateProfile = useUpdateProfileMutation();
   const updateProfileImage = useUpdateProfilePictureMutation();
 
@@ -32,12 +37,20 @@ export default function UserInfoPanel({ initialUser }: UserInfoPanelProps) {
     {
       iconName: 'bookmark' as const,
       title: 'Watchlist',
-      description: '0',
+      description: statsLoading
+        ? '...'
+        : stats
+        ? stats.watchlistCount.toString()
+        : '0',
     },
     {
       iconName: 'star' as const,
       title: 'Reviews',
-      description: '0',
+      description: statsLoading
+        ? '...'
+        : stats
+        ? stats.reviewCount.toString()
+        : '0',
     },
   ];
 
@@ -45,20 +58,37 @@ export default function UserInfoPanel({ initialUser }: UserInfoPanelProps) {
     <>
       <ContentHeroSimple
         title={user.name || user.username}
-        image={
-          user.profilePicture || (avatarFallback as { src: string }).src
-        }
+        image={user.profilePicture || (avatarFallback as { src: string }).src}
         bio={user.bio || 'No bio provided yet.'}
         infoCards={infoCards}
         actionButton={
-          <Button
-            onClick={() => setIsEditModalOpen(true)}
-            variant='solid'
-            color='neutral'
-          >
-            <Icon name='edit' strokeColor='white' />
-            Edit Profile
-          </Button>
+          <div className={styles.actionButton}>
+            <Button
+              onClick={() => setIsEditModalOpen(true)}
+              variant='solid'
+              color='neutral'
+            >
+              <Icon name='edit' strokeColor='white' />
+              Edit Profile
+            </Button>
+            <Button
+              color='neutral'
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    url: `profile/${user.username}`,
+                    title: user.name || user.username,
+                    text: user.bio || 'No bio provided yet.',
+                  });
+                } else {
+                  navigator.clipboard.writeText(`profile/${user.username}`);
+                  alert('Link copied to clipboard!');
+                }
+              }}
+            >
+              <Icon name='share' strokeColor='white' />
+            </Button>
+          </div>
         }
       />
 

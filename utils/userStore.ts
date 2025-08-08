@@ -42,6 +42,39 @@ export const setUserWithExpiry = (
   }
 };
 
+/**
+ * Update only the profile picture in userStore and localStorage without changing expiry
+ */
+export const updateUserProfilePicture = (profilePicture: string | null) => {
+  userStore.setState(prev => ({
+    ...prev,
+    profilePicture: profilePicture || null,
+  }));
+
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('cineverse-user');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const { username, email, expiresAt } = parsed;
+        const payload = {
+          username,
+          email,
+          profilePicture: profilePicture || null,
+          expiresAt,
+        };
+        localStorage.setItem('cineverse-user', JSON.stringify(payload));
+      } catch (error) {
+        // fallback: just update profilePicture
+        localStorage.setItem(
+          'cineverse-user',
+          JSON.stringify({ profilePicture: profilePicture || null })
+        );
+      }
+    }
+  }
+};
+
 // Load from localStorage on init (with expiry check)
 if (typeof window !== 'undefined') {
   const saved = localStorage.getItem('cineverse-user');
