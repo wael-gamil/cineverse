@@ -3,6 +3,7 @@ import { inter, geist } from '@/constants/fonts';
 import '@/styles/global.css';
 import '@/styles/reset.css';
 import Navbar from '@/components/layout/navbar/navbar';
+import DisclaimerBanner from '@/components/layout/disclaimerBanner/DisclaimerBanner';
 import Footer from '@/components/layout/footer/footer';
 import Providers from '@/lib/providers';
 import { Toaster } from 'react-hot-toast';
@@ -58,6 +59,7 @@ export default function RootLayout({
   return (
     <html lang='en' className={`${geist.className} ${inter.className}`}>
       <body>
+        <DisclaimerBanner />
         <Suspense fallback={<div />}>
           <Navbar />
         </Suspense>
