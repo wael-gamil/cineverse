@@ -16,7 +16,7 @@ type ReviewsPageProps = {
 
 export default async function Reviews({ searchParams }: ReviewsPageProps) {
   const awaitedSearchParams = await searchParams;
-  const sortBy = awaitedSearchParams['sortBy'] || '';
+  const sortBy = awaitedSearchParams['sortBy'] || 'recent';
   const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
 
   // Get token from cookies (optional - for userReaction field)
@@ -27,11 +27,19 @@ export default async function Reviews({ searchParams }: ReviewsPageProps) {
   const reviewSortOptions: FilterOpt = {
     title: 'Sort By',
     key: 'sortBy',
-    options: [{ label: 'Most Liked', value: 'likes' }] as any,
+    options: [
+      { label: 'Most Liked', value: 'likes' },
+      { label: 'Most Recent', value: 'recent' },
+    ] as any,
     multiple: false,
   };
 
-  const { reviews } = await getAllReviewsSSR(page, 20, sortBy, token);
+  const { reviews, totalPages, currentPage } = await getAllReviewsSSR(
+    page,
+    10,
+    sortBy,
+    token
+  );
 
   return (
     <div className={styles.pageContainer}>
@@ -53,6 +61,8 @@ export default async function Reviews({ searchParams }: ReviewsPageProps) {
           <ReviewsClientWrapper
             initialReviews={reviews || []}
             searchParams={awaitedSearchParams}
+            totalPages={totalPages}
+            currentPage={currentPage}
           />
         </div>
       </div>

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import styles from '../../page.module.css';
 import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
@@ -11,7 +12,27 @@ import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const router = useRouter();
+  const { redirectIfAuthenticated } = useAuth();
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {}, [redirectIfAuthenticated, searchParams]);
+
+  // On mount, get token and remove it from URL
+  useEffect(() => {
+    const redirectTo = searchParams.get('redirect') || '/';
+    redirectIfAuthenticated(redirectTo);
+    const urlToken = searchParams.get('token');
+    if (urlToken) {
+      setToken(urlToken);
+      // Remove token from URL without reloading
+      const newParams = new URLSearchParams(window.location.search);
+      newParams.delete('token');
+      const newUrl = `${window.location.pathname}${
+        newParams.toString() ? `?${newParams}` : ''
+      }`;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [searchParams, redirectIfAuthenticated]);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -57,10 +78,16 @@ export default function ResetPasswordPage() {
       { token, newPassword: password },
       {
         onSuccess: () => {
-          toast.success('Password reset successfully. You can now log in.', {
-            className: 'toast-success',
-          });
+          toast.success(
+            'Password reset successfully. Redirecting to login...',
+            {
+              className: 'toast-success',
+            }
+          );
           setIsLoading(false);
+          setTimeout(() => {
+            router.push('/login');
+          }, 1200);
         },
         onError: err => {
           toast.error(err.message || 'Something went wrong.', {

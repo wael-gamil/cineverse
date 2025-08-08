@@ -1,14 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import styles from '../page.module.css';
 import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
 import Link from 'next/link';
 import { useForgetPasswordMutation } from '@/hooks/useAuthMutations';
 import toast from 'react-hot-toast';
-
+import { useSearchParams } from 'next/navigation';
 export default function ForgetPasswordClient() {
+  const searchParams = useSearchParams();
+  const { redirectIfAuthenticated } = useAuth();
+  useEffect(() => {
+    const redirectTo = searchParams.get('redirect') || '/';
+    redirectIfAuthenticated(redirectTo);
+  }, [redirectIfAuthenticated, searchParams]);
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);

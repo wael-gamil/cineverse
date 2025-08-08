@@ -6,13 +6,14 @@ import { getUserProfile } from '@/lib/api';
 import { cookies } from 'next/headers';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { UserProfile } from '@/constants/types/movie';
+import NotFoundClient from '@/components/shared/notFound/notFoundClient';
 
 export default async function ProfilePage() {
   const queryClient = getQueryClient();
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
   if (!token) {
-    throw new Error('User token not found');
+    return <NotFoundClient type='user' />;
   }
   await queryClient.prefetchQuery({
     queryKey: ['user-profile'],
@@ -22,7 +23,7 @@ export default async function ProfilePage() {
     | UserProfile
     | undefined;
   if (!userProfile) {
-    throw new Error('User profile not found');
+    return <NotFoundClient type='user' />;
   }
   const dehydratedState = dehydrate(queryClient);
   return (
