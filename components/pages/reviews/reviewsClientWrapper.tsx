@@ -13,11 +13,15 @@ import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
 type ReviewsClientWrapperProps = {
   initialReviews: ExtendedReview[];
   searchParams?: { [key: string]: string };
+  totalPages: number;
+  currentPage: number;
 };
 
 export default function ReviewsClientWrapper({
   initialReviews,
   searchParams = {},
+  totalPages,
+  currentPage,
 }: ReviewsClientWrapperProps) {
   const router = useRouter();
   const [selectedReview, setSelectedReview] = useState<ExtendedReview | null>(
@@ -91,7 +95,12 @@ export default function ReviewsClientWrapper({
   const handleUserClick = (username: string) => {
     router.push(`/profile/${username}`);
   };
-
+  // console log this {reviews &&
+  //       reviews.length > 0 &&
+  //       reviewsData?.totalPages &&
+  //       reviewsData.totalPages > 1 &&
+  console.log('Reviews data:', reviewsData);
+  console.log('Reviews:', reviews);
   return (
     <>
       {isRefetching || (shouldFetch && isLoading) ? (
@@ -129,28 +138,21 @@ export default function ReviewsClientWrapper({
             color: 'var(--color-muted)',
           }}
         >
-          {' '}
           <p>No reviews found. Be the first to write a review!</p>
         </div>
-      )}{' '}
+      )}
       {/* Pagination */}
-      {reviews &&
-        reviews.length > 0 &&
-        reviewsData?.totalPages &&
-        reviewsData.totalPages > 1 && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              margin: 'var(--space-xl) 0',
-            }}
-          >
-            <Pagination
-              currentPage={reviewsData.currentPage}
-              totalPages={reviewsData.totalPages}
-            />
-          </div>
-        )}
+      {reviews && reviews.length > 0 && totalPages && totalPages > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            margin: 'var(--space-xl) 0',
+          }}
+        >
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
+        </div>
+      )}
     </>
   );
 }

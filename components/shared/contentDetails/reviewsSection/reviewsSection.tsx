@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './reviewsSection.module.css';
 import { Review, ExtendedReview } from '@/constants/types/movie';
 import Link from 'next/link';
@@ -33,6 +34,11 @@ export default function ReviewsSection({
   const { requireAuth } = useAuth();
   const reviewsRef = useRef<HTMLElement>(null);
   const isInView = useIsInView(reviewsRef, '100px', 0.4);
+
+  const router = useRouter();
+  const handleUserClick = (username: string) => {
+    router.push(`/profile/${username}`);
+  };
 
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
@@ -133,6 +139,9 @@ export default function ReviewsSection({
                 onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
                   handleReactToReview(id, type)
                 }
+                onUserClick={() =>
+                  handleUserClick(mostHelpfulReview.user.username)
+                }
               />
             </div>
           )}
@@ -152,6 +161,7 @@ export default function ReviewsSection({
                       onReact={(id: number, type: 'LIKE' | 'DISLIKE') =>
                         handleReactToReview(id, type)
                       }
+                      onUserClick={() => handleUserClick(review.user.username)}
                     />
                   );
                 })}

@@ -48,6 +48,7 @@ export default function Button({
       aria-label={ariaLabel}
       type={type}
       style={{ width, ...style }}
+      disabled={disabled}
     >
       {children}
     </button>
