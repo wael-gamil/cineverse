@@ -1,0 +1,49 @@
+.banner {
+  width: 100vw;
+  background: linear-gradient(90deg, #1a1a1a 0%, #232526 100%);
+  color: #fffbe7;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-bottom: 1.5px solid #eab308;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  overflow: hidden;
+  padding: 0;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
+}
+
+.marquee {
+  width: 100vw;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  height: 38px;
+}
+
+.marqueeContent {
+  display: inline-block;
+  padding-right: 4rem;
+  animation: marquee 38s linear infinite;
+}
+
+.message {
+  margin-right: 3rem;
+  display: inline-block;
+  direction: inherit;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
