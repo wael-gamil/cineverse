@@ -29,8 +29,22 @@ export default function HeroSectionWrapper({
   const isMobile = useResponsiveLayout();
   const touchStartRef = useRef<number | null>(null);
   const [showHint, setShowHint] = useState(false);
+  // Helper to reset the auto-advance interval
+  const resetInterval = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (stillInView && !isTrailerFocusMode) {
+      intervalRef.current = setInterval(() => {
+        setActiveIndex(prev => (prev + 1) % contents.length);
+      }, 15000);
+    }
+  };
+
   const handleNext = () => {
-    setActiveIndex(prev => (prev + 1) % contents.length);
+    setActiveIndex(prev => {
+      const next = (prev + 1) % contents.length;
+      return next;
+    });
+    resetInterval();
   };
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartRef.current = e.touches[0].clientX;
@@ -48,7 +62,11 @@ export default function HeroSectionWrapper({
     touchStartRef.current = null;
   };
   const handlePrev = () => {
-    setActiveIndex(prev => (prev - 1 + contents.length) % contents.length);
+    setActiveIndex(prev => {
+      const next = (prev - 1 + contents.length) % contents.length;
+      return next;
+    });
+    resetInterval();
   };
   const resetHideTimeout = () => {
     if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
@@ -59,14 +77,7 @@ export default function HeroSectionWrapper({
     }, 3000);
   };
   useEffect(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-
-    if (stillInView && !isTrailerFocusMode) {
-      intervalRef.current = setInterval(() => {
-        setActiveIndex(prev => (prev + 1) % contents.length);
-      }, 15000);
-    }
-
+    resetInterval();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -182,7 +193,10 @@ export default function HeroSectionWrapper({
             className={`${styles.dot} ${
               index === activeIndex ? styles.active : ''
             }`}
-            onClick={() => setActiveIndex(index)}
+            onClick={() => {
+              setActiveIndex(index);
+              resetInterval();
+            }}
           />
         ))}
       </div>
