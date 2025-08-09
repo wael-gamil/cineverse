@@ -12,7 +12,30 @@ export default function AppError({
   reset: () => void;
 }) {
   useEffect(() => {
+    // Update document title for error page
+    const originalTitle = document.title;
+    document.title = 'Error - CineVerse';
+
+    // Update meta description if it exists
+    const descriptionMeta = document.querySelector('meta[name="description"]');
+    const originalDescription = descriptionMeta?.getAttribute('content');
+
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute(
+        'content',
+        'An unexpected error occurred while loading the page. Our team has been notified and is working to resolve the issue.'
+      );
+    }
+
     console.error('App error:', error);
+
+    // Cleanup function to restore original values
+    return () => {
+      document.title = originalTitle;
+      if (descriptionMeta && originalDescription) {
+        descriptionMeta.setAttribute('content', originalDescription);
+      }
+    };
   }, [error]);
 
   return (
