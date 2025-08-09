@@ -24,18 +24,31 @@ export function useContentSectionQuery(
           url = `/api/proxy/seasons?id=${id}`;
           break;
         case 'episodes':
-          if (!seasonNumber) throw new Error('Missing season number');
+          if (!seasonNumber) {
+            throw new Error('Season number is required for episodes');
+          }
           url = `/api/proxy/episodes?id=${id}&seasonNumber=${seasonNumber}`;
           break;
         default:
-          throw new Error('Unknown section');
+          throw new Error(`Unknown section: ${section}`);
       }
 
       const res = await fetch(url);
-      if (!res.ok) throw new Error('Failed to fetch ' + section);
+      if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error(`${section} not found`);
+        }
+        throw new Error(`Failed to load ${section}`);
+      }
       return await res.json();
     },
-    retry: 2,
+    retry: (failureCount, error) => {
+      // Don't retry on 404 errors
+      if (error.message?.includes('not found')) {
+        return false;
+      }
+      return failureCount < 2;
+    },
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 5000),
     enabled,
     staleTime: 1000 * 60 * 10,
