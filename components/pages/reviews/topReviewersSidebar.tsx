@@ -10,7 +10,7 @@ import SkeletonTopReviewers from './skeletons/skeletonTopReviewers';
 import styles from './topReviewersSidebar.module.css';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-
+import avatarFallback from '@/public/avatar_fallback.png';
 export default function TopReviewersSidebar() {
   const { data: topReviewers = [], isLoading: loadingReviewers } =
     useTopReviewersQuery(5);
@@ -134,7 +134,7 @@ export default function TopReviewersSidebar() {
               >
                 <div className={styles.reviewerAvatar}>
                   <img
-                    src={reviewer.user.imageUrl || '/placeholder.svg'}
+                    src={reviewer.user.imageUrl || avatarFallback.src}
                     alt={reviewer.user.name}
                     className={styles.avatarImage}
                   />

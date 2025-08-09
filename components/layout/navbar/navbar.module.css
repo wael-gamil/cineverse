@@ -249,10 +249,15 @@
   }
 }
 @media (max-width: 1280px) {
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
   .navbarDesktop {
     display: none;
   }
   .navbarMobile {
     display: flex;
+    justify-self: end;
   }
 }
