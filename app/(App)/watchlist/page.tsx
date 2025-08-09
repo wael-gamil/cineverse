@@ -7,8 +7,43 @@ import WatchlistServerPage from './watchlistServerPage';
 import WatchlistSkeleton from '@/components/shared/watchlist/watchListSkeleton';
 import { WatchlistItem } from '@/constants/types/movie';
 import NotFoundClient from '@/components/shared/notFound/notFoundClient';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+// Static metadata for watchlist page
+export const metadata: Metadata = {
+  title: 'My Watchlist | Track Movies & TV Series | CineVerse',
+  description:
+    'Manage your personal watchlist. Keep track of movies and TV series you want to watch or have already watched. Never forget your next great watch on CineVerse.',
+  keywords: [
+    'watchlist',
+    'personal list',
+    'track movies',
+    'track tv series',
+    'want to watch',
+    'watched list',
+    'movie tracker',
+    'tv show tracker',
+    'CineVerse',
+  ],
+  robots: {
+    index: false, // Personal content - don't index
+    follow: true,
+  },
+  openGraph: {
+    title: 'My Watchlist | CineVerse',
+    description:
+      'Manage your personal watchlist and track your favorite movies and TV series.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'My Watchlist | CineVerse',
+    description:
+      'Manage your personal watchlist and track your favorite content.',
+  },
+};
 
 type SearchParams = {
   status?: 'TO_WATCH' | 'WATCHED';

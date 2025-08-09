@@ -8,6 +8,7 @@ import { FilterType } from '@/constants/types/movie';
 import { Suspense } from 'react';
 import SearchResultSkeleton from '@/components/ui/search/searchResultSkeleton';
 import SearchResultWrapper from '@/components/ui/search/searchResultWrapper';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,61 @@ type AwaitedSearchParams = {
   page?: string;
   [key: string]: string | undefined;
 };
+
+// Generate dynamic metadata for search pages
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<AwaitedSearchParams>;
+}): Promise<Metadata> {
+  const awaitedSearchParams = await searchParams;
+  const query = awaitedSearchParams.q || '';
+  const type = awaitedSearchParams.type || '';
+
+  if (query) {
+    const contentType =
+      type === 'MOVIE' ? 'Movies' : type === 'SERIES' ? 'TV Series' : 'Content';
+    return {
+      title: `Search: "${query}" ${
+        type ? `in ${contentType}` : ''
+      } | CineVerse`,
+      description: `Search results for "${query}" ${
+        type ? `in ${contentType.toLowerCase()}` : 'in movies and TV series'
+      }. Find movies, TV shows, actors, and directors on CineVerse.`,
+      keywords: [
+        query,
+        'search',
+        'movies',
+        'tv series',
+        'actors',
+        'directors',
+        'CineVerse',
+        ...(type ? [type.toLowerCase()] : []),
+      ],
+      robots: {
+        index: false, // Don't index search result pages
+        follow: true,
+      },
+    };
+  }
+
+  return {
+    title: 'Search Movies & TV Series | CineVerse',
+    description:
+      'Search for movies, TV series, actors, and directors. Discover new content and find detailed information, reviews, and ratings on CineVerse.',
+    keywords: [
+      'search',
+      'movies',
+      'tv series',
+      'actors',
+      'directors',
+      'films',
+      'television',
+      'discover',
+      'CineVerse',
+    ],
+  };
+}
 
 export default async function Search({
   searchParams,

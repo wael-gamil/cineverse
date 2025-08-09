@@ -22,8 +22,28 @@ export function useWatchlistQuery(
         `/api/watchlist?username=${username}&status=${status}&page=${page}&size=${size}`
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to fetch watchlist');
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error('User not found');
+        }
+        if (res.status === 403) {
+          throw new Error('This watchlist is private');
+        }
+        throw new Error(data.message || 'Failed to load watchlist');
+      }
+
       return data;
+    },
+    retry: (failureCount, error) => {
+      // Don't retry on user not found or private watchlist
+      if (
+        error.message?.includes('not found') ||
+        error.message?.includes('private')
+      ) {
+        return false;
+      }
+      return failureCount < 2;
     },
     enabled,
   });

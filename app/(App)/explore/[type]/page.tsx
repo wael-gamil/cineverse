@@ -9,6 +9,8 @@ import { Suspense } from 'react';
 import SkeletonContentList from '@/components/shared/contentList/skeletonContentList';
 import SectionHeader from '@/components/shared/contentSliderSection/sectionHeader';
 import OrderTabs from '@/components/ui/orderTabs/orderTabs';
+import { Metadata } from 'next';
+import { generateExploreMetadata } from '@/utils/metadata';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +20,36 @@ type ContentPageProps = {
   params: Promise<{ type: 'movies' | 'tv-series' }>;
   searchParams: Promise<{ [key: string]: string }>;
 };
+
+// Generate dynamic metadata for explore pages
+export async function generateMetadata({
+  params,
+  searchParams,
+}: ContentPageProps): Promise<Metadata> {
+  try {
+    const { type } = await params;
+    const awaitedSearchParams = await searchParams;
+
+    if (!validTypes.includes(type)) {
+      return {
+        title: 'Page Not Found | CineVerse',
+        description: 'The requested page could not be found.',
+      };
+    }
+
+    const genres = awaitedSearchParams['genres']?.split(',') || [];
+    const year = awaitedSearchParams['year'] || '';
+    const sortBy = awaitedSearchParams['sortBy'] || '';
+
+    return generateExploreMetadata(type, { genres, year, sortBy });
+  } catch (error) {
+    console.error('Error generating explore metadata:', error);
+    return {
+      title: 'Explore Content | CineVerse',
+      description: 'Discover movies and TV series on CineVerse.',
+    };
+  }
+}
 export default async function ContentPage({
   params,
   searchParams,

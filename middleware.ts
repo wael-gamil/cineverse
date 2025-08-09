@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   const isOwnProfile = pathname === '/profile';
 
   // Routes that should redirect if already authenticated
-  const authRoutes = ['/login', '/register', '/forget-password'];
+  const authRoutes = ['/login', '/register', '/forget-password', '/auth'];
 
   // Check if current path is protected
   const isProtectedRoute =
@@ -19,10 +19,17 @@ export function middleware(request: NextRequest) {
 
   // Check if current path is an auth route
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+  
   // Redirect to login if accessing protected route without token
   if (isProtectedRoute && !token) {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', pathname);
+    
+    // Only set redirect if the current path is NOT an auth route
+    // This prevents auth pages from being stored as redirect destinations
+    if (!isAuthRoute) {
+      loginUrl.searchParams.set('redirect', pathname);
+    }
+    
     return NextResponse.redirect(loginUrl);
   }
 

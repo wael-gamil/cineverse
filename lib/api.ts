@@ -18,35 +18,23 @@ import {
   ExtendedReview,
   WatchlistItem,
 } from '@/constants/types/movie';
+import {
+  safeFetcher,
+  contentApiCall,
+  safeApiCall,
+  handleApiError,
+  ApiError,
+} from './errorHandler';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
+// Legacy fetcher - gradually being replaced with safeFetcher
 const fetcher = async function fetcher(
   query: string,
   revalidateSeconds: number = 60,
   headers: HeadersInit = { 'Content-Type': 'application/json' }
 ) {
-  const response = await fetch(`${BASE_URL}${query}`, {
-    method: 'GET',
-    headers,
-    next: {
-      revalidate: revalidateSeconds,
-    },
-  });
-
-  const text = await response.text();
-  let result;
-  try {
-    result = text ? JSON.parse(text) : {};
-  } catch {
-    throw new Error('Invalid JSON response from server');
-  }
-
-  if (!response.ok || result.success === false) {
-    throw new Error(result.message || 'Something went wrong');
-  }
-
-  return result.data;
+  return await safeFetcher(query, revalidateSeconds, headers, BASE_URL);
 };
 
 export const getContents = async (
@@ -114,12 +102,11 @@ export const getContents = async (
   }
 };
 export const getFilterOptions = async (): Promise<FilterOpt[]> => {
-  try {
-    const rawData = await fetcher(`contents/filter/options`);
-    return rawData;
-  } catch (error) {
-    throw error;
-  }
+  return await safeApiCall(
+    () => fetcher(`contents/filter/options`),
+    [], // Return empty array on error
+    'server'
+  );
 };
 export const getSearchResults = async (
   query: string,
@@ -130,127 +117,123 @@ export const getSearchResults = async (
   totalPages: number;
   currentPage: number;
 }> => {
-  try {
-    const url = `contents/search?q${
-      query && `=${query}`
-    }&page=${page}&type=${type}`;
-    const rawData = await fetcher(url);
-    const contents: Content[] = rawData.content.map((movie: any) => ({
-      id: movie.id,
-      title: movie.title,
-      overview: movie.overview,
-      releaseDate: movie.releaseDate,
-      imdbRate: movie.imdbRate,
-      genres: movie.genres,
-      posterUrl: movie.posterUrl,
-      slug: movie.slug,
-      type: movie.type,
-    }));
+  return await safeApiCall(
+    async () => {
+      const url = `contents/search?q${
+        query && `=${query}`
+      }&page=${page}&type=${type}`;
+      const rawData = await fetcher(url);
+      const contents: Content[] = rawData.content.map((movie: any) => ({
+        id: movie.id,
+        title: movie.title,
+        overview: movie.overview,
+        releaseDate: movie.releaseDate,
+        imdbRate: movie.imdbRate,
+        genres: movie.genres,
+        posterUrl: movie.posterUrl,
+        slug: movie.slug,
+        type: movie.type,
+      }));
 
-    return {
-      contents: contents,
-      totalPages: rawData.totalPages,
-      currentPage: rawData.number,
-    };
-  } catch (error) {
-    throw error;
-  }
+      return {
+        contents: contents,
+        totalPages: rawData.totalPages,
+        currentPage: rawData.number,
+      };
+    },
+    {
+      contents: [],
+      totalPages: 0,
+      currentPage: 0,
+    },
+    'client' // Search results don't need server-side 404
+  );
 };
 export const getContentDetails = async (
   slug: string
 ): Promise<Movie | Series> => {
-  try {
+  return await contentApiCall(async () => {
     const rawData = await fetcher(`contents/${slug}`, 300);
     if ('numberOfSeasons' in rawData) {
       return { ...rawData, type: 'series' } as Series;
     } else {
       return { ...rawData, type: 'movie' } as Movie;
     }
-  } catch (error) {
-    throw error;
-  }
+  });
 };
 export const getAllSeasonDetails = async (id: number): Promise<Season[]> => {
-  try {
+  return await contentApiCall(async () => {
     const rawData = await fetcher(`contents/${id}/seasons`);
     return rawData as Season[];
-  } catch (error) {
-    throw error;
-  }
+  });
 };
+
 export const getSeasonDetails = async (
   seriesId: number,
   seasonNumber: number
 ): Promise<Season> => {
-  try {
+  return await contentApiCall(async () => {
     const rawData = await fetcher(
       `contents/${seriesId}/seasons/${seasonNumber}`
     );
     return rawData as Season;
-  } catch (error) {
-    throw error;
-  }
+  });
 };
 export const getAllEpisodeDetails = async (
   seriesId: number,
   seasonNumber: number
 ): Promise<Episode[]> => {
-  try {
+  return await contentApiCall(async () => {
     const rawData = await fetcher(
       `contents/${seriesId}/seasons/${seasonNumber}/episodes`
     );
     return rawData as Episode[];
-  } catch (error) {
-    throw error;
-  }
+  });
 };
+
 export const getEpisodeDetails = async (
   seriesId: number,
   seasonNumber: number,
   episodeNumber: number
 ): Promise<Episode> => {
-  try {
+  return await contentApiCall(async () => {
     const rawData = await fetcher(
       `contents/${seriesId}/seasons/${seasonNumber}/episodes/${episodeNumber}`
     );
     return rawData as Episode;
-  } catch (error) {
-    throw error;
-  }
+  });
 };
 
 export const getContentTrailer = async (id: number): Promise<Trailer> => {
-  try {
-    const rawData = await fetcher(`contents/${id}/trailer`);
-    return rawData as Trailer;
-  } catch (error) {
-    throw error;
-  }
+  return await safeApiCall(
+    () => fetcher(`contents/${id}/trailer`),
+    { trailer: '' } as Trailer, // Default empty trailer
+    'client'
+  );
 };
 
 export const getContentProviders = async (id: number): Promise<Provider[]> => {
-  try {
-    const rawData = await fetcher(`contents/${id}/providers`);
-    return rawData as Provider[];
-  } catch (error) {
-    throw error;
-  }
+  return await safeApiCall(
+    () => fetcher(`contents/${id}/providers`),
+    [], // Return empty array if no providers found
+    'client'
+  );
 };
+
 export const getContentStats = async (id: number): Promise<Stats> => {
-  try {
-    const rawData = await fetcher(`contents/${id}/stats`);
-    return rawData as Stats;
-  } catch (error) {
-    throw error;
-  }
+  return await safeApiCall(
+    () => fetcher(`contents/${id}/stats`),
+    { totalReviews: 0, watchlistCount: 0, platformRate: 0 } as Stats, // Default stats
+    'client'
+  );
 };
+
 export const getContentReviews = async (id: number): Promise<Review[]> => {
-  try {
-    const rawData = await fetcher(`contents/${id}/reviews`);
-    return rawData as Review[];
-  } catch (error) {
-    throw error;
-  }
+  return await safeApiCall(
+    () => fetcher(`contents/${id}/reviews`),
+    [], // Return empty array if no reviews found
+    'client'
+  );
 };
 
 export const getContentReviewsClient = async (
@@ -258,37 +241,42 @@ export const getContentReviewsClient = async (
   token?: string,
   sortBy = 'likes'
 ): Promise<Review[]> => {
-  try {
-    const query = new URLSearchParams();
-    query.set('sortBy', sortBy);
+  return await safeApiCall(
+    async () => {
+      const query = new URLSearchParams();
+      query.set('sortBy', sortBy);
 
-    const url = `reviews/contents/${id}?${query.toString()}`;
-    console.log('Fetching content reviews from:', url);
-    // Build headers with optional Authorization
-    const headers: HeadersInit = { 'Content-Type': 'application/json' };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+      const url = `reviews/contents/${id}?${query.toString()}`;
+      console.log('Fetching content reviews from:', url);
+      // Build headers with optional Authorization
+      const headers: HeadersInit = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
 
-    const rawData = await fetcher(url, 0, headers);
-    return rawData.content as Review[];
-  } catch (error) {
-    throw error;
-  }
+      const rawData = await fetcher(url, 0, headers);
+      return rawData.content as Review[];
+    },
+    [], // Return empty array on error
+    'client'
+  );
 };
 
 export const getContentCredits = async (id: number): Promise<Credits> => {
-  try {
-    const rawData = await fetcher(`contents/${id}/credits`);
-    return rawData as Credits;
-  } catch (error) {
-    throw error;
-  }
+  return await safeApiCall(
+    () => fetcher(`contents/${id}/credits`),
+    {
+      director: { id: 0, name: '', imageUrl: '' },
+      casts: [],
+    } as Credits, // Default empty credits
+    'client'
+  );
 };
+
 export const getExtendedPersonDetails = async (
   id: number
 ): Promise<ExtendedPerson> => {
-  try {
+  return await contentApiCall(async () => {
     const rawData = await fetcher(`artists/${id}`);
     const departmentMap: Record<string, string> = {
       Acting: 'Actor',
@@ -303,9 +291,7 @@ export const getExtendedPersonDetails = async (
     };
 
     return normalizedData;
-  } catch (error) {
-    throw error;
-  }
+  });
 };
 export const getPersonContents = async (
   id: number,
@@ -419,19 +405,20 @@ export const getUserProfile = async (token: string): Promise<UserProfile> => {
   return data;
 };
 
-// Public profile functions
 export const getPublicUserProfile = async (
   username: string
 ): Promise<UserProfile> => {
-  const data = await fetcher(`users/profile/${username}`, 0);
-  return data;
+  return await contentApiCall(() => fetcher(`users/profile/${username}`, 0));
 };
-// Public user stats function
+
 export const getPublicUserStats = async (
   username: string
 ): Promise<{ reviewCount: number; watchlistCount: number }> => {
-  const data = await fetcher(`users/${username}/stats`, 0);
-  return data;
+  return await safeApiCall(
+    () => fetcher(`users/${username}/stats`, 0),
+    { reviewCount: 0, watchlistCount: 0 }, // Default stats
+    'client'
+  );
 };
 export const getPublicUserReviews = async (
   username: string,
@@ -605,13 +592,11 @@ export const getContentSummary = async (
   seasonNumber: number | null;
   episodeNumber: number | null;
 }> => {
-  try {
+  return await contentApiCall(async () => {
     const url = `contents/${contentId}/summary?contentType=${contentType}`;
     const rawData = await fetcher(url);
     return rawData;
-  } catch (error) {
-    throw error;
-  }
+  });
 };
 type ReviewPayload = {
   contentId: number;

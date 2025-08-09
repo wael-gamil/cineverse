@@ -6,12 +6,39 @@ import { UserProfile } from '@/constants/types/movie';
 import { notFound } from 'next/navigation';
 import PublicTabsWrapper from '@/components/pages/profile/publicTabsWrapper';
 import PublicUserInfoPanel from '@/components/pages/profile/publicUserInfoPanel';
+import { Metadata } from 'next';
+import { generateUserProfileMetadata } from '@/utils/metadata';
 
 export const dynamic = 'force-dynamic';
 
 type PublicProfilePageProps = {
   params: Promise<{ username: string }>;
 };
+
+// Generate dynamic metadata for user profile pages
+export async function generateMetadata({
+  params,
+}: PublicProfilePageProps): Promise<Metadata> {
+  try {
+    const { username } = await params;
+    const userProfile = await getPublicUserProfile(username);
+
+    if (!userProfile) {
+      return {
+        title: 'User Not Found | CineVerse',
+        description: 'The requested user profile could not be found.',
+      };
+    }
+
+    return generateUserProfileMetadata(userProfile);
+  } catch (error) {
+    console.error('Error generating user profile metadata:', error);
+    return {
+      title: 'User Not Found | CineVerse',
+      description: 'The requested user profile could not be found.',
+    };
+  }
+}
 
 export default async function PublicProfilePage({
   params,
@@ -36,13 +63,46 @@ export default async function PublicProfilePage({
 
     const dehydratedState = dehydrate(queryClient);
 
+    // Generate structured data for user profile
+    const structuredData = {
+      '@context': 'https://schema.org',
+      '@type': 'ProfilePage',
+      mainEntity: {
+        '@type': 'Person',
+        name: userProfile.name,
+        alternateName: userProfile.username,
+        description:
+          userProfile.bio || `${userProfile.name}'s profile on CineVerse`,
+        image: userProfile.profilePicture,
+        url: `${
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+        }/profile/${userProfile.username}`,
+        sameAs: `${
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+        }/profile/${userProfile.username}`,
+      },
+    };
+
     return (
-      <HydrationBoundary state={dehydratedState}>
-        <div className={styles.container}>
-          <PublicUserInfoPanel initialUser={userProfile} username={username} />
-          <PublicTabsWrapper username={username} />
-        </div>
-      </HydrationBoundary>
+      <>
+        {/* Structured Data */}
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+
+        <HydrationBoundary state={dehydratedState}>
+          <div className={styles.container}>
+            <PublicUserInfoPanel
+              initialUser={userProfile}
+              username={username}
+            />
+            <PublicTabsWrapper username={username} />
+          </div>
+        </HydrationBoundary>
+      </>
     );
   } catch (error) {
     console.error('Error fetching public profile:', error);

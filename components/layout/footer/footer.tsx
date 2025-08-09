@@ -27,6 +27,9 @@ export default function Footer() {
               { name: 'Home', path: '/' },
               { name: 'Movies', path: '/explore/movies' },
               { name: 'TV Series', path: '/explore/tv-series' },
+              { name: 'Search', path: '/search' },
+              { name: 'Reviews', path: '/reviews' },
+              { name: 'Watchlist', path: '/watchlist' },
             ].map(({ name, path }) => (
               <li key={name}>
                 <Link href={path} className={styles.link}>

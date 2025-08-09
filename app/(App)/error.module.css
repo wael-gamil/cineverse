@@ -1,0 +1,122 @@
+/* app-error.module.css */
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem var(--space-xxl);
+  flex: 1;
+  min-height: 60vh;
+}
+
+.card {
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--color-surface);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-danger-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  background-color: var(--color-danger-20);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-xxl);
+}
+
+.heading {
+  font-size: var(--font-size-xl);
+  font-weight: bold;
+  color: var(--color-white);
+  margin: 0;
+}
+
+.description {
+  color: var(--color-muted);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.errorDetails {
+  background-color: var(--color-surface-60);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-danger-20);
+  margin-top: var(--space-lg);
+}
+
+.errorSummary {
+  padding: var(--space-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+  transition: var(--transition-fast);
+}
+
+.errorSummary:hover {
+  color: var(--color-white);
+}
+
+.errorPre {
+  padding: var(--space-md);
+  background-color: var(--color-bg-60);
+  border-radius: var(--radius-sm);
+  overflow: auto;
+  max-height: 200px;
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .wrapper {
+    padding: var(--space-lg);
+  }
+
+  .card {
+    padding: var(--space-lg);
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .iconWrapper {
+    width: 60px;
+    height: 60px;
+  }
+}

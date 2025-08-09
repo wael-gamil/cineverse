@@ -98,7 +98,6 @@
     var(--light-color-bg) 0%,
     var(--light-color-surface) 100%
   );
-  border-radius: var(--radius-lg);
   box-shadow: var(--light-shadow-lg);
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;

@@ -7,10 +7,40 @@ import SetSeriesStore from '@/utils/useSetSeriesStore';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/getQueryClient';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import {
+  generateContentMetadata,
+  generateMovieStructuredData,
+} from '@/utils/metadata';
 
 type MovieOrSeriesPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+// Generate dynamic metadata for SEO
+export async function generateMetadata({
+  params,
+}: MovieOrSeriesPageProps): Promise<Metadata> {
+  try {
+    const { slug } = await params;
+    const details = await getContentDetails(slug);
+
+    if (!details) {
+      return {
+        title: 'Content Not Found | CineVerse',
+        description: 'The requested movie or TV series could not be found.',
+      };
+    }
+
+    return generateContentMetadata(details, slug);
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Content Not Found | CineVerse',
+      description: 'The requested movie or TV series could not be found.',
+    };
+  }
+}
 
 export default async function MovieOrSeriesPage({
   params,
@@ -35,25 +65,38 @@ export default async function MovieOrSeriesPage({
 
     const dehydratedState = dehydrate(queryClient);
 
+    // Generate structured data for SEO
+    const structuredData = generateMovieStructuredData(details, slug);
+
     return (
-      <HydrationBoundary state={dehydratedState}>
-        <ContentHero content={normalizeContent(details)} />
-        <ContentOverview content={normalizeContent(details)} />
-        <ContentSectionWrapper section='credits' id={details.id} />
-        {details.type === 'series' && (
-          <>
-            <SetSeriesStore data={details} />
-            <ContentSectionWrapper section='seasons' id={details.id} />
-          </>
-        )}{' '}
-        <ContentSectionWrapper
-          section='reviews'
-          id={details.id}
-          contentTitle={details.title}
-          contentPoster={details.posterUrl}
-          sortBy='likes'
+      <>
+        {/* Structured Data */}
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
         />
-      </HydrationBoundary>
+
+        <HydrationBoundary state={dehydratedState}>
+          <ContentHero content={normalizeContent(details)} />
+          <ContentOverview content={normalizeContent(details)} />
+          <ContentSectionWrapper section='credits' id={details.id} />
+          {details.type === 'series' && (
+            <>
+              <SetSeriesStore data={details} />
+              <ContentSectionWrapper section='seasons' id={details.id} />
+            </>
+          )}{' '}
+          <ContentSectionWrapper
+            section='reviews'
+            id={details.id}
+            contentTitle={details.title}
+            contentPoster={details.posterUrl}
+            sortBy='likes'
+          />
+        </HydrationBoundary>
+      </>
     );
   } catch (error) {
     console.error('Error fetching content details:', error);

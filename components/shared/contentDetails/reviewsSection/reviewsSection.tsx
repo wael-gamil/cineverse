@@ -48,7 +48,7 @@ export default function ReviewsSection({
     user: {
       ...review.user,
       username:
-        review.user.name.toLowerCase().replace(/\s+/g, '') ||
+        review.user.name?.toLowerCase().replace(/\s+/g, '') ||
         review.user.username,
     },
     contentId: 0,
