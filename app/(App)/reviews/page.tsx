@@ -7,8 +7,40 @@ import ReviewsFilters from '@/components/pages/reviews/reviewsFilters';
 import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviewsList';
 import { FilterOpt } from '@/constants/types/movie';
 import { cookies } from 'next/headers';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+// Static metadata for reviews page
+export const metadata: Metadata = {
+  title: 'Movie & TV Series Reviews | Community Reviews | CineVerse',
+  description:
+    'Read and discover community reviews for movies and TV series. Share your thoughts, rate content, and find your next watch based on trusted user reviews on CineVerse.',
+  keywords: [
+    'movie reviews',
+    'tv series reviews',
+    'film reviews',
+    'user reviews',
+    'ratings',
+    'community',
+    'movie opinions',
+    'tv show opinions',
+    'cinema reviews',
+    'CineVerse',
+  ],
+  openGraph: {
+    title: 'Community Reviews | CineVerse',
+    description:
+      'Discover what the community is saying about movies and TV series. Read reviews, ratings, and find your next favorite content.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Community Reviews | CineVerse',
+    description:
+      'Discover what the community is saying about movies and TV series.',
+  },
+};
 
 type ReviewsPageProps = {
   searchParams: Promise<{ [key: string]: string }>;

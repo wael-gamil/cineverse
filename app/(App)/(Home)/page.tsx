@@ -7,8 +7,13 @@ import ContentSliderSectionWrapper from '@/components/shared/contentSliderSectio
 import MysterySection from '@/components/shared/homePage/mysterySection';
 import { Icon } from '@/components/ui/icon/icon';
 import MotionSection from '@/components/shared/motionSection';
+import { Metadata } from 'next';
+import { generateHomeMetadata } from '@/utils/metadata';
 
 export const dynamic = 'force-dynamic';
+
+// Enhanced metadata for home page
+export const metadata: Metadata = generateHomeMetadata();
 
 const sectionConfig: Record<
   string,
@@ -199,8 +204,38 @@ export default async function Home() {
   const firstHalf = sectionKeys.slice(0, 4);
   const secondHalf = sectionKeys.slice(4);
 
+  // Generate structured data for home page
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'CineVerse',
+    alternateName: 'CineVerse - Movie and TV Series Platform',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app',
+    description:
+      'The ultimate platform for movie and TV series enthusiasts. Discover new content, create personalized watchlists, share detailed reviews, and connect with fellow cinema lovers.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+        }/search?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+    sameAs: [process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'],
+  };
+
   return (
     <>
+      {/* Structured Data */}
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+
       <HeroSectionWrapper contents={contents} rawContent={content} />
       <div className={styles.container}>
         {/* First half */}

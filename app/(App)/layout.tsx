@@ -3,54 +3,15 @@ import { inter, geist } from '@/constants/fonts';
 import '@/styles/global.css';
 import '@/styles/reset.css';
 import Navbar from '@/components/layout/navbar/navbar';
-import DisclaimerBanner from '@/components/layout/disclaimerBanner/DisclaimerBanner';
+import DisclaimerModal from '@/components/layout/disclaimerModal/disclaimerModal';
 import Footer from '@/components/layout/footer/footer';
 import Providers from '@/lib/providers';
 import { Toaster } from 'react-hot-toast';
 import { Suspense } from 'react';
+import { generateHomeMetadata } from '@/utils/metadata';
 
-export const metadata: Metadata = {
-  title: 'CineVerse',
-  description:
-    'CineVerse is a movie and TV series tracking app that allows users to create and manage their watchlists, discover new content, and share their reviews',
-  keywords: [
-    'CineVerse',
-    ' movie',
-    ' cinema',
-    ' tv',
-    ' series',
-    ' watchlist',
-    ' movies',
-    ' tv shows',
-    ' tv series',
-    ' watch',
-  ],
-  authors: [
-    { name: 'Wael Gamil', url: 'https://www.linkedin.com/in/wael-gamil/' },
-    {
-      name: 'Mahmoud Abdelfattah',
-      url: 'https://www.linkedin.com/in/mahmoud-a-fattah',
-    },
-  ],
-  icons: {
-    icon: 'public/favicon.ico',
-  },
-  openGraph: {
-    title: 'CineVerse',
-    description:
-      'CineVerse is a movie and TV series tracking app that allows users to create and manage their watchlists, discover new content, and share their reviews',
-    //todo: update the url
-    url: '',
-    siteName: 'CineVerse',
-    images: [
-      {
-        url: '',
-        width: 1200,
-        height: 630,
-      },
-    ],
-  },
-};
+//todo: add google analytics
+export const metadata: Metadata = generateHomeMetadata();
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -59,13 +20,13 @@ export default function RootLayout({
   return (
     <html lang='en' className={`${geist.className} ${inter.className}`}>
       <body>
-        <DisclaimerBanner />
         <Suspense fallback={<div />}>
           <Navbar />
         </Suspense>
         <Providers>{children}</Providers>
         <Footer />
         <Toaster position='bottom-right' />
+        <DisclaimerModal />
       </body>
     </html>
   );
