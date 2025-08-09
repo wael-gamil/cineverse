@@ -43,11 +43,6 @@ export default function UserPanel({ closePanel }: Props) {
             View Profile
           </Button>
         </Link>
-        <Link href='/watchlist'>
-          <Button variant='list' width='100%' onClick={closePanel}>
-            My Watchlist
-          </Button>
-        </Link>
         <Button
           variant='list'
           color='danger'
