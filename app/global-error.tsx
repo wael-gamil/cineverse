@@ -17,6 +17,22 @@ export default function GlobalError({
 
   return (
     <html>
+      <head>
+        <title>Error - CineVerse</title>
+        <meta name="description" content="An unexpected error occurred while loading the page. Our team has been notified and is working to resolve the issue. Please try again later or return to the homepage." />
+        <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+        <meta property="og:title" content="Error | CineVerse" />
+        <meta property="og:description" content="An unexpected error occurred while loading the page. Please try again or return to the homepage." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://cineverse-xi.vercel.app" />
+        <meta property="og:site_name" content="CineVerse" />
+        <meta property="og:image" content="https://cineverse-xi.vercel.app/og-logo.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Error | CineVerse" />
+        <meta name="twitter:description" content="An unexpected error occurred. Please try again or return to the homepage." />
+        <meta name="twitter:image" content="https://cineverse-xi.vercel.app/og-logo.png" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body>
         <div className={styles.wrapper}>
           <div className={styles.card}>
