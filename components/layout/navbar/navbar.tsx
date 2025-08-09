@@ -36,6 +36,15 @@ export default function Navbar() {
     const currentPath =
       pathname +
       (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+    
+    // Don't store auth pages as redirect URLs
+    const authRoutes = ['/login', '/register', '/forget-password', '/auth'];
+    const isAuthPage = authRoutes.some(route => pathname.startsWith(route));
+    
+    if (isAuthPage) {
+      return '/login'; // Just go to login without redirect parameter
+    }
+    
     return `/login?redirect=${encodeURIComponent(currentPath)}`;
   };
 
@@ -82,7 +91,7 @@ export default function Navbar() {
       removeListeners(verse);
     };
   }, []);
-
+  console.log(isMobile);
   return (
     <>
       <nav
@@ -159,7 +168,7 @@ export default function Navbar() {
           <div className={styles.navbarMobile}>
             <SearchBar />
             <PanelWrapper
-              label='Menu'
+              label={!isMobile ? 'Menu' : undefined}
               icon={isOpen => (
                 <Icon
                   name={isOpen ? 'close' : 'burger'}
@@ -168,7 +177,9 @@ export default function Navbar() {
                 />
               )}
               badge={
-                hasMounted && isLoggedIn && username ? username : undefined
+                !isMobile && hasMounted && isLoggedIn && username
+                  ? username
+                  : undefined
               }
               position='right'
               padding='lg'
