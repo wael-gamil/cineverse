@@ -147,6 +147,7 @@ export default function ContentHeroSimple({
               <Badge key={badge} text={badge} backgroundColor='bg-muted' />
             ))}
           </div>
+          {actionButton && <>{actionButton}</>}
         </div>
         {bio && (
           <div className={styles.bioWrapper}>
@@ -207,9 +208,6 @@ export default function ContentHeroSimple({
               ))}
             </div>
           </div>
-        )}
-        {actionButton && (
-          <div className={styles.actionWrapper}>{actionButton}</div>
         )}
       </div>
     </section>
