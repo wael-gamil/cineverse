@@ -4,6 +4,7 @@ import SearchInput from '@/components/ui/search/searchInput';
 import SearchResult from '@/components/ui/search/searchResult';
 import ExitButton from '@/components/ui/search/exitButton';
 import SearchFilter from '@/components/ui/search/searchFilter';
+import SearchPageClient from '@/components/ui/search/searchPageClient';
 import { FilterType } from '@/constants/types/movie';
 import { Suspense } from 'react';
 import SearchResultSkeleton from '@/components/ui/search/searchResultSkeleton';
@@ -84,7 +85,7 @@ export default async function Search({
   const type = (awaitedSearchParams.type as FilterType) || '';
 
   return (
-    <div className={styles.content}>
+    <SearchPageClient>
       <div className={styles.header}>
         <div className={styles.headerTop}>
           <div className={styles.headerLeft}>
@@ -101,6 +102,6 @@ export default async function Search({
       >
         <SearchResultWrapper query={query} page={page} type={type} />
       </Suspense>
-    </div>
+    </SearchPageClient>
   );
 }

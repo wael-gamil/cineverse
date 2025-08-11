@@ -72,7 +72,6 @@ export default function GridContainer({
                     gridAutoColumns: `minmax(${cardMinWidth}px, 1fr)`,
                     gridTemplateRows: 'repeat(${scrollRows}, auto)',
                     overflowX: 'auto',
-                    overflowY: 'hidden',
                     scrollBehavior: 'smooth',
                   }
                 : {}),
@@ -85,7 +84,6 @@ export default function GridContainer({
                 ? `minmax(${modifiedCardMinWidth}px, ${cardMaxWidth}px)`
                 : `minmax(${modifiedCardMinWidth}px, 1fr)`,
               overflowX: 'auto',
-              overflowY: 'hidden',
               scrollBehavior: 'smooth',
             }),
       }}

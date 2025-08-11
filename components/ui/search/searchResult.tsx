@@ -27,13 +27,7 @@ export default function SearchResult({
   const resultRef = useRef<HTMLDivElement>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
   const isMobile = useResponsiveLayout();
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      resultRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 0);
 
-    return () => clearTimeout(timeout);
-  }, [currentPage]);
   const handleCardClick = (item: Content, href: string) => {
     setActiveId(item.id);
     setTimeout(() => {
