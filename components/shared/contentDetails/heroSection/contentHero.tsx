@@ -10,6 +10,7 @@ import { useIsInView } from '@/hooks/useIsInView';
 import HeroMetadata from './heroMetadata';
 import { uiStore } from '@/utils/uiStore';
 import useMobileVh from '@/hooks/useMobileVh';
+import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 
 type ContentHeroProps = {
   content: NormalizedContent;
@@ -39,7 +40,7 @@ export default function ContentHero({
   const [trailerFocusMode, setTrailerFocusMode] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [trailerLoaded, setTrailerLoaded] = useState(false);
-
+  const isMobile = useResponsiveLayout();
   const { data, isLoading } =
     content.type === 'movie' || content.type === 'series'
       ? useTrailerQuery(content.id)
@@ -255,9 +256,14 @@ export default function ContentHero({
         {(!trailerFocusMode || isFadingOut) && (
           <>
             <div className={styles.overlayDark} />
-            <div className={styles.overlayGradient} />
-            <div className={styles.overlayBlur} />
-            <div className={styles.spotlightEffect} />
+            {!isMobile && (
+              <>
+                <div className={styles.overlayBlur} />
+                <div className={styles.overlayGradient} />
+                <div className={styles.spotlightEffect} />
+              </>
+            )}
+
             {showBottomOverlay && (
               <div
                 className={`${styles.bottomOverlay} ${

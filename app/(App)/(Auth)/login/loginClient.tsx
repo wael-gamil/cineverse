@@ -41,7 +41,7 @@ export default function LoginPage() {
         );
       }
     } catch (error) {
-      console.error('Failed to fetch user profile:', error);
+      
     }
   };
   // Redirect if already authenticated

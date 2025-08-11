@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
     // Return the transformed data structure that the frontend expects
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Error in all reviews API route:', error);
     return NextResponse.json(
       { error: 'Failed to fetch all reviews' },
       { status: 500 }

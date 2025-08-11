@@ -44,7 +44,6 @@ export default function UserPanel({ closePanel }: Props) {
             width='100%' 
             onClick={(e) => {
               e.preventDefault();
-              console.log('UserPanel View Profile clicked, closePanel:', closePanel);
               closePanel?.();
                 router.push('/profile');
              

@@ -27,9 +27,11 @@
   isolation: isolate; /* ⬅ prevents child z-index bugs */
 }
 .image-lg {
+  min-height: 400px;
   height: 400px;
 }
 .image-md {
+  min-height: 320px;
   height: 320px;
 }
 .posterImage {
@@ -136,7 +138,10 @@
   background: var(--color-surface-70);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
-
+.belowImage {
+  min-height: 275px;
+  height: 275px;
+}
 /* === CONTENT STYLING (SHARED) === */
 .contentTitle {
   font-size: var(--font-size-lg);

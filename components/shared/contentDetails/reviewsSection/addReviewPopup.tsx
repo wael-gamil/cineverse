@@ -104,10 +104,6 @@ export default function AddReviewPopup({
         onClose();
       }, 2000);
     } catch (error) {
-      console.error(
-        `Error ${mode === 'edit' ? 'updating' : 'submitting'} review:`,
-        error
-      );
     } finally {
       setIsSubmitting(false);
     }

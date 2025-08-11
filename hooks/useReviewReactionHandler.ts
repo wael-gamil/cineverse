@@ -170,7 +170,6 @@ export function useReviewReactionHandler<T extends ReviewWithReactions>({
         newMap.delete(reviewId);
         return newMap;
       });
-      console.error('Failed to react to review:', error);
     }
   }, [getServerState, getExpectedServerReaction, reactToReview]);
   

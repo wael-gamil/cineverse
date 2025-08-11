@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ watchlistId });
   } catch (error: any) {
-    console.error('Error checking watchlist existence:', error);
     return NextResponse.json(
       { error: 'Failed to check watchlist existence' },
       { status: 500 }

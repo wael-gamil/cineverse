@@ -32,7 +32,6 @@ export async function generateMetadata({
 
     return generateUserProfileMetadata(userProfile);
   } catch (error) {
-    console.error('Error generating user profile metadata:', error);
     return {
       title: 'User Not Found | CineVerse',
       description: 'The requested user profile could not be found.',
@@ -105,7 +104,6 @@ export default async function PublicProfilePage({
       </>
     );
   } catch (error) {
-    console.error('Error fetching public profile:', error);
     notFound();
   }
 }

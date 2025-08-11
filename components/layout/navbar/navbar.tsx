@@ -97,7 +97,6 @@ export default function Navbar() {
       removeListeners(verse);
     };
   }, []);
-  console.log(isMobile);
   return (
     <>
       <nav

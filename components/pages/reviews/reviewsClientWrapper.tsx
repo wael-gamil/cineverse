@@ -95,12 +95,6 @@ export default function ReviewsClientWrapper({
   const handleUserClick = (username: string) => {
     router.push(`/profile/${username}`);
   };
-  // console log this {reviews &&
-  //       reviews.length > 0 &&
-  //       reviewsData?.totalPages &&
-  //       reviewsData.totalPages > 1 &&
-  console.log('Reviews data:', reviewsData);
-  console.log('Reviews:', reviews);
   return (
     <>
       {isRefetching || (shouldFetch && isLoading) ? (

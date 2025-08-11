@@ -32,7 +32,6 @@ export async function GET(req: Request) {
       },
     });
   } catch (error) {
-    console.error('Proxy error:', error);
     return new Response('Internal Server Error in proxy', { status: 500 });
   }
 }

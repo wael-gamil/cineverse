@@ -87,7 +87,6 @@ export async function generateMetadata({
       },
     };
   } catch (error) {
-    console.error('Error generating season metadata:', error);
     return {
       title: 'Season Not Found | CineVerse',
       description: 'The requested season could not be found.',
