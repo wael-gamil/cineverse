@@ -1,9 +1,10 @@
 .results {
-  overflow-y: auto;
+  overflow-y: visible;
   padding: var(--space-xxl);
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
+  min-height: calc(100vh - 200px); /* Ensure minimum height for scrolling */
 }
 
 /* Grid for cards */
@@ -94,4 +95,16 @@
   transform: scale(0.95);
   transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
   pointer-events: none;
+}
+
+/* Mobile responsive adjustments */
+@media screen and (max-width: 768px) {
+  .results {
+    padding: var(--space-lg);
+    gap: var(--space-lg);
+  }
+  
+  .activeCard {
+    transform: scale(1.05) !important; /* Smaller scale on mobile to prevent clipping */
+  }
 }

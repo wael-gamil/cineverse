@@ -139,7 +139,6 @@
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 .belowImage {
-  min-height: 275px;
   height: 275px;
 }
 /* === CONTENT STYLING (SHARED) === */

@@ -23,7 +23,6 @@
   align-items: center;
   gap: var(--space-md);
   width: 100%;
-  min-height: 450px;
   overflow: hidden;
 }
 .mobileControls {
