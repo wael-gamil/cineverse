@@ -167,16 +167,7 @@ export default function ContentSliderSection({
         }
       />
 
-      <div
-        className={styles.sliderRow}
-        style={
-          isMobile
-            ? cardProps?.imageHeight === 'image-lg'
-              ? { minHeight: '550px', maxHeight: '550px' }
-              : { minHeight: '450px', maxHeight: '450px' }
-            : undefined
-        }
-      >
+      <div className={styles.sliderRow}>
         {!isMobile && (
           <Button
             onClick={handlePrev}
