@@ -18,7 +18,15 @@ export default function TrailerPlayer({
   playerRef,
 }: TrailerPlayerProps) {
   const iframeRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [player, setPlayer] = useState<any>(null);
+  const [currentFocusMode, setCurrentFocusMode] = useState(focusMode);
+
+  // Update internal state when prop changes
+  useEffect(() => {
+    setCurrentFocusMode(focusMode);
+  }, [focusMode]);
+
   useEffect(() => {
     if (!videoId || player) return;
 
@@ -81,5 +89,25 @@ export default function TrailerPlayer({
 
     return () => clearInterval(interval);
   }, [focusMode, player]);
-  return <div ref={iframeRef} className={styles.video} />;
+
+  console.log('focus mode:', focusMode);
+  console.log('current focus mode state:', currentFocusMode);
+
+  // Create className string using currentFocusMode state
+  const wrapperClassName = `${styles.video} ${
+    currentFocusMode ? styles.focused : styles.default
+  }`;
+  console.log('wrapperClassName:', wrapperClassName);
+  console.log('styles.focused:', styles.focused);
+  console.log('styles.default:', styles.default);
+
+  return (
+    <div
+      ref={wrapperRef}
+      className={wrapperClassName}
+      data-focus-mode={currentFocusMode}
+    >
+      <div ref={iframeRef} />
+    </div>
+  );
 }
