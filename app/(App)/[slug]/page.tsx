@@ -34,7 +34,7 @@ export async function generateMetadata({
 
     return generateContentMetadata(details, slug);
   } catch (error) {
-    console.error('Error generating metadata:', error);
+   
     return {
       title: 'Content Not Found | CineVerse',
       description: 'The requested movie or TV series could not be found.',
@@ -99,7 +99,6 @@ export default async function MovieOrSeriesPage({
       </>
     );
   } catch (error) {
-    console.error('Error fetching content details:', error);
     notFound();
   }
 }

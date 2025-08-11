@@ -92,7 +92,6 @@ if (typeof window !== 'undefined') {
         localStorage.removeItem('cineverse-user');
       }
     } catch (error) {
-      console.error('Failed to parse localStorage user data:', error);
       localStorage.removeItem('cineverse-user');
     }
   }

@@ -92,7 +92,6 @@ export default async function Episode({ params }: EpisodeProps) {
       </HydrationBoundary>
     );
   } catch (error) {
-    console.error('Error fetching episode details:', error);
     notFound();
   }
 }

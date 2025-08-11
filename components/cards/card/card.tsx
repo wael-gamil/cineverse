@@ -141,8 +141,12 @@ export default function Card({
         </div>
       );
     });
-  const renderImage = (includeActionButtons = false) => (
-    <div className={`${styles.imageWrapper} ${styles[imageHeight]}`}>
+  const renderImage = (includeActionButtons = false, isBelow = false) => (
+    <div
+      className={`${styles.imageWrapper} ${styles[imageHeight]} ${
+        isBelow ? styles.belowImage : ''
+      }`}
+    >
       <Image
         src={imageToUse}
         alt={title}
@@ -234,7 +238,8 @@ export default function Card({
   );
   const renderBelowLayout = () => (
     <>
-      {renderImage(true)} {/* Pass true to include action buttons in image */}
+      {renderImage(true, true)}{' '}
+      {/* Pass true to include action buttons in image */}
       <div className={styles.belowDetails}>
         <h3 className={styles.contentTitle}>{title}</h3>
 

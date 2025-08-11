@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
     const result = await getUserWatchlistSSR(token, status, page, size);
     return NextResponse.json(result);
   } catch (error: any) {
-    console.error('Error fetching watchlist:', error);
     return NextResponse.json(
       { message: error.message || 'Internal server error' },
       { status: 500 }

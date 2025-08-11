@@ -41,7 +41,7 @@ export default function LoginPage() {
         );
       }
     } catch (error) {
-      console.error('Failed to fetch user profile:', error);
+
     }
   };
   // Redirect if already authenticated
@@ -132,6 +132,7 @@ export default function LoginPage() {
               <input
                 id='username'
                 type='text'
+                maxLength={100}
                 className={`${styles.input} ${
                   errors.username ? styles.inputError : ''
                 }`}

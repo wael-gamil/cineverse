@@ -43,7 +43,6 @@ export async function generateMetadata({
 
     return generateExploreMetadata(type, { genres, year, sortBy });
   } catch (error) {
-    console.error('Error generating explore metadata:', error);
     return {
       title: 'Explore Content | CineVerse',
       description: 'Discover movies and TV series on CineVerse.',

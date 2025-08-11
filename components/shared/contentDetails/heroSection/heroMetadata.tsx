@@ -143,7 +143,9 @@ export default function HeroMetadata({
       )}
 
       <div className={styles.metaHeader}>
-        <h1 className={styles.title}>{content.title}</h1>
+        <Link href={`/${slug}`}>
+          <h1 className={styles.title}>{content.title}</h1>
+        </Link>
         {showExternalLink && (
           <div className={styles.externalLink}>
             <Button variant='ghost' padding='sm' borderRadius='fullRadius'>

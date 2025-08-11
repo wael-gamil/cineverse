@@ -32,7 +32,6 @@ export async function generateMetadata({
 
     return generatePersonMetadata(person);
   } catch (error) {
-    console.error('Error generating person metadata:', error);
     return {
       title: 'Person Not Found | CineVerse',
       description: 'The requested person could not be found.',
@@ -94,7 +93,6 @@ export default async function PersonPage({ params }: PersonPageProps) {
       </>
     );
   } catch (error) {
-    console.error('Error fetching person details:', error);
     notFound();
   }
 }

@@ -39,7 +39,16 @@ export default function UserPanel({ closePanel }: Props) {
 
       <div className={styles.userActions}>
         <Link href='/profile'>
-          <Button variant='list' width='100%' onClick={closePanel}>
+          <Button 
+            variant='list' 
+            width='100%' 
+            onClick={(e) => {
+              e.preventDefault();
+              closePanel?.();
+                router.push('/profile');
+             
+            }}
+          >
             View Profile
           </Button>
         </Link>

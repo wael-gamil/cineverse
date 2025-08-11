@@ -16,11 +16,14 @@ export async function GET(req: NextRequest) {
     const token = cookieStore.get('token')?.value;
 
     // Use Client function with optional token for userReaction field
-    const data: Review[] = await getContentReviewsClient(Number(id), token, sortBy);
+    const data: Review[] = await getContentReviewsClient(
+      Number(id),
+      token,
+      sortBy
+    );
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Proxy error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch content reviews' },
       { status: 500 }

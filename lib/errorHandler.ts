@@ -60,7 +60,6 @@ export function handleApiError(
 
   // Log unknown errors in development
   if (process.env.NODE_ENV === 'development') {
-    console.error('Unknown error:', error);
   }
 
   throw new Error('An unexpected error occurred');
@@ -139,7 +138,6 @@ export async function safeApiCall<T>(
       notFound();
     }
 
-    console.error('API call failed:', error);
     return defaultValue;
   }
 }

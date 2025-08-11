@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import NavLinks from '../../ui/navLinks/navLinks';
 import SearchBar from '../../ui/search/searchBar';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import PanelWrapper from '@/components/ui/panelWrapper/panelWrapper';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 import { useStore } from '@tanstack/react-store';
@@ -22,16 +22,22 @@ export default function Navbar() {
   }, []);
 
   const [isShrunk, setIsShrunk] = useState(false);
-  const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
+  const [closeMobilePanel, setCloseMobilePanel] = useState<() => void>(() => () => {});
+  const [closeUserPanel, setCloseUserPanel] = useState<() => void>(() => () => {});
   const { email, username } = useStore(userStore);
   const isLoggedIn = !!email && !!username;
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const isMobile = useResponsiveLayout();
   const { trailerFocusMode } = useStore(uiStore);
   const showSpacer = useShowSpacer(isMobile ?? false, trailerFocusMode);
 
-  // Helper function to generate login URL with current page as redirect parameter
+  // Helper function to handle login with menu closing
+  const handleLogin = () => {
+    closeMobilePanel();
+    router.push(getLoginUrl());
+  };
   const getLoginUrl = () => {
     const currentPath =
       pathname +
@@ -91,7 +97,6 @@ export default function Navbar() {
       removeListeners(verse);
     };
   }, []);
-  console.log(isMobile);
   return (
     <>
       <nav
@@ -148,9 +153,9 @@ export default function Navbar() {
                 buttonRadius='full'
                 buttonPadding='sm'
                 relativePanel
-                setClose={setClosePanel}
+                setClose={setCloseUserPanel}
               >
-                <UserPanel closePanel={closePanel} />
+                <UserPanel closePanel={closeUserPanel} />
               </PanelWrapper>
             ) : (
               <Link href={getLoginUrl()}>
@@ -188,9 +193,9 @@ export default function Navbar() {
               buttonRadius='full'
               buttonPadding='sm'
               width='full'
-              setClose={setClosePanel}
+              setClose={setCloseMobilePanel}
             >
-              <NavLinks isMobile closeMenu={closePanel} />
+              <NavLinks isMobile closeMenu={closeMobilePanel} />
               <div className={styles.divider}></div>
               {!hasMounted ? (
                 <Button variant='solid' color='primary' width='100%' disabled>
@@ -202,18 +207,16 @@ export default function Navbar() {
                   />
                 </Button>
               ) : isLoggedIn ? (
-                <UserPanel closePanel={closePanel} />
+                <UserPanel closePanel={closeMobilePanel} />
               ) : (
-                <Link href={getLoginUrl()}>
-                  <Button
-                    variant='solid'
-                    color='primary'
-                    width='100%'
-                    onClick={closePanel}
-                  >
-                    Login
-                  </Button>
-                </Link>
+                <Button
+                  variant='solid'
+                  color='primary'
+                  width='100%'
+                  onClick={handleLogin}
+                >
+                  Login
+                </Button>
               )}
             </PanelWrapper>
           </div>

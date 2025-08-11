@@ -85,6 +85,7 @@
   align-items: center;
   gap: var(--space-md);
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .title {
@@ -98,6 +99,7 @@
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
+  flex: 1;
 }
 .cards {
   display: flex;
@@ -254,10 +256,6 @@
 
 .readMoreBtn:hover {
   color: var(--color-primary-80);
-}
-.actionWrapper {
-  position: absolute;
-  right: 0;
 }
 /* Responsive fix */
 @media (max-width: 768px) {

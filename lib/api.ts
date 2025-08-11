@@ -92,7 +92,6 @@ export const getContents = async (
       totalElements: rawData.totalElements,
     };
   } catch (error) {
-    console.error('Error fetching content:', error);
     return {
       content: [],
       totalPages: 0,
@@ -247,7 +246,6 @@ export const getContentReviewsClient = async (
       query.set('sortBy', sortBy);
 
       const url = `reviews/contents/${id}?${query.toString()}`;
-      console.log('Fetching content reviews from:', url);
       // Build headers with optional Authorization
       const headers: HeadersInit = { 'Content-Type': 'application/json' };
       if (token) {
@@ -331,7 +329,6 @@ export const getPersonContents = async (
       totalElements: rawData.totalElements,
     };
   } catch (error) {
-    console.error('Error fetching person content:', error);
     return {
       content: [],
       totalPages: 0,
@@ -444,7 +441,6 @@ export const getPublicUserReviews = async (
       currentPage: rawData.number,
     };
   } catch (error) {
-    console.error('Error fetching public user reviews:', error);
     return {
       reviews: [],
       totalPages: 0,
@@ -480,7 +476,6 @@ export const getPublicUserWatchlist = async (
       currentPage: rawData.number,
     };
   } catch (error) {
-    console.error('Error fetching public user watchlist:', error);
     return {
       items: [],
       totalPages: 0,
@@ -575,7 +570,6 @@ export const getUserReviews = async (
       currentPage: rawData.number,
     };
   } catch (error) {
-    console.error('Error fetching user reviews:', error);
     return {
       reviews: [],
       totalPages: 0,
@@ -717,7 +711,6 @@ export const getAllReviewsSSR = async (
       totalElements: rawData.totalElements,
     };
   } catch (error) {
-    console.error('Error fetching all reviews (SSR):', error);
     return {
       reviews: [],
       totalPages: 0,
@@ -761,7 +754,6 @@ export const getAllReviewsClient = async (
       totalElements: rawData.totalElements,
     };
   } catch (error) {
-    console.error('Error fetching all reviews (Client):', error);
     return {
       reviews: [],
       totalPages: 0,
@@ -790,7 +782,6 @@ export const getTopReviewers = async (
     const data = await fetcher(url);
     return data;
   } catch (error) {
-    console.error('Error fetching top reviewers:', error);
     return [];
   }
 };
@@ -809,7 +800,6 @@ export const getTopReviewedContent = async (): Promise<
     const data = await fetcher(url);
     return data;
   } catch (error) {
-    console.error('Error fetching top reviewed content:', error);
     return [];
   }
 };
@@ -841,7 +831,6 @@ export const getUserWatchlist = async (
       currentPage: rawData.number,
     };
   } catch (error) {
-    console.error('Error fetching watchlist:', error);
     return {
       items: [],
       totalPages: 0,
@@ -883,7 +872,6 @@ export const getUserWatchlistSSR = async (
       currentPage: rawData.number,
     };
   } catch (error) {
-    console.error('Error fetching user watchlist SSR:', error);
     return {
       items: [],
       totalPages: 0,
@@ -929,7 +917,6 @@ export const checkWatchlistExists = async (
     const result = await response.json();
     return result.data; // Returns watchlist ID or null
   } catch (error) {
-    console.error('Error checking watchlist existence:', error);
     return null;
   }
 };

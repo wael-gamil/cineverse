@@ -36,7 +36,6 @@ export async function GET() {
 
     return NextResponse.json(randomContent);
   } catch (error) {
-    console.error('Random content API error:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

@@ -74,7 +74,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [...staticPages, ...moviePages, ...seriesPages];
   } catch (error) {
-    console.error('Error generating dynamic sitemap:', error);
     // Return static pages if dynamic content fails
     return staticPages;
   }

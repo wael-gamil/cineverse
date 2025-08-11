@@ -24,7 +24,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Proxy error:', error);
     return new Response('Internal Server Error in proxy', { status: 500 });
   }
 }

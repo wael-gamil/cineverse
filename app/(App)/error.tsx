@@ -27,7 +27,6 @@ export default function AppError({
       );
     }
 
-    console.error('App error:', error);
 
     // Cleanup function to restore original values
     return () => {
