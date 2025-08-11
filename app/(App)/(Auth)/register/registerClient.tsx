@@ -187,6 +187,7 @@ export default function RegisterPage() {
                 <input
                   id='username'
                   type='text'
+                  maxLength={100}
                   className={`${styles.input} ${
                     errors.username ? styles.inputError : ''
                   }`}
