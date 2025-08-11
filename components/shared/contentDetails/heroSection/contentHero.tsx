@@ -316,6 +316,7 @@ export default function ContentHero({
                   alert('Link copied to clipboard!');
                 }
               }}
+              slug={slug}
               genres={genres}
             />
           </div>

@@ -151,8 +151,11 @@
   line-height: 1.2;
   font-weight: 900;
   text-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+  transition: color var(--transition-normal);
 }
-
+.title:hover {
+  color: var(--color-primary);
+}
 /* === Info Section === */
 .infoRow {
   display: flex;
