@@ -9,6 +9,7 @@ import Providers from '@/lib/providers';
 import { Toaster } from 'react-hot-toast';
 import { Suspense } from 'react';
 import { generateHomeMetadata } from '@/utils/metadata';
+import { Analytics } from '@vercel/analytics/next';
 
 //todo: add google analytics
 export const metadata: Metadata = generateHomeMetadata();
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Footer />
         <Toaster position='bottom-right' />
         <DisclaimerModal />
+        <Analytics />
       </body>
     </html>
   );
