@@ -57,12 +57,33 @@ export default function ContentSliderSection({
   const [visibleStartIndex, setVisibleStartIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [totalElementsByFilter, setTotalElementsByFilter] = useState<
+    Record<FilterType, number | undefined>
+  >(() => ({
+    ALL: initialFilter === 'ALL' ? initialTotalElements : undefined,
+    MOVIE: initialFilter === 'MOVIE' ? initialTotalElements : undefined,
+    SERIES: initialFilter === 'SERIES' ? initialTotalElements : undefined,
+  }));
+  // derived current totalElements for rendering
+  const totalElements = totalElementsByFilter[filter] ?? fetchedContent.length;
   const isMobile = useResponsiveLayout();
   const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
   const [animation, setAnimation] = useState<'slideLeft' | 'slideRight'>(
     'slideLeft'
   );
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [isNextCooldown, setIsNextCooldown] = useState(false);
+  const nextCooldownRef = useRef<number | null>(null);
+  const NEXT_ANIMATION_COOLDOWN_MS = 400;
+
+  useEffect(() => {
+    return () => {
+      if (nextCooldownRef.current) {
+        clearTimeout(nextCooldownRef.current);
+      }
+    };
+  }, []);
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
       const container = entries[0].target as HTMLDivElement;
@@ -81,6 +102,17 @@ export default function ContentSliderSection({
     filter,
     enabled
   );
+
+  useEffect(() => {
+    if (isFetching || isLoading) {
+      setIsNextCooldown(true);
+      return;
+    }
+
+    if (!nextCooldownRef.current) {
+      setIsNextCooldown(false);
+    }
+  }, [isFetching, isLoading]);
   useEffect(() => {
     if (data) {
       setTotalPages(data.totalPages);
@@ -93,6 +125,15 @@ export default function ContentSliderSection({
         return merged;
       });
 
+      if (typeof data.totalElements === 'number') {
+        setTotalElementsByFilter(prev => {
+          if (prev[filter] === undefined) {
+            return { ...prev, [filter]: data.totalElements };
+          }
+          return prev;
+        });
+      }
+
       const canShowMore =
         visibleStartIndex + cardsPerView <
         fetchedContent.length + data.content.length;
@@ -100,8 +141,7 @@ export default function ContentSliderSection({
         setVisibleStartIndex(prev => prev + cardsPerView);
       }
     }
-  }, [data]);
-
+  }, [data, filter]);
   const handleFilterChange = (value: FilterType) => {
     setFilter(value);
     setPage(0);
@@ -110,6 +150,7 @@ export default function ContentSliderSection({
   };
 
   const handleNext = () => {
+    if (isNextCooldown) return;
     setAnimation('slideRight');
     setShouldAnimate(true);
     const nextStartIndex = visibleStartIndex + cardsPerView;
@@ -119,13 +160,25 @@ export default function ContentSliderSection({
     );
     if (nextSlice.length === cardsPerView) {
       setVisibleStartIndex(nextStartIndex);
+      setIsNextCooldown(true);
+      nextCooldownRef.current = window.setTimeout(() => {
+        setIsNextCooldown(false);
+        nextCooldownRef.current = null;
+      }, NEXT_ANIMATION_COOLDOWN_MS);
       return;
     }
 
     if (page + 1 < totalPages) {
+
       setPage(prev => prev + 1);
+      setIsNextCooldown(true);
     } else if (nextSlice.length > 0) {
       setVisibleStartIndex(nextStartIndex);
+      setIsNextCooldown(true);
+      nextCooldownRef.current = window.setTimeout(() => {
+        setIsNextCooldown(false);
+        nextCooldownRef.current = null;
+      }, NEXT_ANIMATION_COOLDOWN_MS);
     }
   };
 
@@ -147,6 +200,12 @@ export default function ContentSliderSection({
       return () => clearTimeout(timer);
     }
   }, [shouldAnimate]);
+
+  const displayedEnd = Math.min(
+    visibleStartIndex + cardsPerView,
+    fetchedContent.length,
+    typeof totalElements === 'number' ? totalElements : Infinity
+  );
   return (
     <div className={styles.wrapper}>
       <SectionHeader
@@ -174,6 +233,7 @@ export default function ContentSliderSection({
             variant='outline'
             color='neutral'
             disabled={visibleStartIndex === 0}
+            title='Previous Slide'
           >
             <Icon name='arrow-left' strokeColor='white' />
           </Button>
@@ -259,9 +319,11 @@ export default function ContentSliderSection({
             variant='outline'
             color='neutral'
             disabled={
-              visibleStartIndex + cardsPerView >= fetchedContent.length &&
-              page + 1 >= totalPages
+              (visibleStartIndex + cardsPerView >= fetchedContent.length &&
+                page + 1 >= totalPages) ||
+              isNextCooldown
             }
+            title='Next Slide'
           >
             <Icon name='arrow-right' strokeColor='white' />
           </Button>
@@ -274,6 +336,7 @@ export default function ContentSliderSection({
             variant='outline'
             color='neutral'
             disabled={visibleStartIndex === 0}
+            title='Previous Slide'
           >
             <Icon name='arrow-left' strokeColor='white' />
           </Button>
@@ -282,20 +345,18 @@ export default function ContentSliderSection({
             variant='outline'
             color='neutral'
             disabled={
-              visibleStartIndex + cardsPerView >= fetchedContent.length &&
-              page + 1 >= totalPages
+              (visibleStartIndex + cardsPerView >= fetchedContent.length &&
+                page + 1 >= totalPages) ||
+              isNextCooldown
             }
+            title='Next Slide'
           >
             <Icon name='arrow-right' strokeColor='white' />
           </Button>
         </div>
       )}
       <div className={styles.pageInfo}>
-        Showing {visibleStartIndex + 1} –{' '}
-        {Math.min(visibleStartIndex + cardsPerView, fetchedContent.length)} of{' '}
-        {data?.totalElements === 0
-          ? 0
-          : data?.totalElements || initialTotalElements}
+        Showing {visibleStartIndex + 1} – {displayedEnd} of {totalElements ?? fetchedContent.length}
       </div>
     </div>
   );
