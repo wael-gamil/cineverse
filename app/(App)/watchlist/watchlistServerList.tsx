@@ -217,6 +217,7 @@ export default function WatchlistServerList({
                       }}
                       color='danger'
                       padding='sm'
+                      title='Remove from watchlist'
                     >
                       <Icon name='trash' strokeColor='white' />
                     </Button>

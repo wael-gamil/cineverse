@@ -69,11 +69,6 @@ export default function SearchResult({
                 <Button onClick={() => router.push(`/search`)}>
                   Clear Search
                 </Button>
-                {/* {activeFilter !== '' && (
-                  <Button onClick={() => setActiveFilter('')} color='neutral'>
-                    Browse All
-                  </Button>
-                )} */}
               </div>
             </>
           )}

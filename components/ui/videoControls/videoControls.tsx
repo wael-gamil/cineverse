@@ -185,6 +185,7 @@ export default function VideoControls({
               variant='ghost'
               color='neutral'
               padding='sm'
+              title={isPlaying ? 'Pause' : 'Play'}
             >
               <Icon name={isPlaying ? 'pause' : 'play'} strokeColor='white' />
             </Button>
@@ -205,6 +206,7 @@ export default function VideoControls({
                 variant='ghost'
                 color='neutral'
                 padding='sm'
+                title={muted || volume === 0 ? 'Unmute' : 'Mute'}
               >
                 <Icon
                   name={
@@ -239,6 +241,7 @@ export default function VideoControls({
                 variant='ghost'
                 color='neutral'
                 padding='sm'
+                title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
               >
                 <Icon
                   name={isFullscreen ? 'contract' : 'expand'}
@@ -252,8 +255,9 @@ export default function VideoControls({
               variant='ghost'
               color='danger'
               padding='sm'
+              title='Close'
             >
-              ✕
+              <Icon name='close' strokeColor='white' />
             </Button>
           </div>
         </div>

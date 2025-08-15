@@ -258,6 +258,7 @@ export default function ExtendedReviewCard({
                     ? 'var(--color-primary-20)'
                     : 'transparent',
               }}
+              title='Like this review'
             >
               <Icon
                 name='thumbUp'
@@ -293,6 +294,7 @@ export default function ExtendedReviewCard({
                     ? 'var(--color-danger-20)'
                     : 'transparent',
               }}
+              title='Dislike this review'
             >
               <Icon
                 name='thumbDown'
@@ -336,6 +338,7 @@ export default function ExtendedReviewCard({
                       spoiler: review.spoiler,
                     });
                   }}
+                  title='Edit this review'
                 >
                   <Icon name='edit' strokeColor='white' />
                 </Button>
@@ -350,6 +353,7 @@ export default function ExtendedReviewCard({
                     e.stopPropagation();
                     onDelete(review.reviewId);
                   }}
+                  title='Delete this review'
                 >
                   <Icon name='trash' strokeColor='white' />
                 </Button>

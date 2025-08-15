@@ -260,11 +260,11 @@ export default function HeroMetadata({
             </>
           )}
         </Button>
-        <Button color='neutral' onClick={onShare}>
+        <Button color='neutral' onClick={onShare} title='Share Content'>
           <Icon name='share' strokeColor='white' />
         </Button>
         {trailerAvailable && onToggleMute && (
-          <Button color='neutral' onClick={onToggleMute}>
+          <Button color='neutral' onClick={onToggleMute} title='Toggle Mute'>
             <Icon name={isMuted ? 'mute' : 'speaker'} strokeColor='white' />
           </Button>
         )}

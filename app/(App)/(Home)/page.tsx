@@ -38,7 +38,7 @@ const sectionConfig: Record<
     fetchUrl: '/api/slider?section=top-rated&',
     header: {
       variant: 'block',
-      subtitle: 'Best movies according to IMDb rating',
+      subtitle: 'Best according to IMDb rating',
       icon: <Icon name='star' strokeColor='primary' width={32} height={32} />,
     },
     cardProps: {
@@ -83,7 +83,7 @@ const sectionConfig: Record<
     fetchUrl: '/api/slider?section=top-arab&',
     header: {
       variant: 'strip',
-      subtitle: 'Critically acclaimed Arab films',
+      subtitle: 'Critically acclaimed Arab content',
       icon: <Icon name='film' strokeColor='white' width={32} height={32} />,
     },
     cardProps: {
@@ -127,7 +127,7 @@ const sectionConfig: Record<
     fetchUrl: '/api/slider?section=top-horror&',
     header: {
       variant: 'ghost',
-      subtitle: 'Terrifying horror films',
+      subtitle: 'Terrifying horror content',
       icon: (
         <Icon name='skull' strokeColor='secondary' width={32} height={32} />
       ),
@@ -159,7 +159,7 @@ const sectionConfig: Record<
     fetchUrl: '/api/slider?section=family-picks&',
     header: {
       variant: 'block',
-      subtitle: 'Most-Recent films to watch with family',
+      subtitle: 'Most-Recent content to watch with family',
       icon: <Icon name='family' strokeColor='white' width={32} height={32} />,
     },
     cardProps: {
@@ -223,7 +223,9 @@ export default async function Home() {
       },
       'query-input': 'required name=search_term_string',
     },
-    sameAs: [process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'],
+    sameAs: [
+      process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app',
+    ],
   };
 
   return (

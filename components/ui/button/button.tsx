@@ -16,6 +16,7 @@ type ButtonProps = {
   padding?: 'none' | 'sm' | 'md' | 'lg';
   active?: boolean;
   style?: React.CSSProperties;
+  title?: string;
 };
 
 export default function Button({
@@ -34,6 +35,7 @@ export default function Button({
   padding = 'md',
   active = false,
   style,
+  title,
 }: ButtonProps) {
   return (
     <button
@@ -49,6 +51,7 @@ export default function Button({
       type={type}
       style={{ width, ...style }}
       disabled={disabled}
+      title={title}
     >
       {children}
     </button>

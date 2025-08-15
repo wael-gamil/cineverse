@@ -273,6 +273,7 @@ export default function WatchlistList({ status }: WatchlistItemProp) {
                     }}
                     color='danger'
                     padding='sm'
+                    title='Remove from Watchlist'
                   >
                     <Icon name='trash' strokeColor='white' />
                   </Button>

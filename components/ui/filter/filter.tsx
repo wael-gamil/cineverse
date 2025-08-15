@@ -27,6 +27,8 @@ export default function Filter({
   const [debouncedYear, setDebouncedYear] = useState('');
   const [debouncedRating, setDebouncedRating] = useState(0);
 
+  const MAX_YEAR = new Date().getFullYear() + 50;
+
   const [closePanel, setClosePanel] = useState<() => void>(() => () => {});
   useResetPageOnParamChange([
     'genres',
@@ -181,12 +183,16 @@ export default function Filter({
           <input
             type='number'
             min={1900}
-            max={new Date().getFullYear()}
+            max={MAX_YEAR}
             placeholder='e.g. 2011'
             value={selected.year?.[0] || ''}
             onChange={e => {
               const val = e.target.value;
-              if (val === '' || /^\d{0,4}$/.test(val)) {
+
+              if (
+                val === '' ||
+                (/^\d{0,4}$/.test(val) && Number(val) <= MAX_YEAR)
+              ) {
                 setSelected(prev => ({
                   ...prev,
                   year: val ? [val] : [],

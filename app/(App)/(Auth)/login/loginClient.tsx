@@ -40,9 +40,7 @@ export default function LoginPage() {
           userProfile.profilePicture
         );
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
   // Redirect if already authenticated
   useEffect(() => {
@@ -173,6 +171,7 @@ export default function LoginPage() {
                 color='neutral'
                 padding='none'
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
               >
                 <Icon
                   name={showPassword ? 'eye-off' : 'eye'}

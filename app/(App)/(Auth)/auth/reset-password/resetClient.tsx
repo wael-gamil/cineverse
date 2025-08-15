@@ -161,6 +161,7 @@ export default function ResetPasswordPage() {
                   variant='ghost'
                   color='neutral'
                   padding='none'
+                  title='Toggle password visibility'
                 >
                   <Icon
                     name={showPassword ? 'eye-off' : 'eye'}
