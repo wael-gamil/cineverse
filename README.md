@@ -2,7 +2,7 @@
 
 A modern, feature-rich movie and TV series tracking application built with Next.js 14. CineVerse allows users to discover, track, and review their favorite movies and TV shows with a beautiful, responsive interface.
 
-![CineVerse Preview](./public/preview.png)
+![CineVerse Preview](./public/screenshot-wide.png)
 
 ## ✨ Features
 
@@ -82,7 +82,6 @@ A modern, feature-rich movie and TV series tracking application built with Next.
 ### Development Tools
 
 - **TypeScript**: Full type safety
-- **ESLint**: Code linting and formatting
 - **Custom Fonts**: Geist and Inter font families
 - **Environment Variables**: Secure configuration management
 
@@ -113,10 +112,9 @@ A modern, feature-rich movie and TV series tracking application built with Next.
    Create a `.env.local` file in the root directory:
 
    ```env
-   NEXT_PUBLIC_API_BASE_URL=your_backend_api_url
-   NEXTAUTH_SECRET=your_secret_key
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   NEXT_PUBLIC_API_BASE_URL=YOUR_API_BASE_URL_HERE
+   NEXT_PUBLIC_SITE_URL=YOUR_SITE_URL_HERE
+   NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=YOUR_GOOGLE_ANALYTICS_ID_HERE
    ```
 
 4. **Run the development server**
@@ -196,7 +194,7 @@ cineverse/
 - **Watchlist Management**: Add, remove, and organize content
 - **Review System**: Write, edit, and interact with reviews
 - **Rating System**: 10-point rating scale with visual feedback
-- **Social Features**: Like/dislike reviews, follow top reviewers
+- **Social Features**: Like/dislike reviews, view top reviewers
 
 ### Performance Optimizations
 
@@ -227,22 +225,6 @@ cineverse/
 - **Animations**: Smooth transitions and micro-interactions
 - **Responsive**: Mobile-first design approach
 
-## 🔧 Configuration
-
-### Environment Variables
-
-```env
-# API Configuration
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/
-
-# Authentication
-NEXTAUTH_SECRET=your-secret-key
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-```
-
 ### Custom Hooks
 
 - `useAuthMutations`: Authentication operations
@@ -265,7 +247,6 @@ CineVerse is fully responsive and optimized for:
 - **HTTP-Only Cookies**: Protection against XSS attacks
 - **Input Validation**: Client and server-side validation
 - **Protected Routes**: Authentication guards for sensitive pages
-- **CSRF Protection**: Built-in Next.js CSRF protection
 
 ## 🚀 Performance Features
 
@@ -275,46 +256,9 @@ CineVerse is fully responsive and optimized for:
 - **Code Splitting**: Automatic bundle splitting
 - **Prefetching**: Link prefetching for instant navigation
 
-## 🧪 Testing
-
-```bash
-# Run tests
-pnpm test
-
-# Run tests with coverage
-pnpm test:coverage
-
-# Run tests in watch mode
-pnpm test:watch
-```
-
-## 📦 Deployment
-
-### Vercel (Recommended)
-
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables in Vercel dashboard
-3. Deploy automatically on every push to main branch
-
-### Manual Deployment
-
-```bash
-pnpm build
-pnpm start
-```
-
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Commit your changes: `git commit -m 'Add amazing feature'`
-5. Push to the branch: `git push origin feature/amazing-feature`
-6. Open a Pull Request
 
 ## 📄 License
 
@@ -342,4 +286,4 @@ If you have any questions or need help, please:
 
 ---
 
-**CineVerse** - Your gateway to the world of cinema 🎬✨
+**CineVerse** - Explore the universe of film and series—beautifully presented. 🎬✨
