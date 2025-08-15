@@ -14,6 +14,7 @@ import SectionHeader from './sectionHeader';
 import GridContainer from '@/components/shared/gridContainer/gridContainer';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 import Badge from '@/components/ui/badge/badge';
+import ExpandedCard from '@/components/cards/expandedCard/expandedCard';
 
 type FilterType = 'ALL' | 'MOVIE' | 'SERIES';
 
@@ -57,6 +58,16 @@ export default function ContentSliderSection({
   const [visibleStartIndex, setVisibleStartIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(6);
   const [totalPages, setTotalPages] = useState(1);
+  const [expandedCard, setExpandedCard] = useState<{
+    isOpen: boolean;
+    content: Content | null;
+    cardPosition: DOMRect | null;
+  }>({
+    isOpen: false,
+    content: null,
+    cardPosition: null,
+  });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [totalElementsByFilter, setTotalElementsByFilter] = useState<
     Record<FilterType, number | undefined>
@@ -169,7 +180,6 @@ export default function ContentSliderSection({
     }
 
     if (page + 1 < totalPages) {
-
       setPage(prev => prev + 1);
       setIsNextCooldown(true);
     } else if (nextSlice.length > 0) {
@@ -186,6 +196,34 @@ export default function ContentSliderSection({
     setAnimation('slideLeft');
     setShouldAnimate(true);
     setVisibleStartIndex(prev => Math.max(prev - cardsPerView, 0));
+  };
+
+  const handleInfoClick = (e: React.MouseEvent | undefined, item: Content) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Get the card element position
+      const target = e.currentTarget as HTMLElement;
+      const cardElement =
+        target.closest('.card') || target.closest('[class*="cardWrapper"]');
+      if (cardElement) {
+        const cardRect = cardElement.getBoundingClientRect();
+        setExpandedCard({
+          isOpen: true,
+          content: item,
+          cardPosition: cardRect,
+        });
+      }
+    }
+  };
+
+  const closeExpandedCard = () => {
+    setExpandedCard({
+      isOpen: false,
+      content: null,
+      cardPosition: null,
+    });
   };
 
   const visibleContent = fetchedContent.slice(
@@ -207,7 +245,7 @@ export default function ContentSliderSection({
     typeof totalElements === 'number' ? totalElements : Infinity
   );
   return (
-    <div className={styles.wrapper}>
+    <div ref={containerRef} className={styles.wrapper}>
       <SectionHeader
         title={title}
         subtitle={header?.subtitle}
@@ -290,6 +328,10 @@ export default function ContentSliderSection({
                     position: 'top-left',
                   },
                 ]}
+                additionalButton={{
+                  iconName: 'info',
+                  onClick: e => handleInfoClick(e, item),
+                }}
                 {...cardProps}
               >
                 <div className={styles.contentDetails}>
@@ -308,7 +350,7 @@ export default function ContentSliderSection({
                       />
                     ))}
                   </div>
-                </div>{' '}
+                </div>
               </Card>
             ))}
         </GridContainer>
@@ -356,8 +398,22 @@ export default function ContentSliderSection({
         </div>
       )}
       <div className={styles.pageInfo}>
-        Showing {visibleStartIndex + 1} – {displayedEnd} of {totalElements ?? fetchedContent.length}
+        Showing {visibleStartIndex + 1} – {displayedEnd} of{' '}
+        {totalElements ?? fetchedContent.length}
       </div>
+
+      {/* Expanded Card */}
+      {expandedCard.isOpen &&
+        expandedCard.content &&
+        expandedCard.cardPosition && (
+          <ExpandedCard
+            content={expandedCard.content}
+            isOpen={expandedCard.isOpen}
+            onClose={closeExpandedCard}
+            cardPosition={expandedCard.cardPosition}
+            containerRef={containerRef}
+          />
+        )}
     </div>
   );
 }

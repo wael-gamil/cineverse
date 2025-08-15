@@ -4,7 +4,6 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './reviewsSection.module.css';
 import { Review, ExtendedReview } from '@/constants/types/movie';
-import Link from 'next/link';
 import Button from '../../../ui/button/button';
 import { Icon } from '../../../ui/icon/icon';
 import ExtendedReviewCard from '../../../cards/extendedReviewCard/extendedReviewCard';
@@ -33,7 +32,7 @@ export default function ReviewsSection({
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { requireAuth } = useAuth();
   const reviewsRef = useRef<HTMLElement>(null);
-  const isInView = useIsInView(reviewsRef, '100px', 0.4);
+  const isInView = useIsInView(reviewsRef, '50px', 0.3);
 
   const router = useRouter();
   const handleUserClick = (username: string) => {
@@ -124,7 +123,6 @@ export default function ReviewsSection({
         </div>
 
         <div className={styles.container}>
-          {' '}
           {/* Most Helpful Review */}
           {mostHelpfulReview && (
             <div className={styles.cardWrapper}>

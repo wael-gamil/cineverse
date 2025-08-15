@@ -186,7 +186,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--space-2xl);
+  padding: var(--space-xl);
   background: var(--color-surface);
   border: 1px solid var(--color-white-20);
   border-radius: var(--radius-lg);
@@ -220,7 +220,6 @@
 
 .errorContainer {
   border-color: var(--color-danger-20);
-  background: var(--color-danger-5);
 }
 
 .errorContainer h3 {

@@ -14,6 +14,18 @@ export default function GoogleOAuthSuccessPage() {
         { type: 'OAUTH_TOKEN', token },
         window.location.origin
       );
+
+      // remove token from URL/history so it isn't stored in browser history
+      url.searchParams.delete('token');
+      const cleanedUrl = `${url.pathname}${
+        url.search ? `?${url.searchParams.toString()}` : ''
+      }`;
+      try {
+        window.history.replaceState({}, '', cleanedUrl);
+      } catch (e) {
+        // ignore if replaceState fails for some reason
+      }
+
       setTimeout(() => window.close(), 500);
     }
   }, []);

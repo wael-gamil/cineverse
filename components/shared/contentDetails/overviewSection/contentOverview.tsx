@@ -1,6 +1,5 @@
 'use client';
 import styles from './contentOverview.module.css';
-
 import { NormalizedContent } from '@/constants/types/movie';
 import { Icon } from '../../../ui/icon/icon';
 import Image from 'next/image';
@@ -19,6 +18,7 @@ export default function ContentOverview({
   content,
   genres,
 }: ContentOverviewProps) {
+  console.log('ContentOverview content:', content);
   const { data } = useStatsQuery(content.id);
   const runtime =
     content.runtime && !isNaN(Number(content.runtime))
@@ -193,25 +193,7 @@ export default function ContentOverview({
                 </div>
               </div>
             )}
-          {genreList && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='badge' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Genres</span>
-                <span className={styles.value}>
-                  {genreList.map((genre, index) => (
-                    <Badge
-                      key={index}
-                      text={genre}
-                      backgroundColor='bg-white'
-                    />
-                  ))}
-                </span>
-              </div>
-            </div>
-          )}
+
           {typeof data?.platformRate === 'number' && data?.platformRate > 0 && (
             <div className={styles.card}>
               <div className={styles.iconWrapper}>
@@ -250,6 +232,29 @@ export default function ContentOverview({
                       </div>
                     );
                   })}
+                </span>
+              </div>
+            </div>
+          )}
+          {genreList && (
+            <div
+              className={`${styles.card} ${
+                genreList.length > 3 ? styles.cardWide : ''
+              }`}
+            >
+              <div className={styles.iconWrapper}>
+                <Icon name='badge' strokeColor='white' />
+              </div>
+              <div className={styles.titleBlock}>
+                <span className={styles.label}>Genres</span>
+                <span className={styles.value}>
+                  {genreList.map((genre, index) => (
+                    <Badge
+                      key={index}
+                      text={genre}
+                      backgroundColor='bg-white'
+                    />
+                  ))}
                 </span>
               </div>
             </div>

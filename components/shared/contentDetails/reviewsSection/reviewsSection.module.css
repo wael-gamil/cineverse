@@ -78,6 +78,33 @@
 }
 
 /* === Light Mode Styles === */
+.section {
+  position: relative;
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    var(--light-color-bg) 0%,
+    var(--light-color-surface) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section:global(.lightMode)::before {
+  opacity: 1;
+}
+
 .section:global(.lightMode) {
   --color-bg: var(--light-color-bg);
   --color-surface: var(--light-color-surface);
@@ -93,25 +120,28 @@
   --shadow-md: var(--light-shadow-md);
   --shadow-lg: var(--light-shadow-lg);
 
-  background: linear-gradient(
-    135deg,
-    var(--light-color-bg) 0%,
-    var(--light-color-surface) 100%
-  );
-  box-shadow: var(--light-shadow-lg);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
   backdrop-filter: blur(20px);
+  animation: lightModeSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes lightModeSlideIn {
+  0% {
+    transform: translateY(8px);
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    transform: translateY(0);
+    filter: brightness(1.05) saturate(1.1);
+  }
 }
 
 /* Ensure content is above any effects */
-.section:global(.lightMode) > * {
+.section > * {
   position: relative;
   z-index: 1;
 }
 
-/* Enhanced light mode text styles */
+/* Enhanced light mode text styles with smooth color transitions */
 .section:global(.lightMode) .heading h2 {
   color: var(--light-color-text-primary);
   text-shadow: none;
@@ -124,42 +154,63 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  transition: all var(--transition-normal);
+  transition: all 0.3s ease-out;
+  transform: translateY(-1px);
 }
 
 .section:global(.lightMode) .heading p {
   color: var(--light-color-text-secondary);
   font-weight: 500;
+  transition: color 0.3s ease-out;
 }
 
 .section:global(.lightMode) .cardWrapper h3 {
   color: var(--light-color-text-primary);
   font-weight: 700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
 }
 
 .section:global(.lightMode) .text h3 {
   color: var(--light-color-text-primary);
   font-weight: 700;
+  transition: color 0.3s ease-out;
 }
 
 .section:global(.lightMode) .text p {
   color: var(--light-color-text-secondary);
   font-weight: 500;
+  transition: color 0.3s ease-out;
+}
+
+/* Staggered animation for child elements */
+.section:global(.lightMode) .heading {
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
+}
+
+.section:global(.lightMode) .cardWrapper {
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+}
+
+.section:global(.lightMode) .empty {
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s both;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Smooth transition for all nested elements */
-.section {
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: center;
-}
-
 .section * {
-  transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s ease-out, background-color 0.3s ease-out,
+    border-color 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
 /* Enhanced light mode empty state */
