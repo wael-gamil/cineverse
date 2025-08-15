@@ -42,7 +42,7 @@ export type CardProps = {
   children?: React.ReactNode;
   additionalButton?: {
     iconName?: IconName;
-    onClick: () => void;
+    onClick: (e?: React.MouseEvent) => void;
   };
   actionButtons?: ActionButtonType[];
   highlight?: boolean;
@@ -94,6 +94,15 @@ export default function Card({
       if (onClick) onClick();
       else if (href) router.push(href);
     }
+  };
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // If there's an onClick handler, prevent default link behavior and use onClick instead
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+    // Otherwise, let the Link navigate normally
   };
 
   const Wrapper = href ? Link : 'div';
@@ -166,7 +175,11 @@ export default function Card({
             ariaLabel='show more info'
             title='More info'
             padding='none'
-            onClick={additionalButton?.onClick}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              additionalButton?.onClick(e);
+            }}
           >
             <Icon
               name={additionalButton?.iconName || 'info'}
@@ -221,7 +234,11 @@ export default function Card({
               ariaLabel='show more info'
               title='More info'
               padding='none'
-              onClick={additionalButton?.onClick}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                additionalButton?.onClick(e);
+              }}
             >
               <Icon
                 name={additionalButton?.iconName || 'info'}
@@ -295,6 +312,7 @@ export default function Card({
         highlight ? styles.highlight : ''
       } ${className}`}
       style={computedStyle}
+      onClick={handleLinkClick}
     >
       {getLayout()}
     </Link>
