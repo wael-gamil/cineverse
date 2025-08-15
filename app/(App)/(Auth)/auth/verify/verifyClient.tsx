@@ -4,17 +4,31 @@ import styles from '../../page.module.css';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEmailVerification } from '@/hooks/useEmailVerification';
 import Button from '@/components/ui/button/button'; // reuse your styled button
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function VerifyPage() {
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  // keep token in local state so we can remove it from the URL while still using it
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
   const { redirectIfAuthenticated } = useAuth();
+
   useEffect(() => {
     const redirectTo = searchParams.get('redirect') || '/';
     redirectIfAuthenticated(redirectTo);
+
+    // extract token once and remove it from the URL to avoid exposing it in history
+    const urlToken = searchParams.get('token');
+    if (urlToken) {
+      setToken(urlToken);
+      const newParams = new URLSearchParams(window.location.search);
+      newParams.delete('token');
+      const newUrl = `${window.location.pathname}${
+        newParams.toString() ? `?${newParams}` : ''
+      }`;
+      window.history.replaceState({}, '', newUrl);
+    }
   }, [redirectIfAuthenticated, searchParams]);
 
   const {
