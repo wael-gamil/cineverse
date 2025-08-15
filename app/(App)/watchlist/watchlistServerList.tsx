@@ -151,13 +151,6 @@ export default function WatchlistServerList({
     );
   }
 
-  if (data.items.length === 0) {
-    return (
-      <div className={styles.emptyContainer}>
-        <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
-      </div>
-    );
-  }
   return (
     <>
       <GridContainer
@@ -168,6 +161,9 @@ export default function WatchlistServerList({
         cardCount={data.items.length}
         scrollRows={isMobile ? 1 : undefined}
       >
+        {data.items.length === 0 && (
+          <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
+        )}
         {data.items.map((item: WatchlistItem) => {
           return (
             <Card
@@ -247,7 +243,7 @@ export default function WatchlistServerList({
           currentPage={data.currentPage}
           totalPages={data.totalPages}
         />
-      )}{' '}
+      )}
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={deleteModalOpen && !!itemToDelete}
