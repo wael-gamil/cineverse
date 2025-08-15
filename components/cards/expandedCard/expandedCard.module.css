@@ -394,19 +394,6 @@
   justify-content: space-between;
 }
 
-.actionButtons > * {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  padding: var(--space-md);
-  min-height: 44px;
-  white-space: nowrap;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .expandedCard {
