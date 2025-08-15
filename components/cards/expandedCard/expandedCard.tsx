@@ -581,7 +581,7 @@ export default function ExpandedCard({
                   color='primary'
                   onClick={handleViewDetails}
                   ariaLabel='View full details'
-                  padding='sm'
+                  width='100%'
                 >
                   <Icon name='eye' strokeColor='white' />
                   View Full Details
@@ -595,7 +595,7 @@ export default function ExpandedCard({
                       ? handleRemoveFromWatchlist
                       : handleAddToWatchlist
                   }
-                  padding='sm'
+                  width='100%'
                 >
                   {isHydrated && isCheckingWatchlist ? (
                     <>
