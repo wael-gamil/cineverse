@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('token')?.value;
+  // Make sure falsy or placeholder string values are treated as missing
+  const rawToken = request.cookies.get('token')?.value;
+  const token =
+    rawToken && rawToken !== 'null' && rawToken !== 'undefined'
+      ? rawToken
+      : null;
   const pathname = request.nextUrl.pathname;
   // Routes that require authentication
   const protectedRoutes = ['/watchlist'];
@@ -19,17 +24,17 @@ export function middleware(request: NextRequest) {
 
   // Check if current path is an auth route
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
-  
+
   // Redirect to login if accessing protected route without token
   if (isProtectedRoute && !token) {
     const loginUrl = new URL('/login', request.url);
-    
+
     // Only set redirect if the current path is NOT an auth route
     // This prevents auth pages from being stored as redirect destinations
     if (!isAuthRoute) {
       loginUrl.searchParams.set('redirect', pathname);
     }
-    
+
     return NextResponse.redirect(loginUrl);
   }
 
