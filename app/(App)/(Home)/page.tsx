@@ -9,6 +9,7 @@ import { Icon } from '@/components/ui/icon/icon';
 import MotionSection from '@/components/shared/motionSection';
 import { Metadata } from 'next';
 import { generateHomeMetadata } from '@/utils/metadata';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
@@ -189,13 +190,14 @@ const sectionConfig: Record<
 };
 
 export default async function Home() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
   const { content } = await getContents(
     'MOVIE',
     { sortBy: 'mostRecent', lang: 'en', genres: [''] },
     0,
     4
   );
-
   const contents = await Promise.all(
     content.map(movie => getContentDetails(movie.slug).then(normalizeContent))
   );
@@ -301,9 +303,11 @@ export default async function Home() {
             </MotionSection>
           );
         })}
-        <MotionSection variantType='fade'>
-          <CommunityFloat />
-        </MotionSection>
+        {token && (
+          <MotionSection variantType='fade'>
+            <CommunityFloat />
+          </MotionSection>
+        )}
       </div>
     </>
   );
