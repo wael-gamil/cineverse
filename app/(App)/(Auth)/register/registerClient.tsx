@@ -2,7 +2,7 @@
 import Button from '@/components/ui/button/button';
 import styles from '../page.module.css';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Icon from '@/components/ui/icon/icon';
 import {
   useRegisterMutation,
@@ -37,6 +37,257 @@ export default function RegisterPage() {
   const [resendMessage, setResendMessage] = useState('');
   const { mutate: resendVerification, isPending: resendLoading } =
     useResendVerificationMutation();
+
+  // State declarations first
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const [buttonRotation, setButtonRotation] = useState(0);
+  const [buttonOpacity, setButtonOpacity] = useState(1);
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [buttonMessage, setButtonMessage] = useState('');
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [isDizzy, setIsDizzy] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
+  const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Dynamic messages system
+  const getValidationMessages = useCallback(() => {
+    const missing = [];
+    if (!username.trim()) missing.push('username');
+    if (!email.trim()) missing.push('email');
+    if (password.length < 8) missing.push('password (8+ chars)');
+    if (password !== confirmPassword) missing.push('matching passwords');
+    return missing;
+  }, [username, email, password, confirmPassword]);
+
+  const getRandomMessage = useCallback(
+    (
+      type: 'attempt' | 'cooldown' | 'recovery',
+      attemptCount: number,
+      missing: string[],
+      cooldownTime?: number
+    ) => {
+      switch (type) {
+        case 'attempt':
+          const attemptMessages = [
+            [
+              `Oops! Fill in: ${missing[0]} first! 🔄`,
+              `Hey! Need your ${missing[0]}! 📝`,
+              `Missing ${missing[0]}? Let's fix that! ✨`,
+            ],
+            [
+              `Still missing ${missing.length} field${
+                missing.length > 1 ? 's' : ''
+              }! 🌀`,
+              `Almost there! ${missing.length} more to go! 🎯`,
+              `So close! Just ${missing.join(', ')} left! 💪`,
+            ],
+            [
+              `Getting dizzy! Complete the form! 😵‍💫`,
+              `Whoa! Too much spinning! Help! 🌪️`,
+              `Feeling wobbly! Fill it out! 😵`,
+            ],
+            [
+              `I'm too dizzy to work! Help! 🌪️`,
+              `Can't... stop... spinning! 🌀`,
+              `Too dizzy! Need a break! 😵‍💫`,
+            ],
+          ];
+          const messageIndex = Math.min(
+            attemptCount - 1,
+            attemptMessages.length - 1
+          );
+          const messages = attemptMessages[messageIndex];
+          return messages[Math.floor(Math.random() * messages.length)];
+
+        case 'cooldown':
+          const cooldownMessages = [
+            'Still too dizzy! 🥴',
+            'Need more rest... 😵‍💫',
+            'Spinning too much! 🌪️',
+            `Wait ${cooldownTime} more seconds! ⏰`,
+            "Can't work right now! 😴",
+            'Recovery mode activated! 🔄',
+            'Give me a moment... 💤',
+          ];
+          return cooldownMessages[
+            Math.floor(Math.random() * cooldownMessages.length)
+          ];
+
+        case 'recovery':
+          const recoveryMessages = [
+            'Feeling better! Try again! 😊',
+            'Ready to spin again! 🎯',
+            'Recharged and ready! ⚡',
+            'Back in action! 💪',
+          ];
+          return recoveryMessages[
+            Math.floor(Math.random() * recoveryMessages.length)
+          ];
+
+        default:
+          return '';
+      }
+    },
+    [cooldownTime]
+  );
+
+  // Centralized message management
+  const showMessage = useCallback(
+    (message: string, duration: number = 3000) => {
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+      }
+      setButtonMessage(message);
+      messageTimeoutRef.current = setTimeout(() => {
+        setButtonMessage('');
+        messageTimeoutRef.current = null;
+      }, duration);
+    },
+    []
+  );
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const allFieldsComplete =
+    username.trim().length > 0 &&
+    email.trim().length > 0 &&
+    password.length >= 8 &&
+    confirmPassword.length > 0 &&
+    password === confirmPassword;
+
+  // Reset button when fields are complete
+  useEffect(() => {
+    if (allFieldsComplete) {
+      setButtonRotation(0);
+      setButtonOpacity(1);
+      setAttemptCount(0);
+      setButtonMessage('');
+      setIsSpinning(false);
+      setIsDizzy(false);
+      setCooldownTime(0);
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+        messageTimeoutRef.current = null;
+      }
+    }
+  }, [allFieldsComplete]);
+
+  // Cooldown timer
+  useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => {
+        setCooldownTime(prev => {
+          const newTime = prev - 1;
+          if (newTime === 0) {
+            setIsDizzy(false);
+            setButtonOpacity(1);
+            const recoveryMessage = getRandomMessage('recovery', 0, []);
+            showMessage(recoveryMessage, 2000);
+          }
+          return newTime;
+        });
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime, showMessage]);
+
+  const handleButtonClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (allFieldsComplete || isLoading) {
+        // Let the form submit normally
+        return;
+      }
+
+      // Prevent form submission
+      e.preventDefault();
+      e.stopPropagation();
+
+      // If button is dizzy (in cooldown), just show message
+      if (isDizzy) {
+        const cooldownMessage = getRandomMessage(
+          'cooldown',
+          0,
+          [],
+          cooldownTime
+        );
+        showMessage(cooldownMessage, 1500);
+        return;
+      }
+
+      if (isSpinning) return;
+
+      setIsSpinning(true);
+      setAttemptCount(prev => prev + 1);
+
+      // Get missing fields
+      const missing = [];
+      if (!username.trim()) missing.push('username');
+      if (!email.trim()) missing.push('email');
+      if (password.length < 8) missing.push('password (8+ chars)');
+      if (password !== confirmPassword) missing.push('matching passwords');
+
+      // Progressive spinning behavior
+      if (attemptCount === 0) {
+        setButtonRotation(prev => prev + 180);
+        setButtonMessage(`Oops! Fill in: ${missing[0]} first! 🔄`);
+      } else if (attemptCount === 1) {
+        setButtonRotation(prev => prev + 360);
+        setButtonMessage(
+          `Still missing ${missing.length} field${
+            missing.length > 1 ? 's' : ''
+          }! �`
+        );
+      } else if (attemptCount === 2) {
+        setButtonRotation(prev => prev + 720);
+        setButtonOpacity(0.5);
+        setButtonMessage(`Getting dizzy! Complete the form! 😵‍💫`);
+      } else {
+        // Maximum dizziness - more spinning each time
+        setButtonRotation(prev => prev + 1440);
+        setButtonOpacity(0.3);
+        setButtonMessage(`I'm too dizzy to work! Help! 🌪️`);
+
+        // Set dizzy state and start 5-second cooldown after a delay
+        setTimeout(() => {
+          setIsDizzy(true);
+          setCooldownTime(5);
+          setButtonOpacity(0.7);
+          setButtonMessage('Taking a dizzy break... 😴');
+        }, 500);
+      }
+
+      // Reset spinning state
+      setTimeout(() => {
+        setIsSpinning(false);
+        if (attemptCount < 3) {
+          setButtonOpacity(1);
+        }
+      }, 1000);
+
+      // Clear message (only for non-dizzy attempts)
+      if (attemptCount < 3) {
+        setTimeout(() => setButtonMessage(''), 3000);
+      }
+    },
+    [
+      allFieldsComplete,
+      isLoading,
+      isDizzy,
+      isSpinning,
+      attemptCount,
+      cooldownTime,
+      getValidationMessages,
+      getRandomMessage,
+      showMessage,
+    ]
+  );
 
   const {
     loginWithGoogle,
@@ -289,7 +540,9 @@ export default function RegisterPage() {
                   aria-label={
                     showConfirmPassword ? 'Hide password' : 'Show password'
                   }
-                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  title={
+                    showConfirmPassword ? 'Hide password' : 'Show password'
+                  }
                 >
                   <Icon
                     name={showConfirmPassword ? 'eye-off' : 'eye'}
@@ -302,9 +555,47 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <Button type='submit' width='100%' disabled={isLoading}>
-              {isLoading ? 'Creating account...' : 'Create account'}
-            </Button>
+            <div
+              ref={buttonRef}
+              style={{
+                transform: `rotate(${buttonRotation}deg)`,
+                opacity: buttonOpacity,
+                transition:
+                  'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease',
+                width: '100%',
+                position: 'relative',
+                cursor: allFieldsComplete ? 'pointer' : 'not-allowed',
+              }}
+              onClick={handleButtonClick}
+            >
+              <Button
+                type={allFieldsComplete ? 'submit' : 'button'}
+                width='100%'
+                disabled={isLoading}
+                title={
+                  buttonMessage ||
+                  (!allFieldsComplete
+                    ? 'Complete all fields first! �'
+                    : undefined)
+                }
+              >
+                {isLoading ? 'Creating account...' : 'Create account'}
+              </Button>
+            </div>
+
+            {buttonMessage && (
+              <div
+                style={{
+                  textAlign: 'center',
+                  color: 'var(--color-primary)',
+                  fontSize: 'var(--font-size-sm)',
+                  marginTop: 'var(--space-sm)',
+                  animation: 'fadeIn 0.3s ease',
+                }}
+              >
+                {buttonMessage}
+              </div>
+            )}
           </form>
         )}
         <div className={styles.divider}>

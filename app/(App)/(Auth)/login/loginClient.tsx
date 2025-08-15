@@ -2,7 +2,7 @@
 import Button from '@/components/ui/button/button';
 import styles from '../page.module.css';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Icon from '@/components/ui/icon/icon';
 import { useLoginMutation } from '@/hooks/useAuthMutations';
 import { setUserWithExpiry } from '@/utils/userStore';
@@ -72,6 +72,60 @@ export default function LoginPage() {
     }
   }, []);
   const { mutate: login } = useLoginMutation();
+
+  // Playful "shy" button behavior
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
+  const [shyLevel, setShyLevel] = useState(0);
+  const [isButtonShaking, setIsButtonShaking] = useState(false);
+  const [isEvading, setIsEvading] = useState(false);
+  
+  const fieldsComplete = username.trim().length > 0 && password.trim().length > 0;
+
+  // Reset button position when fields are complete
+  useEffect(() => {
+    if (fieldsComplete) {
+      setButtonPosition({ x: 0, y: 0 });
+      setShyLevel(0);
+      setIsButtonShaking(false);
+      setIsEvading(false);
+    }
+  }, [fieldsComplete]);
+
+  const handleButtonHover = () => {
+    if (fieldsComplete || isLoading || isEvading) return;
+
+    setIsEvading(true);
+    // Increase shyness with each attempt
+    setShyLevel(prev => prev + 1);
+
+    // Different behaviors based on shyness level with bigger movements
+    if (shyLevel === 0) {
+      // First hover: medium jump away
+      setButtonPosition({ x: Math.random() > 0.5 ? 80 : -80, y: -40 });
+    } else if (shyLevel === 1) {
+      // Second hover: bigger jump with rotation
+      setButtonPosition({ x: Math.random() > 0.5 ? 120 : -120, y: -60 });
+    } else if (shyLevel === 2) {
+      // Third hover: shake in place and show message
+      setIsButtonShaking(true);
+      setButtonPosition({ x: 0, y: -80 }); // Move up while shaking
+      setTimeout(() => setIsButtonShaking(false), 600);
+    } else {
+      // After multiple attempts: dramatic escape to corners
+      const corners = [
+        { x: 150, y: -100 },
+        { x: -150, y: -100 },
+        { x: 100, y: 50 },
+        { x: -100, y: 50 }
+      ];
+      const randomCorner = corners[Math.floor(Math.random() * corners.length)];
+      setButtonPosition(randomCorner);
+    }
+
+    // Reset evading state after animation
+    setTimeout(() => setIsEvading(false), 500);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,9 +237,33 @@ export default function LoginPage() {
           </div>
 
           {/* Submit */}
-          <Button type='submit' width='100%' disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign in'}
-          </Button>
+          <div 
+            ref={buttonRef}
+            style={{
+              transform: `translate(${buttonPosition.x}px, ${buttonPosition.y}px)`,
+              transition: isButtonShaking ? 'none' : 'transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+              animation: isButtonShaking ? 'shake 0.6s ease-in-out' : 'none',
+              width: '100%',
+              position: 'relative',
+              pointerEvents: isEvading ? 'none' : 'auto' // Disable interaction while evading
+            }}
+            onMouseEnter={handleButtonHover}
+            onFocus={handleButtonHover}
+          >
+            <Button 
+              type='submit' 
+              width='100%' 
+              disabled={isLoading || !fieldsComplete}
+              title={!fieldsComplete ? (
+                shyLevel === 0 ? "I'm a bit shy... fill in the fields first! 😳" :
+                shyLevel === 1 ? "Nope, still not ready! Complete the form! 🏃" :
+                shyLevel === 2 ? "I'm getting nervous! Please fill everything! 😰" :
+                "I'll hide in the corners until you're done! 🫣"
+              ) : undefined}
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </div>
         </form>
 
         <div className={styles.divider}>
