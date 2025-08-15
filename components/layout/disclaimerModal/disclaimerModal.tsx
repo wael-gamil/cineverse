@@ -23,7 +23,26 @@ export default function DisclaimerModal() {
       return () => clearTimeout(timer);
     }
   }, []);
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
 
+    if (isOpen) {
+      html.style.overflow = 'hidden';
+      body.style.overflow = 'hidden';
+      body.style.touchAction = 'none';
+    } else {
+      html.style.overflow = '';
+      body.style.overflow = '';
+      body.style.touchAction = '';
+    }
+
+    return () => {
+      html.style.overflow = '';
+      body.style.overflow = '';
+      body.style.touchAction = '';
+    };
+  }, [isOpen]);
   const handleClose = () => {
     setIsOpen(false);
     localStorage.setItem('cineverse-disclaimer-seen', 'true');
