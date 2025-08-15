@@ -132,12 +132,28 @@ export default function TopReviewersSidebar() {
                   reviewer.user.name || reviewer.user.username
                 }'s profile`}
               >
-                <div className={styles.reviewerAvatar}>
+                <div
+                  className={`${styles.reviewerAvatar} ${
+                    styles[`rank${idx + 1}`]
+                  }`}
+                >
                   <img
                     src={reviewer.user.imageUrl || avatarFallback.src}
                     alt={reviewer.user.name}
                     className={styles.avatarImage}
                   />
+                  {/* Rank badge overlay */}
+                  <div className={styles.rankBadge} aria-hidden>
+                    {idx === 0 ? (
+                      <span className={styles.rankEmoji}>👑</span>
+                    ) : idx === 1 ? (
+                      <span className={styles.rankEmoji}>🥈</span>
+                    ) : idx === 2 ? (
+                      <span className={styles.rankEmoji}>🥉</span>
+                    ) : (
+                      <span className={styles.rankNumber}>{idx + 1}</span>
+                    )}
+                  </div>
                 </div>
                 <div className={styles.reviewerInfo}>
                   <h4 className={styles.reviewerName}>

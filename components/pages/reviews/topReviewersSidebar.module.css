@@ -110,23 +110,82 @@
 }
 
 .reviewerAvatar {
+  position: relative;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  overflow: hidden;
+  overflow: visible;
   flex-shrink: 0;
-  border: 2px solid var(--color-white-20);
+  padding: 3px;
   transition: all var(--transition-normal);
 }
 
+.reviewerAvatar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-60),
+    var(--color-primary)
+  );
+  z-index: 0;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.reviewerAvatar.rank1::before {
+  background: conic-gradient(
+    from 0deg,
+    #ffd700,
+    #ffb700,
+    #ffd700,
+    #ffb700,
+    #ffd700
+  );
+  opacity: 1;
+  animation: rotate 3s linear infinite;
+}
+
+.reviewerAvatar.rank2::before {
+  background: conic-gradient(
+    from 0deg,
+    #c0c0c0,
+    #e8e8e8,
+    #c0c0c0,
+    #e8e8e8,
+    #c0c0c0
+  );
+  opacity: 1;
+  animation: rotate 4s linear infinite;
+}
+
+.reviewerAvatar.rank3::before {
+  background: conic-gradient(
+    from 0deg,
+    #cd7f32,
+    #e89b5a,
+    #cd7f32,
+    #e89b5a,
+    #cd7f32
+  );
+  opacity: 1;
+  animation: rotate 5s linear infinite;
+}
+
 .reviewerItem:hover .reviewerAvatar {
-  border-color: var(--color-primary-40);
+  transform: scale(1.05);
 }
 
 .avatarImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  border: 2px solid var(--color-surface);
 }
 
 .reviewerInfo {
@@ -152,6 +211,67 @@
   font-size: var(--font-size-sm);
   color: var(--color-muted);
   padding-top: var(--space-xs);
+}
+
+/* Rank Badge Styles */
+.rankBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-white);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-white-20);
+  z-index: 2;
+}
+
+.rankEmoji {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.rankNumber {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Rank variants */
+.rank1 .rankBadge {
+  background: var(--color-surface);
+  border: 2px solid #ffd700;
+  color: #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.rank2 .rankBadge {
+  background: var(--color-surface);
+  border: 2px solid #c0c0c0;
+  color: #c0c0c0;
+  box-shadow: 0 0 8px rgba(192, 192, 192, 0.3);
+}
+
+.rank3 .rankBadge {
+  background: var(--color-surface);
+  border: 2px solid #cd7f32;
+  color: #cd7f32;
+  box-shadow: 0 0 8px rgba(205, 127, 50, 0.3);
+}
+
+/* Rotating animation for frames */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 1024px) {
