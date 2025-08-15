@@ -26,6 +26,7 @@ export default function SearchBar() {
           ariaLabel='Open Search'
           borderRadius='fullRadius'
           padding='none'
+          title='Open Search'
         >
           <Icon name='search' strokeColor='white' />
         </Button>

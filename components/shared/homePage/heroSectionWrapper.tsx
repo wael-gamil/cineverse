@@ -131,7 +131,7 @@ export default function HeroSectionWrapper({
     >
       {!isMobile && (
         <div className={styles.externalLink}>
-          <Button variant='ghost' padding='sm' borderRadius='fullRadius'>
+          <Button variant='ghost' padding='sm' borderRadius='fullRadius' title='View Details'>
             <Link href={`/${rawContent[activeIndex].slug}`} target='_blank'>
               <Icon name='ExternalLink' strokeColor='white' />
             </Link>
@@ -151,6 +151,7 @@ export default function HeroSectionWrapper({
               variant='solid'
               padding='sm'
               borderRadius='fullRadius'
+              title='Previous Slide'
             >
               <Icon name='arrow-left' strokeColor='white' />
             </Button>
@@ -165,6 +166,7 @@ export default function HeroSectionWrapper({
               variant='solid'
               padding='sm'
               borderRadius='fullRadius'
+              title='Next Slide'
             >
               <Icon name='arrow-right' strokeColor='white' />
             </Button>

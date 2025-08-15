@@ -195,6 +195,7 @@ export default function AddReviewPopup({
             onClick={handleClose}
             disabled={isSubmitting}
             ariaLabel='Close modal'
+            title='Close modal'
           >
             <Icon name='close' strokeColor='white' />
           </Button>
@@ -260,6 +261,7 @@ export default function AddReviewPopup({
                         onClick={() => setRating(starValue)}
                         aria-label={`Rate ${starValue} out of 10`}
                         disabled={isSubmitting}
+                        title={`Rate ${starValue} out of 10`}
                       >
                         <Icon
                           name='starFilled'

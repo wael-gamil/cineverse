@@ -63,7 +63,7 @@ export default function ContentSliderSkeleton({
         }
       >
         {!isMobile && (
-          <Button variant='outline' color='neutral' disabled>
+          <Button variant='outline' color='neutral' disabled title='Previous Slide'>
             <Icon name='arrow-left' strokeColor='white' />
           </Button>
         )}
@@ -81,7 +81,7 @@ export default function ContentSliderSkeleton({
         </GridContainer>
 
         {!isMobile && (
-          <Button variant='outline' color='neutral' disabled>
+          <Button variant='outline' color='neutral' disabled title='Next Slide'>
             <Icon name='arrow-right' strokeColor='white' />
           </Button>
         )}
@@ -89,10 +89,10 @@ export default function ContentSliderSkeleton({
 
       {isMobile && (
         <div className={styles.mobileControls}>
-          <Button variant='outline' color='neutral' disabled>
+          <Button variant='outline' color='neutral' disabled title='Previous Slide'>
             <Icon name='arrow-left' strokeColor='white' />
           </Button>
-          <Button variant='outline' color='neutral' disabled>
+          <Button variant='outline' color='neutral' disabled title='Next Slide'>
             <Icon name='arrow-right' strokeColor='white' />
           </Button>
         </div>

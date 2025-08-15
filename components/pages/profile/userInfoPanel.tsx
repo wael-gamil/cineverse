@@ -85,6 +85,7 @@ export default function UserInfoPanel({ initialUser }: UserInfoPanelProps) {
                   alert('Link copied to clipboard!');
                 }
               }}
+              title='Share Profile'
             >
               <Icon name='share' strokeColor='white' />
             </Button>

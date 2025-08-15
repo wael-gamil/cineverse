@@ -113,6 +113,7 @@ export default function EditProfileModal({
             borderRadius='fullRadius'
             onClick={onClose}
             ariaLabel='Close modal'
+            title='Close modal'
           >
             <Icon name='close' strokeColor='white' />
           </Button>

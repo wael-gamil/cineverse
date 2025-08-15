@@ -10,7 +10,7 @@ import { useRandomContentQuery } from '@/hooks/useRandomContentQuery';
 export default function MysterySection() {
   const { data, isLoading, error, refetch, isFetching } =
     useRandomContentQuery();
-  
+
   const [revealedCardId, setRevealedCardId] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -31,16 +31,18 @@ export default function MysterySection() {
   // Only validate and potentially clear storage when data is actually loaded
   useEffect(() => {
     if (!data || isLoading) return; // Don't do anything if data is not loaded yet
-    
+
     const savedRevealedCard = localStorage.getItem('mysteryCardRevealed');
-    
+
     if (savedRevealedCard) {
       try {
         const parsedCard = JSON.parse(savedRevealedCard);
         // Only clear if the content is definitely different (not just loading)
-        if (data.id !== parsedCard.id || 
-            data.title !== parsedCard.title || 
-            data.slug !== parsedCard.slug) {
+        if (
+          data.id !== parsedCard.id ||
+          data.title !== parsedCard.title ||
+          data.slug !== parsedCard.slug
+        ) {
           // This is genuinely different content, clear the storage
           setRevealedCardId(null);
           localStorage.removeItem('mysteryCardRevealed');
@@ -56,11 +58,14 @@ export default function MysterySection() {
   const handleCardFlip = () => {
     if (data?.id) {
       setRevealedCardId(data.id);
-      localStorage.setItem('mysteryCardRevealed', JSON.stringify({
-        id: data.id,
-        title: data.title,
-        slug: data.slug
-      }));
+      localStorage.setItem(
+        'mysteryCardRevealed',
+        JSON.stringify({
+          id: data.id,
+          title: data.title,
+          slug: data.slug,
+        })
+      );
     }
   };
 
@@ -83,7 +88,8 @@ export default function MysterySection() {
           <p className={styles.subtitle}>
             Flip the card to reveal a surprise movie or series.
           </p>
-        </div>        <Button onClick={handleDrawAnother} disabled={isFetching} padding='lg'>
+        </div>
+        <Button onClick={handleDrawAnother} disabled={isFetching} padding='lg'>
           {isFetching ? 'Drawing...' : 'Draw Another Mystery'}
         </Button>
       </div>
@@ -93,8 +99,8 @@ export default function MysterySection() {
       ) : error || !data ? (
         <p className={styles.status}>Unable to load mystery card.</p>
       ) : (
-        <MysteryCard 
-          item={data} 
+        <MysteryCard
+          item={data}
           isRevealed={isRevealed}
           onFlip={handleCardFlip}
         />

@@ -135,6 +135,7 @@ export default function Card({
             ariaLabel={button.ariaLabel || 'action'}
             padding='none'
             onClick={button.onClick}
+            title={button.ariaLabel || 'action'}
           >
             <Icon name={button.iconName} strokeColor='white' />
           </Button>
@@ -157,12 +158,13 @@ export default function Card({
       />
       {renderBadges()}
       {additionalButton && (
-        <div className={styles.infoButtonWrapper}>
+        <div className={styles.infoButtonWrapper} title='More info'>
           <Button
             borderRadius='fullRadius'
             variant='ghost'
             color='neutral'
             ariaLabel='show more info'
+            title='More info'
             padding='none'
             onClick={additionalButton?.onClick}
           >
@@ -190,6 +192,7 @@ export default function Card({
                 ariaLabel={button.ariaLabel || 'action'}
                 padding='none'
                 onClick={button.onClick}
+                title={button.ariaLabel || 'action'}
               >
                 <Icon name={button.iconName} strokeColor='white' />
               </Button>
@@ -210,12 +213,13 @@ export default function Card({
         </div>
         <div className={styles.hoverOverlay}>
           {renderActionButtons()}
-          <div className={styles.infoButtonWrapper}>
+          <div className={styles.infoButtonWrapper} title='More info'>
             <Button
               borderRadius='fullRadius'
               variant='ghost'
               color='neutral'
               ariaLabel='show more info'
+              title='More info'
               padding='none'
               onClick={additionalButton?.onClick}
             >

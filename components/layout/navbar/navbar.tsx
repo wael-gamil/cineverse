@@ -127,6 +127,7 @@ export default function Navbar() {
                 padding='none'
                 borderRadius='fullRadius'
                 disabled
+                title='Loading...'
               >
                 <Icon
                   name='loader'
@@ -164,6 +165,7 @@ export default function Navbar() {
                   color='neutral'
                   padding='none'
                   borderRadius='fullRadius'
+                  title='Login'
                 >
                   <Icon name='user' width={24} strokeColor='white' />
                 </Button>
@@ -198,7 +200,7 @@ export default function Navbar() {
               <NavLinks isMobile closeMenu={closeMobilePanel} />
               <div className={styles.divider}></div>
               {!hasMounted ? (
-                <Button variant='solid' color='primary' width='100%' disabled>
+                <Button variant='solid' color='primary' width='100%' disabled title='Loading...'>
                   <Icon
                     name='loader'
                     width={20}

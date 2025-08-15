@@ -87,6 +87,7 @@ export default function Pagination({ currentPage, totalPages }: Props) {
         borderRadius='fullRadius'
         color='neutral'
         padding='none'
+        title='Previous Page'
       >
         <Icon name='arrow-left' strokeColor='muted' />
       </Button>
@@ -102,6 +103,7 @@ export default function Pagination({ currentPage, totalPages }: Props) {
         borderRadius='fullRadius'
         color='neutral'
         padding='none'
+        title='Next Page'
       >
         <Icon name='arrow-right' strokeColor='muted' />
       </Button>

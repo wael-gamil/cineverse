@@ -250,6 +250,7 @@ export default function RegisterPage() {
                   color='neutral'
                   padding='none'
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
                 >
                   <Icon
                     name={showPassword ? 'eye-off' : 'eye'}
@@ -288,6 +289,7 @@ export default function RegisterPage() {
                   aria-label={
                     showConfirmPassword ? 'Hide password' : 'Show password'
                   }
+                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   <Icon
                     name={showConfirmPassword ? 'eye-off' : 'eye'}
