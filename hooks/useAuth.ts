@@ -2,23 +2,46 @@
 
 import { useStore } from '@tanstack/react-store';
 import { useRouter } from 'next/navigation';
-import { userStore } from '@/utils/userStore';
-import { useCallback } from 'react';
+import { userStore, debugLog } from '@/utils/userStore';
+import { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 export function useAuth() {
   const { username, email, isHydrated } = useStore(userStore);
   const router = useRouter();
 
-  const isAuthenticated = !!(username && email && isHydrated); 
-  const isHydrated_ = isHydrated; 
+  // Separate authentication state from hydration state
+  const isAuthenticated = !!(username && email);
+  const isReady = isHydrated; // Rename for clarity
+  
+  // Debug authentication state changes
+  useEffect(() => {
+    debugLog('Auth State Change', {
+      username: !!username,
+      email: !!email,
+      isHydrated,
+      isAuthenticated,
+      isReady,
+      currentPath: typeof window !== 'undefined' ? window.location.pathname : 'server'
+    });
+  }, [username, email, isHydrated, isAuthenticated, isReady]);
+  
   const requireAuth = useCallback(
     (action?: () => void, message?: string) => {
-      if (!isHydrated_) {
+      debugLog('RequireAuth Called', {
+        isReady,
+        isAuthenticated,
+        currentPath: typeof window !== 'undefined' ? window.location.pathname : 'server'
+      });
+      
+      // Don't check auth until we're hydrated
+      if (!isReady) {
+        debugLog('RequireAuth - Not Ready Yet');
         return false;
       }
       
       if (!isAuthenticated) {
+        debugLog('RequireAuth - Not Authenticated, Redirecting to Login');
         toast.error(message || 'Please log in to continue', {
           className: 'toast-error',
         });
@@ -29,17 +52,19 @@ export function useAuth() {
         return false;
       }
 
+      debugLog('RequireAuth - Success, Executing Action');
       if (action) {
         action();
       }
       return true;
     },
-    [isAuthenticated, isHydrated_, router]
+    [isAuthenticated, isReady, router]
   );
 
   const redirectIfAuthenticated = useCallback(
     (redirectTo: string = '/') => {
-      if (!isHydrated_) {
+      // Don't redirect until we're hydrated
+      if (!isReady) {
         return false;
       }
       
@@ -49,12 +74,12 @@ export function useAuth() {
       }
       return false;
     },
-    [isAuthenticated, isHydrated_, router]
+    [isAuthenticated, isReady, router]
   );
 
   return {
     isAuthenticated,
-    isHydrated: isHydrated_,
+    isReady,
     user: { username, email },
     requireAuth,
     redirectIfAuthenticated,

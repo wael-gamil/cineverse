@@ -1,6 +1,8 @@
 import styles from './navLinks.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useStore } from '@tanstack/react-store';
+import { userStore, debugLog } from '@/utils/userStore';
 
 type NavLinksProps = {
   isMobile?: boolean;
@@ -20,6 +22,25 @@ export default function NavLinks({
   closeMenu,
 }: NavLinksProps) {
   const pathname = usePathname();
+  const { username, email, isHydrated } = useStore(userStore);
+
+  const handleLinkClick = (path: string, name: string) => {
+    // Debug logging for watchlist navigation issue
+    debugLog(`NavLink Clicked: ${name}`, {
+      path,
+      name,
+      pathname,
+      username: !!username,
+      email: !!email,
+      isHydrated,
+      isAuthenticated: !!(username && email),
+      timestamp: new Date().toISOString(),
+    });
+    
+    if (closeMenu) {
+      closeMenu();
+    }
+  };
 
   return (
     <ul className={`${styles.navLinks} ${isMobile ? styles.mobile : ''}`}>
@@ -30,7 +51,8 @@ export default function NavLinks({
             className={`${styles.navbar_item} ${
               pathname === path ? styles.active : ''
             }`}
-            onClick={closeMenu}
+            onClick={() => handleLinkClick(path, name)}
+            prefetch={path !== '/watchlist'} // Disable prefetch for watchlist
           >
             {name}
           </Link>

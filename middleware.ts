@@ -9,6 +9,18 @@ export function middleware(request: NextRequest) {
       ? rawToken
       : null;
   const pathname = request.nextUrl.pathname;
+  
+  // Debug logging for watchlist navigation issue
+  if (pathname === '/watchlist') {
+    console.log('🔍 Middleware debug for /watchlist:', {
+      pathname,
+      hasToken: !!token,
+      rawToken: rawToken?.substring(0, 10) + '...',
+      userAgent: request.headers.get('user-agent')?.substring(0, 50),
+      referer: request.headers.get('referer'),
+      timestamp: new Date().toISOString(),
+    });
+  }
   // Routes that require authentication
   const protectedRoutes = ['/watchlist'];
 
