@@ -5,12 +5,27 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   const pathname = request.nextUrl.pathname;
 
-  // Detect RSC / prefetch requests and avoid redirecting them.
-  // Next's RSC prefetch will often include an `_rsc` query param or a special header.
-  const isRscRequest =
-    request.nextUrl.searchParams.has('_rsc') ||
-    request.headers.get('x-nextjs-rsc') !== null ||
-    request.headers.get('x-rsc') !== null;
+  // Enhanced detection of RSC / prefetch / next/data requests.
+  const searchParams = request.nextUrl.searchParams;
+  const headers = request.headers;
+
+  const hasRscQuery = searchParams.has('_rsc');
+  const hasXNextjsRsc = headers.get('x-nextjs-rsc') !== null;
+  const hasXRsc = headers.get('x-rsc') !== null;
+  const hasXNextjsData = headers.get('x-nextjs-data') !== null;
+  const hasMiddlewarePrefetch = headers.get('x-middleware-prefetch') !== null;
+  const acceptHeader = headers.get('accept') || '';
+  const acceptsRsc = acceptHeader.includes('text/x-component');
+  const isNextDataPath = pathname.startsWith('/_next/data');
+
+  const isPrefetchOrDataRequest =
+    hasRscQuery ||
+    hasXNextjsRsc ||
+    hasXRsc ||
+    hasXNextjsData ||
+    hasMiddlewarePrefetch ||
+    acceptsRsc ||
+    isNextDataPath;
 
   // Routes that require authentication
   const protectedRoutes = ['/watchlist'];
@@ -28,10 +43,8 @@ export function middleware(request: NextRequest) {
   // Check if current path is an auth route
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
 
-  // If this is an RSC/prefetch request, do not perform redirects here.
-  // Returning NextResponse.next() lets the prefetch proceed without causing
-  // the middleware to issue redirect responses that confuse the client navigation.
-  if (isRscRequest) {
+  // If this is a prefetch / next/data / RSC request, do not perform redirects here.
+  if (isPrefetchOrDataRequest) {
     return NextResponse.next();
   }
 
