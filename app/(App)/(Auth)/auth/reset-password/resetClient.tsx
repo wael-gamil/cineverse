@@ -15,12 +15,12 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const { redirectIfAuthenticated } = useAuth();
   const [token, setToken] = useState<string | null>(null);
-  useEffect(() => {}, [redirectIfAuthenticated, searchParams]);
-
-  // On mount, get token and remove it from URL
   useEffect(() => {
     const redirectTo = searchParams.get('redirect') || '/';
     redirectIfAuthenticated(redirectTo);
+  }, [redirectIfAuthenticated, searchParams]);
+
+  useEffect(() => {
     const urlToken = searchParams.get('token');
     if (urlToken) {
       setToken(urlToken);

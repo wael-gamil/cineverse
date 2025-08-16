@@ -24,8 +24,9 @@ export default function Navbar() {
   const [isShrunk, setIsShrunk] = useState(false);
   const [closeMobilePanel, setCloseMobilePanel] = useState<() => void>(() => () => {});
   const [closeUserPanel, setCloseUserPanel] = useState<() => void>(() => () => {});
-  const { email, username } = useStore(userStore);
-  const isLoggedIn = !!email && !!username;
+  const { email, username, isHydrated } = useStore(userStore);
+  const isLoggedIn = !!email && !!username && isHydrated; 
+  const isLoading = !isHydrated; 
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -119,8 +120,8 @@ export default function Navbar() {
           </div>
           <div className={styles.navbarDesktop}>
             <SearchBar />
-            {!hasMounted ? (
-              // Loading state before userStore is ready
+            {!hasMounted || isLoading ? (
+              
               <Button
                 variant='solid'
                 color='neutral'
@@ -199,7 +200,7 @@ export default function Navbar() {
             >
               <NavLinks isMobile closeMenu={closeMobilePanel} />
               <div className={styles.divider}></div>
-              {!hasMounted ? (
+              {!hasMounted || isLoading ? (
                 <Button variant='solid' color='primary' width='100%' disabled title='Loading...'>
                   <Icon
                     name='loader'

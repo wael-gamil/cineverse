@@ -7,12 +7,17 @@ import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 
 export function useAuth() {
-  const { username, email } = useStore(userStore);
+  const { username, email, isHydrated } = useStore(userStore);
   const router = useRouter();
 
-  const isAuthenticated = !!(username && email);
+  const isAuthenticated = !!(username && email && isHydrated); 
+  const isHydrated_ = isHydrated; 
   const requireAuth = useCallback(
     (action?: () => void, message?: string) => {
+      if (!isHydrated_) {
+        return false;
+      }
+      
       if (!isAuthenticated) {
         toast.error(message || 'Please log in to continue', {
           className: 'toast-error',
@@ -29,22 +34,27 @@ export function useAuth() {
       }
       return true;
     },
-    [isAuthenticated, router]
+    [isAuthenticated, isHydrated_, router]
   );
 
   const redirectIfAuthenticated = useCallback(
     (redirectTo: string = '/') => {
+      if (!isHydrated_) {
+        return false;
+      }
+      
       if (isAuthenticated) {
         router.push(redirectTo);
         return true;
       }
       return false;
     },
-    [isAuthenticated, router]
+    [isAuthenticated, isHydrated_, router]
   );
 
   return {
     isAuthenticated,
+    isHydrated: isHydrated_,
     user: { username, email },
     requireAuth,
     redirectIfAuthenticated,

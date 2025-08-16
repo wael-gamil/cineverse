@@ -1,7 +1,7 @@
 // utils/logout.ts
 'use client';
 
-import { userStore } from './userStore';
+import { clearUser } from './userStore';
 import toast from 'react-hot-toast';
 
 export async function logout(router?: any) {
@@ -10,8 +10,7 @@ export async function logout(router?: any) {
       method: 'POST',
     });
 
-    userStore.setState({ username: null, email: null, profilePicture: null });
-    localStorage.removeItem('cineverse-user');
+    clearUser(); 
 
     // Show logout success toast
     toast.success('Logged out successfully', {
@@ -26,7 +25,6 @@ export async function logout(router?: any) {
       );
 
       if (isOnProtectedRoute) {
-        // Use setTimeout to allow the userStore state to update first
         setTimeout(() => {
           router.push('/');
         }, 100);

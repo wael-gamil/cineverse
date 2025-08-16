@@ -6,19 +6,18 @@ type UserState = {
   username: string | null;
   email: string | null;
   profilePicture: string | null;
+  isHydrated: boolean; 
 };
 
 const initialState: UserState = {
   username: null,
   email: null,
   profilePicture: null,
+  isHydrated: false,
 };
 
 export const userStore = new Store<UserState>(initialState);
 
-/**
- * Set user and sync to localStorage with expiry (2 hours)
- */
 export const setUserWithExpiry = (
   username: string,
   email: string,
@@ -29,6 +28,7 @@ export const setUserWithExpiry = (
     username,
     email,
     profilePicture: profilePicture || null,
+    isHydrated: true,
   });
 
   if (typeof window !== 'undefined') {
@@ -42,9 +42,6 @@ export const setUserWithExpiry = (
   }
 };
 
-/**
- * Update only the profile picture in userStore and localStorage without changing expiry
- */
 export const updateUserProfilePicture = (profilePicture: string | null) => {
   userStore.setState(prev => ({
     ...prev,
@@ -75,7 +72,19 @@ export const updateUserProfilePicture = (profilePicture: string | null) => {
   }
 };
 
-// Load from localStorage on init (with expiry check)
+export const clearUser = () => {
+  userStore.setState({
+    username: null,
+    email: null,
+    profilePicture: null,
+    isHydrated: true,
+  });
+
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('cineverse-user');
+  }
+};
+
 if (typeof window !== 'undefined') {
   const saved = localStorage.getItem('cineverse-user');
   if (saved) {
@@ -87,12 +96,19 @@ if (typeof window !== 'undefined') {
           username,
           email,
           profilePicture: profilePicture || null,
+          isHydrated: true, 
         });
       } else {
         localStorage.removeItem('cineverse-user');
+        userStore.setState(prev => ({ ...prev, isHydrated: true }));
       }
     } catch (error) {
       localStorage.removeItem('cineverse-user');
+      userStore.setState(prev => ({ ...prev, isHydrated: true }));
     }
+  } else {
+    userStore.setState(prev => ({ ...prev, isHydrated: true }));
   }
+} else {
+  userStore.setState(prev => ({ ...prev, isHydrated: true }));
 }
