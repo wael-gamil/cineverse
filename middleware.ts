@@ -16,6 +16,7 @@ export function middleware(request: NextRequest) {
   const hasMiddlewarePrefetch = headers.get('x-middleware-prefetch') !== null;
   const acceptHeader = headers.get('accept') || '';
   const acceptsRsc = acceptHeader.includes('text/x-component');
+  const acceptsHtml = acceptHeader.includes('text/html');
   const isNextDataPath = pathname.startsWith('/_next/data');
 
   const isPrefetchOrDataRequest =
@@ -26,6 +27,11 @@ export function middleware(request: NextRequest) {
     hasMiddlewarePrefetch ||
     acceptsRsc ||
     isNextDataPath;
+
+  // If request does not accept HTML (likely a prefetch/data call), don't redirect.
+  if (!acceptsHtml || isPrefetchOrDataRequest) {
+    return NextResponse.next();
+  }
 
   // Routes that require authentication
   const protectedRoutes = ['/watchlist'];
@@ -42,11 +48,6 @@ export function middleware(request: NextRequest) {
 
   // Check if current path is an auth route
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
-
-  // If this is a prefetch / next/data / RSC request, do not perform redirects here.
-  if (isPrefetchOrDataRequest) {
-    return NextResponse.next();
-  }
 
   // Redirect to login if accessing protected route without token
   if (isProtectedRoute && !token) {
