@@ -11,9 +11,15 @@ type MysteryCardProps = {
   item: Content;
   isRevealed?: boolean;
   onFlip?: () => void;
+  onInfoClick?: (e?: React.MouseEvent) => void; // parent handler
 };
 
-export default function MysteryCard({ item, isRevealed = false, onFlip }: MysteryCardProps) {
+export default function MysteryCard({
+  item,
+  isRevealed = false,
+  onFlip,
+  onInfoClick,
+}: MysteryCardProps) {
   const [flipped, setFlipped] = useState(isRevealed);
 
   // Update local state when prop changes
@@ -50,6 +56,10 @@ export default function MysteryCard({ item, isRevealed = false, onFlip }: Myster
             description={item.overview}
             imageUrl={item.posterUrl}
             href={`/${item.slug}`}
+            additionalButton={{
+              iconName: 'info' as IconName,
+              onClick: e => onInfoClick?.(e),
+            }}
             layout='overlay'
             imageHeight='image-lg'
             badges={[

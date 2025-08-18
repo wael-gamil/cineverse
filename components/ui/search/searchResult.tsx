@@ -16,12 +16,14 @@ type Props = {
   query: string;
   currentPage: number;
   totalPages: number;
+  type: '' | 'MOVIE' | 'SERIES';
 };
 export default function SearchResult({
   contents,
   query,
   currentPage,
   totalPages,
+  type,
 }: Props) {
   const router = useRouter();
   const resultRef = useRef<HTMLDivElement>(null);
@@ -55,7 +57,9 @@ export default function SearchResult({
             <>
               <h3 className={styles.title}>Start your search</h3>
               <p className={styles.subtitle}>
-                Enter a movie or TV show name to see results.
+                Enter a {type !== 'SERIES' && 'Movie'}
+                {type === '' ? ' , ' : ''}
+                {type !== 'MOVIE' && 'TV show'} name to see results.
               </p>
             </>
           ) : (

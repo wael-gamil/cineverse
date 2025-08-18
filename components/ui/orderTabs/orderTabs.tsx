@@ -28,8 +28,16 @@ export default function OrderTabs({ initialOrder = 'DESC' }: OrderTabsProps) {
   return (
     <FilterTabs<OrderValue>
       options={[
-        { label: '↑ Asc', value: 'ASC' },
-        { label: '↓ Desc', value: 'DESC' },
+        {
+          label: '↑ Asc',
+          value: 'ASC',
+          title: 'Ascending order',
+        },
+        {
+          label: '↓ Desc',
+          value: 'DESC',
+          title: 'Descending order',
+        },
       ]}
       active={order}
       onChange={setOrder}

@@ -94,7 +94,7 @@ export default async function Search({
           <ExitButton />
         </div>
         <SearchInput initialQuery={query} />
-        <SearchFilter />
+        {/* <SearchFilter />  */}
       </div>
       <Suspense
         key={JSON.stringify(awaitedSearchParams)}
