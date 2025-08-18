@@ -39,6 +39,7 @@ type ContentSliderSectionProps = {
       'title' | 'imageUrl' | 'description' | 'subtitle' | 'href' | 'badges'
     >
   >;
+  showUpcomingBadge?: boolean;
 };
 
 export default function ContentSliderSection({
@@ -51,6 +52,7 @@ export default function ContentSliderSection({
   enabled,
   header,
   cardProps,
+  showUpcomingBadge,
 }: ContentSliderSectionProps) {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState<FilterType>(initialFilter);
@@ -312,47 +314,61 @@ export default function ContentSliderSection({
           {!isFetching &&
             !isLoading &&
             visibleContent.length > 0 &&
-            visibleContent.map(item => (
-              <Card
-                key={item.id}
-                title={item.title}
-                subtitle={item.releaseDate?.split('-')[0]}
-                description={item.overview}
-                imageUrl={item.posterUrl}
-                href={`/${item.slug}`}
-                badges={[
-                  {
-                    iconName: 'star' as IconName,
-                    color: 'secondary',
-                    number: Number(item.imdbRate.toFixed(1)),
-                    position: 'top-left',
-                  },
-                ]}
-                additionalButton={{
-                  iconName: 'info',
-                  onClick: e => handleInfoClick(e, item),
-                }}
-                {...cardProps}
-              >
-                <div className={styles.contentDetails}>
-                  <div className={styles.date}>
-                    <Icon name='calendar' strokeColor='muted' width={16} />
-                    <span>{item.releaseDate?.split('-')[0]}</span>
+            visibleContent.map(item => {
+              const isUpcoming =
+                !!item.releaseDate &&
+                new Date(item.releaseDate).getTime() > Date.now();
+              return (
+                <Card
+                  key={item.id}
+                  title={item.title}
+                  subtitle={item.releaseDate?.split('-')[0]}
+                  description={item.overview}
+                  imageUrl={item.posterUrl}
+                  href={`/${item.slug}`}
+                  badges={[
+                    {
+                      iconName: 'star' as IconName,
+                      color: 'secondary',
+                      number: Number(item.imdbRate.toFixed(1)),
+                      position: 'top-left',
+                    },
+                    {
+                      iconName: 'calendar' as IconName,
+                      text:
+                        isUpcoming && showUpcomingBadge
+                          ? 'Upcoming'
+                          : undefined,
+                      color: 'primary',
+                      position: 'top-left',
+                    },
+                  ]}
+                  additionalButton={{
+                    iconName: 'info',
+                    onClick: e => handleInfoClick(e, item),
+                  }}
+                  {...cardProps}
+                >
+                  <div className={styles.contentDetails}>
+                    <div className={styles.date}>
+                      <Icon name='calendar' strokeColor='muted' width={16} />
+                      <span>{item.releaseDate?.split('-')[0]}</span>
+                    </div>
+                    <div className={styles.genres}>
+                      {item.genres.slice(0, 3).map(genre => (
+                        <Badge
+                          key={genre}
+                          text={genre}
+                          color='color-white'
+                          backgroundColor='bg-muted'
+                          className={styles.genreBadge}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className={styles.genres}>
-                    {item.genres.slice(0, 3).map(genre => (
-                      <Badge
-                        key={genre}
-                        text={genre}
-                        color='color-white'
-                        backgroundColor='bg-muted'
-                        className={styles.genreBadge}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
         </GridContainer>
 
         {!isMobile && (

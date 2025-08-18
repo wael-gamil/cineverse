@@ -88,6 +88,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
               minWidth: 250,
               maxWidth: 400,
             }}
+            showUpcomingBadge
           />
         </HydrationBoundary>
       </>
