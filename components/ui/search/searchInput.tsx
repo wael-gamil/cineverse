@@ -46,7 +46,7 @@ export default function SearchInput({ initialQuery = '' }: Props) {
       <input
         ref={inputRef}
         type='text'
-        placeholder='Search movies, TV shows, genres...'
+        placeholder='Search movies, TV shows...'
         value={query}
         onChange={e => setQuery(e.target.value)}
         className={styles.input}

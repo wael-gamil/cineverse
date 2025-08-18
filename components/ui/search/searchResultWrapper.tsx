@@ -24,6 +24,7 @@ export default async function SearchResultWrapper({
       query={query}
       totalPages={totalPages}
       currentPage={currentPage}
+      type={type}
     />
   );
 }
