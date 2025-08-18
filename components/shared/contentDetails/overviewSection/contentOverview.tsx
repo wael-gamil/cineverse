@@ -18,7 +18,6 @@ export default function ContentOverview({
   content,
   genres,
 }: ContentOverviewProps) {
-  console.log('ContentOverview content:', content);
   const { data } = useStatsQuery(content.id);
   const runtime =
     content.runtime && !isNaN(Number(content.runtime))

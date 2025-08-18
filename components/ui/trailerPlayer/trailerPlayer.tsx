@@ -90,17 +90,10 @@ export default function TrailerPlayer({
     return () => clearInterval(interval);
   }, [focusMode, player]);
 
-  console.log('focus mode:', focusMode);
-  console.log('current focus mode state:', currentFocusMode);
-
   // Create className string using currentFocusMode state
   const wrapperClassName = `${styles.video} ${
     currentFocusMode ? styles.focused : styles.default
   }`;
-  console.log('wrapperClassName:', wrapperClassName);
-  console.log('styles.focused:', styles.focused);
-  console.log('styles.default:', styles.default);
-
   return (
     <div
       ref={wrapperRef}
