@@ -137,6 +137,8 @@ export default function EditProfileModal({
                   alt='Profile Picture'
                   fill
                   className={styles.avatar}
+                  sizes='(max-width: 768px) 100vw, 50vw'
+                  priority
                 />{' '}
                 <div className={styles.avatarOverlay}>
                   <Icon name='edit' strokeColor='white' />

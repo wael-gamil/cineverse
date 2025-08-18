@@ -233,6 +233,8 @@ export default function ContentHero({
             className={`${styles.backdropImage} ${
               showTrailer && trailerLoaded ? styles.backdropHidden : ''
             }`}
+            sizes='(max-width: 768px) 100vw, 50vw'
+            priority
           />
           {/* YouTube Player - fade in when ready */}
           {showTrailer && (
@@ -287,6 +289,8 @@ export default function ContentHero({
                   alt={content.title}
                   fill
                   className={styles.posterImage}
+                  sizes='(max-width: 768px) 100vw, 50vw'
+                  priority
                 />
               </div>
             )}
@@ -339,6 +343,8 @@ export default function ContentHero({
               alt={content.title}
               fill
               className={styles.posterImage}
+              sizes='(max-width: 768px) 100vw, 50vw'
+              priority
             />
           </div>
         )}

@@ -131,6 +131,7 @@ export default function ExtendedReviewCard({
         className={styles.posterImage}
         sizes='(max-width: 768px) 100vw, 180px'
         style={{ opacity: 1 }}
+        priority
       />
     </div>
   );
@@ -150,6 +151,7 @@ export default function ExtendedReviewCard({
               onError={() => setHasAvatarError(true)}
               className={styles.avatarImage}
               sizes='24px'
+              priority
             />
           </div>
           <span className={styles.authorName}>

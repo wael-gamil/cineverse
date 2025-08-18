@@ -109,10 +109,10 @@ export default function Navbar() {
               <div className={styles.iconBackground}></div>
               <Icon name='film' strokeColor='primary' />
             </div>
-            <h1 className={styles.navbarTitle}>
+            <h2 className={styles.navbarTitle}>
               <span className={styles.cine}>CINE</span>
               <span className={styles.verse}>VERSE</span>
-            </h1>
+            </h2>
           </Link>
           <div className={styles.navbarDesktop}>
             <NavLinks />

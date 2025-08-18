@@ -227,7 +227,13 @@ export default function ContentOverview({
                   {providers.map((provider, index) => {
                     return (
                       <div className={styles.imageWrapper} key={index}>
-                        <Image src={provider.logo} alt={provider.name} fill />
+                        <Image
+                          src={provider.logo}
+                          alt={provider.name}
+                          fill
+                          sizes='(max-width: 768px) 100vw, 50vw'
+                          priority
+                        />
                       </div>
                     );
                   })}
