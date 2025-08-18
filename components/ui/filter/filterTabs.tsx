@@ -4,7 +4,7 @@ import Button from '../button/button';
 import styles from './filterTabs.module.css';
 
 type FilterTabsProps<T extends string> = {
-  options: { label: string; value: T }[];
+  options: { label: string; value: T; title?: string }[];
   active?: T;
   onChange?: (value: T) => void;
   showAll?: boolean;
@@ -34,6 +34,7 @@ export default function FilterTabs<T extends string>({
           padding='sm'
           variant={active === option.value ? 'solid' : 'ghost'}
           color={active === option.value ? 'primary' : 'neutral'}
+          title={option.title}
         >
           {option.label}
         </Button>
