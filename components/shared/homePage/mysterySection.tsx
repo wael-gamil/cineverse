@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './mysterySection.module.css';
 import MysteryCard from '@/components/cards/card/mysteryCard';
 import Button from '@/components/ui/button/button';
 import Icon from '@/components/ui/icon/icon';
 import { useRandomContentQuery } from '@/hooks/useRandomContentQuery';
+import ExpandedCard from '@/components/cards/expandedCard/expandedCard';
+import type { Content } from '@/constants/types/movie';
 
 export default function MysterySection() {
   const { data, isLoading, error, refetch, isFetching } =
@@ -13,6 +15,14 @@ export default function MysterySection() {
 
   const [revealedCardId, setRevealedCardId] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
+
+  // container ref for ExpandedCard positioning
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [expandedCard, setExpandedCard] = useState<{
+    isOpen: boolean;
+    content: Content | null;
+    cardPosition: DOMRect | null;
+  }>({ isOpen: false, content: null, cardPosition: null });
 
   // Initialize client-side state and load from localStorage
   useEffect(() => {
@@ -77,34 +87,78 @@ export default function MysterySection() {
 
   const isRevealed = isClient && data?.id ? revealedCardId === data.id : false;
 
-  return (
-    <section className={styles.wrapper}>
-      <div className={styles.text}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>
-            <Icon name='dice' strokeColor='white' width={32} height={32} />
-            <span>Mystery Pick</span>
-          </h2>
-          <p className={styles.subtitle}>
-            Flip the card to reveal a surprise movie or series.
-          </p>
-        </div>
-        <Button onClick={handleDrawAnother} disabled={isFetching} padding='lg'>
-          {isFetching ? 'Drawing...' : 'Draw Another Mystery'}
-        </Button>
-      </div>
+  // open expanded card handler (parent-level so ExpandedCard is rendered outside flipped DOM)
+  const handleInfoClick = (e: React.MouseEvent | undefined) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
 
-      {isLoading || isFetching ? (
-        <p className={styles.status}>Loading mystery...</p>
-      ) : error || !data ? (
-        <p className={styles.status}>Unable to load mystery card.</p>
-      ) : (
-        <MysteryCard
-          item={data}
-          isRevealed={isRevealed}
-          onFlip={handleCardFlip}
-        />
-      )}
-    </section>
+      // Get the card element position
+      const target = e.currentTarget as HTMLElement;
+      const cardElement =
+        target.closest('.card') || target.closest('[class*="cardWrapper"]');
+      if (cardElement) {
+        const cardRect = cardElement.getBoundingClientRect();
+        setExpandedCard({
+          isOpen: true,
+          content: data ?? null,
+          cardPosition: cardRect,
+        });
+      }
+    }
+  };
+
+  const closeExpandedCard = () => {
+    setExpandedCard({ isOpen: false, content: null, cardPosition: null });
+  };
+
+  return (
+    <>
+      <section ref={containerRef as any} className={styles.wrapper}>
+        <div className={styles.text}>
+          <div className={styles.header}>
+            <h2 className={styles.title}>
+              <Icon name='dice' strokeColor='white' width={32} height={32} />
+              <span>Mystery Pick</span>
+            </h2>
+            <p className={styles.subtitle}>
+              Flip the card to reveal a surprise movie or series.
+            </p>
+          </div>
+          <Button
+            onClick={handleDrawAnother}
+            disabled={isFetching}
+            padding='lg'
+          >
+            {isFetching ? 'Drawing...' : 'Draw Another Mystery'}
+          </Button>
+        </div>
+
+        {isLoading || isFetching ? (
+          <p className={styles.status}>Loading mystery...</p>
+        ) : error || !data ? (
+          <p className={styles.status}>Unable to load mystery card.</p>
+        ) : (
+          <MysteryCard
+            item={data}
+            isRevealed={isRevealed}
+            onFlip={handleCardFlip}
+            onInfoClick={handleInfoClick}
+          />
+        )}
+      </section>
+      {/* Render ExpandedCard outside of the flipped card DOM to avoid clipping/mirroring */}
+      {expandedCard.isOpen &&
+        expandedCard.content &&
+        expandedCard.cardPosition && (
+          <ExpandedCard
+            content={expandedCard.content}
+            isOpen={expandedCard.isOpen}
+            onClose={closeExpandedCard}
+            cardPosition={expandedCard.cardPosition}
+            containerRef={containerRef}
+          />
+        )}
+    </>
   );
 }
