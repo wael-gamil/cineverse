@@ -239,7 +239,7 @@ export default function ContentOverview({
           {genreList && (
             <div
               className={`${styles.card} ${
-                genreList.length >= 3 ? styles.cardWide : ''
+                genreList.length >= 2 ? styles.cardWide : ''
               }`}
             >
               <div className={styles.iconWrapper}>
