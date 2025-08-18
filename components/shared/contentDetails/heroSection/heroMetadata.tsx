@@ -138,6 +138,8 @@ export default function HeroMetadata({
             alt={content.title}
             fill
             className={styles.posterImage}
+            sizes='(max-width: 768px) 100vw, 50vw'
+            priority
           />
         </div>
       )}
@@ -145,7 +147,9 @@ export default function HeroMetadata({
       <div className={styles.metaHeader}>
         {slug ? (
           <Link href={`/${slug}`}>
-            <h1 className={styles.title}>{content.title}</h1>
+            <h1 className={`${styles.title} ${styles.linkTitle}`}>
+              {content.title}
+            </h1>
           </Link>
         ) : (
           <h1 className={styles.title}>{content.title}</h1>
