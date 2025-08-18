@@ -212,6 +212,8 @@ export default function AddReviewPopup({
                   alt={contentTitle}
                   fill
                   className={styles.poster}
+                  sizes='(max-width: 768px) 100vw, 50vw'
+                  priority
                 />
               </div>
               <div className={styles.contentDetails}>

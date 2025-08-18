@@ -55,7 +55,14 @@ export default function ContentHeroSimple({
     <section className={styles.hero}>
       <div className={styles.rightSection}>
         <div className={styles.posterWrapper}>
-          <Image src={image} alt={title} fill className={styles.posterImage} />
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className={styles.posterImage}
+            sizes='(max-width: 768px) 100vw, 50vw'
+            priority
+          />
         </div>
         {(socialLinks.facebookUrl ||
           socialLinks.instagramUrl ||
