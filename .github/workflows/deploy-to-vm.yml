@@ -1,0 +1,55 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build on runner (optional sanity build)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: (Optional) run a local build to catch build errors early
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Deploy to remote VM via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          timeout: 600
+          script: |
+            set -e
+            cd "${{ secrets.REMOTE_DIR }}"
+            # Ensure repo references are up to date and reset to remote branch
+            git fetch --all --prune
+            git reset --hard origin/main
+
+            # Ensure pnpm is available and install deps
+            corepack enable || true
+            corepack prepare pnpm@latest --activate || true
+            pnpm install --frozen-lockfile
+
+            # Build and run post-deploy command
+            pnpm build
+            if [ -n "${{ secrets.POST_DEPLOY }}" ]; then
+              eval "${{ secrets.POST_DEPLOY }}"
+            fi
