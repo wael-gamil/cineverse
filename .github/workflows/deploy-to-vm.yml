@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          timeout: 600
+          timeout: 600s
           script: |
             set -e
             cd "${{ secrets.REMOTE_DIR }}"
