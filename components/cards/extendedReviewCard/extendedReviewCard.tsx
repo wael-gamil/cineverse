@@ -213,22 +213,24 @@ export default function ExtendedReviewCard({
         </div>
 
         {/* Review Description with Spoiler Handling */}
-        <div className={styles.reviewDescriptionContainer}>
-          {review.spoiler && !spoilerRevealed ? (
-            <div
-              className={styles.spoilerOverlay}
-              onClick={handleSpoilerReveal}
-            >
-              <div className={styles.spoilerContent}>
-                <Icon name='eye' className={styles.spoilerIcon} />
-                <span className={styles.spoilerText}>Contains Spoilers</span>
-                <span className={styles.spoilerSubtext}>Click to reveal</span>
+        {displayDescription && (
+          <div className={styles.reviewDescriptionContainer}>
+            {review.spoiler && !spoilerRevealed ? (
+              <div
+                className={styles.spoilerOverlay}
+                onClick={handleSpoilerReveal}
+              >
+                <div className={styles.spoilerContent}>
+                  <Icon name='eye' className={styles.spoilerIcon} />
+                  <span className={styles.spoilerText}>Contains Spoilers</span>
+                  <span className={styles.spoilerSubtext}>Click to reveal</span>
+                </div>
               </div>
-            </div>
-          ) : (
-            <p className={styles.reviewDescription}>{displayDescription}</p>
-          )}
-        </div>
+            ) : (
+              <p className={styles.reviewDescription}>{displayDescription}</p>
+            )}
+          </div>
+        )}
 
         {shouldShowReadMore && (spoilerRevealed || !review.spoiler) && (
           <button
