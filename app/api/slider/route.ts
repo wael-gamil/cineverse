@@ -37,10 +37,6 @@ const sortMap: Record<SectionKey, SortMapValue> = {
     sortBy: 'topRated',
     year: '2000',
     lang: 'en',
-    genres: {
-      MOVIE: ['Action', 'Adventure'],
-      SERIES: ['Action & Adventure'],
-    },
   },
   'most-recent': {
     sortBy: 'mostRecent',
