@@ -299,6 +299,7 @@
   position: relative;
   padding: var(--space-xs);
   border-radius: var(--radius-sm);
+  flex-wrap: wrap;
 }
 
 .authorSection::before {
@@ -761,7 +762,6 @@
   .cardWrapper {
     flex-direction: column;
     height: auto;
-    min-height: 300px;
   }
 
   .imageWrapper {
@@ -786,10 +786,6 @@
 }
 
 @media (max-width: 480px) {
-  .cardWrapper {
-    min-height: 280px;
-  }
-
   .imageWrapper {
     height: 180px;
   }
@@ -993,13 +989,13 @@
   box-shadow: 0 4px 12px rgba(31, 142, 241, 0.2);
 }
 
-:global(.lightMode) .actions :global(.button[data-color="primary"]) {
+:global(.lightMode) .actions :global(.button[data-color='primary']) {
   background: linear-gradient(135deg, var(--light-color-primary), #3b82f6);
   border-color: var(--light-color-primary);
   color: white;
 }
 
-:global(.lightMode) .actions :global(.button[data-color="danger"]) {
+:global(.lightMode) .actions :global(.button[data-color='danger']) {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   border-color: #ef4444;
   color: white;

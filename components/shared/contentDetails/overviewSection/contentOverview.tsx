@@ -45,23 +45,76 @@ export default function ContentOverview({
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+
   useEffect(() => {
     const el = descriptionRef.current;
     if (el) {
       setIsOverflowing(el.scrollHeight > el.clientHeight);
     }
   }, [content.description]);
+
   return (
     <section className={styles.overview}>
-      {/* LEFT SECTION */}
       <h2 className={styles.heading}>
         {content.type.charAt(0).toUpperCase() + content.type.slice(1)} Overview
       </h2>
+
       <div className={styles.container}>
+        {/* DESCRIPTION PANEL WITH FLOATING STATS */}
         {content.description && (
           <div className={styles.descriptionWrapper}>
+            {/* Floating Stats Badges */}
+            {((typeof data?.totalReviews === 'number' &&
+              data?.totalReviews > 0) ||
+              (typeof data?.watchlistCount === 'number' &&
+                data?.watchlistCount > 0) ||
+              (typeof data?.platformRate === 'number' &&
+                data?.platformRate > 0)) && (
+              <div className={styles.floatingStats}>
+                {typeof data?.platformRate === 'number' &&
+                  data?.platformRate > 0 && (
+                    <Badge
+                      className={styles.floatingBadge}
+                      iconName='starFilled'
+                      iconColor='white'
+                      text='Rating'
+                      number={Math.round((data?.platformRate ?? 0) * 10)}
+                      backgroundColor='bg-primary'
+                      numberColor='color-white'
+                      size='size-sm'
+                    />
+                  )}
+                {typeof data?.totalReviews === 'number' &&
+                  data?.totalReviews > 0 && (
+                    <Badge
+                      className={styles.floatingBadge}
+                      iconName='message-square'
+                      iconColor='white'
+                      text='Reviews'
+                      number={data?.totalReviews}
+                      backgroundColor='bg-primary'
+                      numberColor='color-white'
+                      size='size-sm'
+                    />
+                  )}
+                {typeof data?.watchlistCount === 'number' &&
+                  data?.watchlistCount > 0 && (
+                    <Badge
+                      className={styles.floatingBadge}
+                      iconName='bookmark'
+                      iconColor='white'
+                      text='Watchlist'
+                      number={data?.watchlistCount}
+                      backgroundColor='bg-primary'
+                      numberColor='color-white'
+                      size='size-sm'
+                    />
+                  )}
+              </div>
+            )}
+
             <div className={styles.descriptionSection}>
-              <h2 className={styles.descriptionHeading}>Description</h2>
+              <h3 className={styles.descriptionHeading}>Description</h3>
               <p
                 ref={descriptionRef}
                 className={`${styles.descriptionText} ${
@@ -81,190 +134,178 @@ export default function ContentOverview({
             </div>
           </div>
         )}
-        <div className={styles.grid}>
-          <div className={styles.card}>
-            <div className={styles.iconWrapper}>
-              <Icon name='tv' strokeColor='white' />
-            </div>
-            <div className={styles.titleBlock}>
-              <span className={styles.label}>Type</span>
-              <span className={styles.value}>
-                {content.type.charAt(0).toUpperCase() + content.type.slice(1)}
-              </span>
-            </div>
-          </div>
 
-          <div className={styles.card}>
-            <div className={styles.iconWrapper}>
-              <Icon name='calendar' strokeColor='white' />
-            </div>
-            <div className={styles.titleBlock}>
-              <span className={styles.label}>Release Date</span>
-              <span className={styles.value}>{content.releaseDate}</span>
-            </div>
-          </div>
-
-          {typeof content.runtime === 'number' && content.runtime > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='clock' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Runtime</span>
-                <span className={styles.value}>{runtime}</span>
-              </div>
-            </div>
-          )}
-
-          {content.language && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='languages' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Language</span>
-                <span className={styles.value}>
-                  {fullLangLabel ? fullLangLabel : content.language}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {content.productionCountry && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='globe' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Country</span>
-                <span className={styles.value}>
-                  {content.productionCountry}
-                </span>
-              </div>
-            </div>
-          )}
-          {content.numberOfSeasons && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='tv-alt' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Seasons</span>
-                <span className={styles.value}>{content.numberOfSeasons}</span>
-              </div>
-            </div>
-          )}
-          {content.numberOfEpisodes && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='film' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Episodes</span>
-                <span className={styles.value}>{content.numberOfEpisodes}</span>
-              </div>
-            </div>
-          )}
-          {typeof data?.totalReviews === 'number' && data?.totalReviews > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='user' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Total Reviews</span>
-                <span className={styles.value}>
-                  {data?.totalReviews.toLocaleString()}
-                </span>
-              </div>
-            </div>
-          )}
-          {typeof data?.watchlistCount === 'number' &&
-            data?.watchlistCount > 0 && (
-              <div className={styles.card}>
-                <div className={styles.iconWrapper}>
-                  <Icon name='bookmark' strokeColor='white' />
+        {/* CLUSTERED INFO GRID */}
+        <div className={styles.clusteredGrid}>
+          {/* Basic Info Cluster */}
+          <div className={styles.infoCluster}>
+            <h3 className={styles.clusterTitle}>Basic Info</h3>
+            <div className={styles.clusterItems}>
+              <div className={styles.clusterItem}>
+                <div className={styles.clusterIcon}>
+                  <Icon name='tv' strokeColor='white' />
                 </div>
-                <div className={styles.titleBlock}>
-                  <span className={styles.label}>Watchlist Count</span>
-                  <span className={styles.value}>
-                    {data?.watchlistCount.toLocaleString()}
+                <div className={styles.clusterContent}>
+                  <span className={styles.clusterLabel}>Type</span>
+                  <span className={styles.clusterValue}>
+                    {content.type.charAt(0).toUpperCase() +
+                      content.type.slice(1)}
                   </span>
                 </div>
               </div>
-            )}
 
-          {typeof data?.platformRate === 'number' && data?.platformRate > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='star' strokeColor='secondary' />
+              <div className={styles.clusterItem}>
+                <div className={styles.clusterIcon}>
+                  <Icon name='calendar' strokeColor='white' />
+                </div>
+                <div className={styles.clusterContent}>
+                  <span className={styles.clusterLabel}>Release Date</span>
+                  <span className={styles.clusterValue}>
+                    {content.releaseDate}
+                  </span>
+                </div>
               </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Cineverse Score</span>
-                <span className={styles.value}>{data?.platformRate * 10}%</span>
+
+              {typeof content.runtime === 'number' && content.runtime > 0 && (
+                <div className={styles.clusterItem}>
+                  <div className={styles.clusterIcon}>
+                    <Icon name='clock' strokeColor='white' />
+                  </div>
+                  <div className={styles.clusterContent}>
+                    <span className={styles.clusterLabel}>Runtime</span>
+                    <span className={styles.clusterValue}>{runtime}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Regional Info Cluster */}
+          {(content.language ||
+            content.productionCountry ||
+            content.status) && (
+            <div className={styles.infoCluster}>
+              <h3 className={styles.clusterTitle}>Regional Info</h3>
+              <div className={styles.clusterItems}>
+                {content.language && (
+                  <div className={styles.clusterItem}>
+                    <div className={styles.clusterIcon}>
+                      <Icon name='languages' strokeColor='white' />
+                    </div>
+                    <div className={styles.clusterContent}>
+                      <span className={styles.clusterLabel}>Language</span>
+                      <span className={styles.clusterValue}>
+                        {fullLangLabel ? fullLangLabel : content.language}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {content.productionCountry && (
+                  <div className={styles.clusterItem}>
+                    <div className={styles.clusterIcon}>
+                      <Icon name='globe' strokeColor='white' />
+                    </div>
+                    <div className={styles.clusterContent}>
+                      <span className={styles.clusterLabel}>Country</span>
+                      <span className={styles.clusterValue}>
+                        {content.productionCountry}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {content.status && (
+                  <div className={styles.clusterItem}>
+                    <div className={styles.clusterIcon}>
+                      <Icon name='status' strokeColor='white' />
+                    </div>
+                    <div className={styles.clusterContent}>
+                      <span className={styles.clusterLabel}>Status</span>
+                      <span className={styles.clusterValue}>
+                        {content.status}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {content.status && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='status' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Status</span>
-                <span className={styles.value}>{content.status}</span>
-              </div>
-            </div>
-          )}
-          {providers && providers.length > 0 && (
-            <div className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon name='tv-alt' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>You can watch on</span>
-                <span className={styles.value}>
-                  {providers.map((provider, index) => {
-                    return (
-                      <div className={styles.imageWrapper} key={index}>
-                        <Image
-                          src={provider.logo}
-                          alt={provider.name}
-                          fill
-                          sizes='(max-width: 768px) 100vw, 50vw'
-                          priority
-                        />
-                      </div>
-                    );
-                  })}
-                </span>
-              </div>
-            </div>
-          )}
-          {genreList && (
-            <div
-              className={`${styles.card} ${
-                genreList.length >= 2 ? styles.cardWide : ''
-              }`}
-            >
-              <div className={styles.iconWrapper}>
-                <Icon name='badge' strokeColor='white' />
-              </div>
-              <div className={styles.titleBlock}>
-                <span className={styles.label}>Genres</span>
-                <span className={styles.value}>
-                  {genreList.map((genre, index) => (
-                    <Badge
-                      key={index}
-                      text={genre}
-                      backgroundColor='bg-white'
-                    />
-                  ))}
-                </span>
+          {/* Series Info Cluster */}
+          {(content.numberOfSeasons || content.numberOfEpisodes) && (
+            <div className={`${styles.infoCluster}`}>
+              <h3 className={styles.clusterTitle}>Series Info</h3>
+              <div className={styles.clusterItems}>
+                {content.numberOfSeasons && (
+                  <div className={styles.clusterItem}>
+                    <div className={styles.clusterIcon}>
+                      <Icon name='tv-alt' strokeColor='white' />
+                    </div>
+                    <div className={styles.clusterContent}>
+                      <span className={styles.clusterLabel}>Seasons</span>
+                      <span className={styles.clusterValue}>
+                        {content.numberOfSeasons}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {content.numberOfEpisodes && (
+                  <div className={styles.clusterItem}>
+                    <div className={styles.clusterIcon}>
+                      <Icon name='film' strokeColor='white' />
+                    </div>
+                    <div className={styles.clusterContent}>
+                      <span className={styles.clusterLabel}>Episodes</span>
+                      <span className={styles.clusterValue}>
+                        {content.numberOfEpisodes}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
         </div>
+
+        {/* COMBINED CONTENT SECTION */}
+        {((genreList && genreList.length > 0) ||
+          (providers && providers.length > 0)) && (
+          <div className={styles.combinedContent}>
+            {genreList && genreList.length > 0 && (
+              <div className={styles.contentSection}>
+                <h3 className={styles.sectionTitle}>Genres</h3>
+                <div className={styles.genresFlow}>
+                  {genreList.map((genre, index) => (
+                    <span key={index} className={styles.genreTag}>
+                      {genre}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {providers && providers.length > 0 && (
+              <div className={styles.contentSection}>
+                <h3 className={styles.sectionTitle}>Available On</h3>
+                <div className={styles.providersFlow}>
+                  {providers.map((provider, index) => (
+                    <div key={index} className={styles.providerCard}>
+                      <Image
+                        src={provider.logo}
+                        alt={provider.name}
+                        fill
+                        sizes='60px'
+                        style={{ objectFit: 'cover' }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

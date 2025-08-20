@@ -1,5 +1,5 @@
 .section {
-  padding: var(--space-md) var(--space-xxl);
+  padding: var(--space-md) var(--space-xxl) var(--space-xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);

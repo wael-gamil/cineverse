@@ -109,7 +109,7 @@ export default function ReviewsSection({
     <>
       <section
         ref={reviewsRef}
-        className={`${styles.section} ${isInView ? 'lightMode' : ''}`}
+        className={`${styles.section} ${isInView ? '' : ''}`}
       >
         <div className={styles.sectionHeader}>
           <div className={styles.heading}>
