@@ -137,40 +137,40 @@ pnpm start
 
 ```
 cineverse/
-├── app/                          # Next.js 14 App Router
-│   ├── (App)/                   # Main application routes
-│   │   ├── (Auth)/             # Authentication pages
-│   │   │   ├── login/          # Login page
-│   │   │   ├── register/       # Registration page
-│   │   │   └── forget-password/ # Password reset
-│   │   ├── (Home)/             # Home page
-│   │   ├── [slug]/             # Dynamic content pages
-│   │   ├── crew/               # Cast & crew pages
-│   │   ├── explore/            # Content discovery
-│   │   ├── profile/            # User profiles
-│   │   ├── reviews/            # Reviews section
-│   │   ├── search/             # Search functionality
-│   │   └── watchlist/          # Watchlist management
-│   ├── api/                    # API routes
-│   │   ├── auth/               # Authentication endpoints
-│   │   ├── content/            # Content-related APIs
-│   │   ├── proxy/              # Proxy endpoints
-│   │   ├── reviews/            # Review management
-│   │   ├── user/               # User management
-│   │   └── watchlist/          # Watchlist APIs
-│   └── layout.tsx              # Root layout
-├── components/                 # React components
-│   ├── cards/                  # Card components
-│   ├── layout/                 # Layout components
-│   ├── pages/                  # Page-specific components
-│   ├── shared/                 # Shared components
-│   └── ui/                     # UI components
-├── hooks/                      # Custom React hooks
-├── lib/                        # Utility libraries
-├── constants/                  # Constants and types
-├── styles/                     # Global styles
-├── utils/                      # Utility functions
-└── public/                     # Static assets
+├── app/                             # Next.js 14 App Router
+│   ├── (App)/                       # Main application routes
+│   │   ├── (Auth)/                  # Authentication pages
+│   │   │   ├── login/               # Login page
+│   │   │   ├── register/            # Registration page
+│   │   │   └── forget-password/     # Password reset
+│   │   ├── (Home)/                  # Home page
+│   │   ├── [slug]/                  # Dynamic content pages
+│   │   ├── crew/                    # Cast & crew pages
+│   │   ├── explore/                 # Content discovery
+│   │   ├── profile/                 # User profiles
+│   │   ├── reviews/                 # Reviews section
+│   │   ├── search/                  # Search functionality
+│   │   └── watchlist/               # Watchlist management
+│   ├── api/                         # API routes
+│   │   ├── auth/                    # Authentication endpoints
+│   │   ├── content/                 # Content-related APIs
+│   │   ├── proxy/                   # Proxy endpoints
+│   │   ├── reviews/                 # Review management
+│   │   ├── user/                    # User management
+│   │   └── watchlist/               # Watchlist APIs
+│   └── layout.tsx                   # Root layout
+├── components/                      # React components
+│   ├── cards/                       # Card components
+│   ├── layout/                      # Layout components
+│   ├── pages/                       # Page-specific components
+│   ├── shared/                      # Shared components
+│   └── ui/                          # UI components
+├── hooks/                           # Custom React hooks
+├── lib/                             # Utility libraries
+├── constants/                       # Constants and types
+├── styles/                          # Global styles
+├── utils/                           # Utility functions
+└── public/                          # Static assets
 ```
 
 ## 🎯 Key Features Deep Dive
