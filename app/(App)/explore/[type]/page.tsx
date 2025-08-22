@@ -11,7 +11,6 @@ import SectionHeader from '@/components/shared/contentSliderSection/sectionHeade
 import OrderTabs from '@/components/ui/orderTabs/orderTabs';
 import { Metadata } from 'next';
 import { generateExploreMetadata } from '@/utils/metadata';
-import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -137,7 +136,7 @@ export default async function ContentPage({
   ];
   return (
     <>
-      <Script
+      <script
         id='explore page schema'
         type='application/ld+json'
         dangerouslySetInnerHTML={{

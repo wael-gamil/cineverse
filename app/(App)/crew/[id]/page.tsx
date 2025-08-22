@@ -10,7 +10,6 @@ import {
   generatePersonMetadata,
   generatePersonStructuredData,
 } from '@/utils/metadata';
-import Script from 'next/script';
 
 type PersonPageProps = {
   params: Promise<{ id: number }>;
@@ -79,7 +78,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
     return (
       <>
         {/* Structured Data */}
-        <Script
+        <script
           id={`${extendedPersonDetails.name}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{

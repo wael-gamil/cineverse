@@ -10,7 +10,6 @@ import MotionSection from '@/components/shared/motionSection';
 import { Metadata } from 'next';
 import { generateHomeMetadata } from '@/utils/metadata';
 import { cookies } from 'next/headers';
-import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -243,7 +242,7 @@ export default async function Home() {
   return (
     <>
       {/* Structured Data */}
-      <Script
+      <script
         id='home-page-structured-data'
         type='application/ld+json'
         dangerouslySetInnerHTML={{

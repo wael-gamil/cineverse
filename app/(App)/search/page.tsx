@@ -10,7 +10,6 @@ import { Suspense } from 'react';
 import SearchResultSkeleton from '@/components/ui/search/searchResultSkeleton';
 import SearchResultWrapper from '@/components/ui/search/searchResultWrapper';
 import { Metadata } from 'next';
-import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -129,7 +128,7 @@ export default async function Search({
   };
   return (
     <SearchPageClient>
-      <Script
+      <script
         id='search-results-schema'
         type='application/ld+json'
         dangerouslySetInnerHTML={{

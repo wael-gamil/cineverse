@@ -17,7 +17,6 @@ import {
 import { getQueryClient } from '@/lib/getQueryClient';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
-import Script from 'next/script';
 
 type EpisodeProps = {
   params: Promise<{
@@ -216,7 +215,7 @@ export default async function Episode({ params }: EpisodeProps) {
     };
     return (
       <HydrationBoundary state={dehydratedState}>
-        <Script
+        <script
           id={`${details.title}-${seasonNumber}-${episodeNumber}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{

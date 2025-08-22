@@ -13,7 +13,6 @@ import type { Season } from '@/constants/types/movie';
 import { getQueryClient } from '@/lib/getQueryClient';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
-import Script from 'next/script';
 
 type SeasonProps = {
   params: Promise<{ seasonNumber: number; slug: string }>;
@@ -168,7 +167,7 @@ export default async function Season({ params }: SeasonProps) {
   return (
     <>
       {/* Structured Data */}
-      <Script
+      <script
         id={`${details.title}-${seasonNumber}-schema`}
         type='application/ld+json'
         dangerouslySetInnerHTML={{
