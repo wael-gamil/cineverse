@@ -32,11 +32,12 @@ export default function CommunityFloat() {
           <div className={styles.textHeader}>
             <h3 className={styles.heading}>Join CineVerse</h3>
             <p className={styles.subtext}>
-              Build your watchlist, write reviews, and connect with fellow movie
-              enthusiasts.
+              Explore new movies, track your favorites, share reviews, and
+              connect with fellow film fans. CineVerse is your home for
+              discovering and celebrating cinema together.
             </p>
           </div>
-          <div className={styles.stats}>
+          {/* <div className={styles.stats}>
             <div className={styles.statBox}>
               <Icon name='user' strokeColor='white' />
               <span className={styles.statNumber}>2.5M+</span>
@@ -47,7 +48,7 @@ export default function CommunityFloat() {
               <span className={styles.statNumber}>1.8M+</span>
               <p className={styles.statLabel}>Reviews</p>
             </div>
-          </div>
+          </div> */}
           <div className={styles.cta}>
             <Button>
               <Link href='/register' className={styles.link}>
