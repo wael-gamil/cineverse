@@ -75,10 +75,10 @@ export default async function PublicProfilePage({
           userProfile.bio || `${userProfile.name}'s profile on CineVerse`,
         image: userProfile.profilePicture,
         url: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
         }/profile/${userProfile.username}`,
         sameAs: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
         }/profile/${userProfile.username}`,
       },
     };
@@ -89,17 +89,14 @@ export default async function PublicProfilePage({
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item:
-            process.env.NEXT_PUBLIC_SITE_URL ||
-            'https://cineverse-xi.vercel.app',
+          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: userProfile.name,
           item: `${
-            process.env.NEXT_PUBLIC_SITE_URL ||
-            'https://cineverse-xi.vercel.app'
+            process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
           }/profile/${userProfile.username}`,
         },
       ],
