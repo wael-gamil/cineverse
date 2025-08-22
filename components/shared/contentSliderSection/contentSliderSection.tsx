@@ -82,6 +82,8 @@ export default function ContentSliderSection({
   const totalElements = totalElementsByFilter[filter] ?? fetchedContent.length;
   const isMobile = useResponsiveLayout();
   const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
+  const minHeight =
+    cardProps?.imageHeight === 'image-md' ? 300 : 400 + (isMobile ? 250 : 0);
   const [animation, setAnimation] = useState<'slideLeft' | 'slideRight'>(
     'slideLeft'
   );
@@ -291,6 +293,7 @@ export default function ContentSliderSection({
             page + 1 >= totalPages
           }
           animation={shouldAnimate ? animation : null}
+          minHeight={minHeight}
         >
           {(isLoading || (isFetching && visibleContent.length === 0)) &&
             Array.from({ length: cardsPerView }).map((_, idx) => (

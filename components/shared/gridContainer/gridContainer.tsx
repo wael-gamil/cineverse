@@ -17,6 +17,7 @@ type GridContainerProps = {
   lastPage?: boolean;
   scrollRows?: number;
   animation?: 'slideLeft' | 'slideRight' | 'fade' | null;
+  minHeight?: number | string;
 };
 
 export default function GridContainer({
@@ -30,6 +31,7 @@ export default function GridContainer({
   lastPage = false,
   scrollRows,
   animation,
+  minHeight,
 }: GridContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useResponsiveLayout();
@@ -60,6 +62,7 @@ export default function GridContainer({
       }`}
       style={{
         gap: `${cardGap}px`,
+        minHeight: minHeight ?? undefined,
         ...(layout === 'grid'
           ? {
               gridTemplateColumns:
