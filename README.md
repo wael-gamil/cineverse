@@ -26,6 +26,8 @@ It allows users to discover, track, and review their favorite movies and TV show
 
 ![CineVerse Preview](./public/screenshot-wide.png)
 
+---
+
 ## ✨ Features
 
 ### 🔍 Content Discovery
@@ -81,6 +83,8 @@ It allows users to discover, track, and review their favorite movies and TV show
 - **Loading States**: Skeleton screens for better perceived performance
 - **Toast Notifications**: User-friendly feedback messages
 
+---
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -106,6 +110,8 @@ It allows users to discover, track, and review their favorite movies and TV show
 - **TypeScript**: Full type safety
 - **Custom Fonts**: Geist and Inter font families
 - **Environment Variables**: Secure configuration management
+
+---
 
 ## 🚀 Getting Started
 
@@ -195,6 +201,8 @@ cineverse/
 └── public/                          # Static assets
 ```
 
+---
+
 ## 🎯 Key Features Deep Dive
 
 ### Authentication System
@@ -226,6 +234,8 @@ cineverse/
 - **Caching**: Strategic caching with React Query
 - **Skeleton Loading**: Better perceived performance
 
+---
+
 ## 🎨 Design System
 
 ### Color Palette
@@ -255,6 +265,8 @@ cineverse/
 - `useResponsiveLayout`: Responsive design utilities
 - `useIsInView`: Intersection observer wrapper
 
+---
+
 ## 📱 Responsive Design
 
 CineVerse is fully responsive and optimized for:
@@ -263,12 +275,16 @@ CineVerse is fully responsive and optimized for:
 - **Tablet**: Optimized layouts with touch-friendly interactions
 - **Mobile**: Streamlined interface with mobile-specific navigation
 
+---
+
 ## 🛡️ Security Features
 
 - **JWT Authentication**: Secure token-based authentication
 - **HTTP-Only Cookies**: Protection against XSS attacks
 - **Input Validation**: Client and server-side validation
 - **Protected Routes**: Authentication guards for sensitive pages
+
+---
 
 ## 🚀 Performance Features
 
@@ -278,18 +294,26 @@ CineVerse is fully responsive and optimized for:
 - **Code Splitting**: Automatic bundle splitting
 - **Prefetching**: Link prefetching for instant navigation
 
+---
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+---
+
 ## 👥 Authors
 
 - **[Wael Gamil](https://www.linkedin.com/in/wael-gamil/)** - Frontend Developer
 - **[Mahmoud Abdelfattah](https://www.linkedin.com/in/mahmoud-a-fattah)** - Backend Developer
+
+---
 
 ## 🙏 Acknowledgments
 
@@ -297,6 +321,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Next.js](https://nextjs.org/) for the amazing React framework
 - [TanStack](https://tanstack.com/) for excellent data fetching and state management
 - The open-source community for inspiration and tools
+
+---
 
 ## 📞 Support
 
