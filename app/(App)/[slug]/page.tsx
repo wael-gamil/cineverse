@@ -12,7 +12,6 @@ import {
   generateContentMetadata,
   generateMovieStructuredData,
 } from '@/utils/metadata';
- 
 
 type MovieOrSeriesPageProps = {
   params: Promise<{ slug: string }>;
@@ -45,6 +44,8 @@ export async function generateMetadata({
 export default async function MovieOrSeriesPage({
   params,
 }: MovieOrSeriesPageProps) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   const { slug } = await params;
   const queryClient = getQueryClient();
 
@@ -75,13 +76,13 @@ export default async function MovieOrSeriesPage({
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: baseUrl,
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: details.title,
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: `${baseUrl}/${slug}`,
         },
       ],
     };
@@ -89,13 +90,17 @@ export default async function MovieOrSeriesPage({
       <>
         {/* Structured Data */}
         <script
-          id={`${details.title}-schema`}
+          id={`structured-data-${details.id}`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              ...structuredData,
-              breadcrumb,
-            }),
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+        <script
+          id={`breadcrumb-${details.id}`}
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumb),
           }}
         />
         <HydrationBoundary state={dehydratedState}>

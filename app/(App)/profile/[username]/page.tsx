@@ -44,7 +44,8 @@ export default async function PublicProfilePage({
 }: PublicProfilePageProps) {
   const { username } = await params;
   const queryClient = getQueryClient();
-
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   try {
     await queryClient.prefetchQuery({
       queryKey: ['public-user-profile', username],
@@ -73,30 +74,25 @@ export default async function PublicProfilePage({
         description:
           userProfile.bio || `${userProfile.name}'s profile on CineVerse`,
         image: userProfile.profilePicture,
-        url: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-        }/profile/${userProfile.username}`,
-        sameAs: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-        }/profile/${userProfile.username}`,
+        url: `${baseUrl}/profile/${userProfile.username}`,
+        sameAs: `${baseUrl}/profile/${userProfile.username}`,
       },
     };
     const breadcrumb = {
+      '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
         {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: baseUrl,
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: userProfile.name,
-          item: `${
-            process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-          }/profile/${userProfile.username}`,
+          item: `${baseUrl}/profile/${userProfile.username}`,
         },
       ],
     };
@@ -104,13 +100,17 @@ export default async function PublicProfilePage({
       <>
         {/* Structured Data */}
         <script
-          id={`${userProfile.name || userProfile.username}-schema`}
+          id={`profile-schema-${userProfile.username}`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              ...structuredData,
-              breadcrumb,
-            }),
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+        <script
+          id={`breadcrumb-schema-${userProfile.username}`}
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumb),
           }}
         />
         <HydrationBoundary state={dehydratedState}>

@@ -79,6 +79,8 @@ export default async function Search({
 }: {
   searchParams: Promise<AwaitedSearchParams>;
 }) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   const awaitedSearchParams = await searchParams;
   const query = awaitedSearchParams.q || '';
   const page = parseInt(awaitedSearchParams.page || '1', 10) - 1;
@@ -89,20 +91,18 @@ export default async function Search({
     '@type': 'WebSite',
     name: 'CineVerse',
     alternateName: 'CineVerse - Movie and TV Series Platform',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+    url: baseUrl,
     description:
       'Search movies, TV series, actors, and directors on CineVerse. Discover new content and find detailed information, reviews, and ratings.',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-        }/search?q={search_term_string}`,
+        urlTemplate: `${baseUrl}/search?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
-    sameAs: [process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'],
+    sameAs: [baseUrl],
   };
 
   // Generate breadcrumb structured data for search page
@@ -114,46 +114,52 @@ export default async function Search({
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        item: baseUrl,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Search',
-        item: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-        }/search${query ? `?q=${encodeURIComponent(query)}` : ''}`,
+        item: `${baseUrl}/search${
+          query ? `?q=${encodeURIComponent(query)}` : ''
+        }`,
       },
     ],
   };
   return (
-    <SearchPageClient>
+    <>
       <script
-        id='search-results-schema'
+        id='structured-data-schema'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...structuredData,
-            breadcrumb,
-          }),
+          __html: JSON.stringify(structuredData),
         }}
       />
-      <div className={styles.header}>
-        <div className={styles.headerTop}>
-          <div className={styles.headerLeft}>
-            <h2 className={styles.title}>Search Results</h2>
+      <script
+        id='breadcrumb-schema'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumb),
+        }}
+      />
+      <SearchPageClient>
+        <div className={styles.header}>
+          <div className={styles.headerTop}>
+            <div className={styles.headerLeft}>
+              <h2 className={styles.title}>Search Results</h2>
+            </div>
+            <ExitButton />
           </div>
-          <ExitButton />
+          <SearchInput initialQuery={query} />
+          {/* <SearchFilter />  */}
         </div>
-        <SearchInput initialQuery={query} />
-        {/* <SearchFilter />  */}
-      </div>
-      <Suspense
-        key={JSON.stringify(awaitedSearchParams)}
-        fallback={<SearchResultSkeleton />}
-      >
-        <SearchResultWrapper query={query} page={page} type={type} />
-      </Suspense>
-    </SearchPageClient>
+        <Suspense
+          key={JSON.stringify(awaitedSearchParams)}
+          fallback={<SearchResultSkeleton />}
+        >
+          <SearchResultWrapper query={query} page={page} type={type} />
+        </Suspense>
+      </SearchPageClient>
+    </>
   );
 }

@@ -94,6 +94,8 @@ export async function generateMetadata({
   }
 }
 export default async function Season({ params }: SeasonProps) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   const { seasonNumber, slug } = await params;
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
@@ -123,6 +125,7 @@ export default async function Season({ params }: SeasonProps) {
       '@type': 'TVSeries',
       name: details.title,
       genre: details.genres,
+      url: `${baseUrl}/${slug}`,
     },
     name: `${details.title} Season ${seasonNumber}`,
     seasonNumber: seasonNumber,
@@ -148,19 +151,19 @@ export default async function Season({ params }: SeasonProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        item: baseUrl,
       },
       {
         '@type': 'ListItem',
         position: 2,
-        name: details.title,
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        name: details?.title || 'Series',
+        item: `${baseUrl}/${slug}`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: `Season ${seasonNumber}`,
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        item: `${baseUrl}/${slug}/seasons/${seasonNumber}`,
       },
     ],
   };
@@ -168,13 +171,17 @@ export default async function Season({ params }: SeasonProps) {
     <>
       {/* Structured Data */}
       <script
-        id={`${details.title}-${seasonNumber}-schema`}
+        id={`season-schema-${details.id}-Season ${seasonNumber}`}
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...structuredData,
-            breadcrumb,
-          }),
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <script
+        id={`breadcrumb-schema-${details.id}-Season ${seasonNumber}`}
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumb),
         }}
       />
       <HydrationBoundary state={dehydratedState}>

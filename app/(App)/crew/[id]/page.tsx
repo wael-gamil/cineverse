@@ -40,6 +40,7 @@ export async function generateMetadata({
 }
 
 export default async function PersonPage({ params }: PersonPageProps) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
   const { id } = await params;
   const queryClient = getQueryClient();
 
@@ -61,31 +62,39 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
     // Generate structured data for SEO
     const structuredData = generatePersonStructuredData(extendedPersonDetails);
-    const breadcrumb = [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: extendedPersonDetails.name,
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
-      },
-    ];
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: baseUrl,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: extendedPersonDetails.name,
+          item: `${baseUrl}/crew/${extendedPersonDetails.id}`,
+        },
+      ],
+    };
     return (
       <>
         {/* Structured Data */}
         <script
-          id={`${extendedPersonDetails.name}-schema`}
+          id={`person-schema-${extendedPersonDetails.id}`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              ...structuredData,
-              breadcrumb,
-            }),
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+        <script
+          id={`person-breadcrumb-${extendedPersonDetails.id}`}
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumb),
           }}
         />
         <HydrationBoundary state={dehydratedState}>
