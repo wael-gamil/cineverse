@@ -7,19 +7,35 @@ export function useContentSectionQuery(
   id: number,
   enabled: boolean,
   seasonNumber?: number,
-  sortBy?: string
+  sortBy?: string,
+  page?: number,
+  size?: number
 ) {
   return useQuery({
-    queryKey: ['content-section', section, id, seasonNumber, sortBy],
+    queryKey: [
+      'content-section',
+      section,
+      id,
+      seasonNumber,
+      sortBy,
+      page,
+      size,
+    ],
     queryFn: async () => {
       let url = '';
       switch (section) {
         case 'credits':
           url = `/api/proxy/credits?id=${id}`;
           break;
-        case 'reviews':
-          url = `/api/proxy/reviews?id=${id}&sortBy=${sortBy || 'likes'}`;
+        case 'reviews': {
+          const params = new URLSearchParams();
+          params.set('id', String(id));
+          params.set('sortBy', sortBy || 'likes');
+          params.set('page', String(page ?? 0));
+          params.set('size', String(size ?? 5));
+          url = `/api/proxy/reviews?${params.toString()}`;
           break;
+        }
         case 'seasons':
           url = `/api/proxy/seasons?id=${id}`;
           break;

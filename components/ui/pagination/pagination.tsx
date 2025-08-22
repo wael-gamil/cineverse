@@ -9,15 +9,26 @@ import useResponsiveLayout from '@/hooks/useResponsiveLayout';
 type Props = {
   currentPage: number;
   totalPages: number;
+  hideParam?: boolean;
+  setCurrentPage?: (page: number) => void;
 };
 
-export default function Pagination({ currentPage, totalPages }: Props) {
+export default function Pagination({
+  currentPage,
+  totalPages,
+  hideParam = false,
+  setCurrentPage,
+}: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isMobile = useResponsiveLayout();
 
   const onPageChange = (displayPage: number) => {
+    if (hideParam && setCurrentPage) {
+      setCurrentPage(displayPage - 1);
+      return;
+    }
     const params = new URLSearchParams(searchParams);
     params.set('page', displayPage.toString());
     router.push(`${pathname}?${params.toString()}`);

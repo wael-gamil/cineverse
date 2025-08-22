@@ -138,7 +138,6 @@
 /* Ensure content is above any effects */
 .section > * {
   position: relative;
-  z-index: 1;
 }
 
 /* Enhanced light mode text styles with smooth color transitions */

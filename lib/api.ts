@@ -238,12 +238,16 @@ export const getContentReviews = async (id: number): Promise<Review[]> => {
 export const getContentReviewsClient = async (
   id: number,
   token?: string,
-  sortBy = 'likes'
-): Promise<Review[]> => {
+  sortBy = 'likes',
+  page = 0,
+  size = 5
+): Promise<{ reviews: Review[]; totalPages: number; currentPage: number }> => {
   return await safeApiCall(
     async () => {
       const query = new URLSearchParams();
       query.set('sortBy', sortBy);
+      query.set('page', String(page));
+      query.set('size', String(size));
 
       const url = `reviews/contents/${id}?${query.toString()}`;
       // Build headers with optional Authorization
@@ -253,9 +257,13 @@ export const getContentReviewsClient = async (
       }
 
       const rawData = await fetcher(url, 0, headers);
-      return rawData.content as Review[];
+      return {
+        reviews: rawData.content as Review[],
+        totalPages: rawData.totalPages ?? 1,
+        currentPage: rawData.number ?? page,
+      };
     },
-    [], // Return empty array on error
+    { reviews: [], totalPages: 0, currentPage: 0 }, // Return empty on error
     'client'
   );
 };

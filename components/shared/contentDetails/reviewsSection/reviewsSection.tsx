@@ -12,6 +12,8 @@ import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useReviewReactionHandler } from '@/hooks/useReviewReactionHandler';
+import ReviewsFilters from '@/components/pages/reviews/reviewsFilters';
+import Pagination from '@/components/ui/pagination/pagination';
 import { useIsInView } from '@/hooks/useIsInView';
 
 type ReviewsSectionProps = {
@@ -20,6 +22,11 @@ type ReviewsSectionProps = {
   contentTitle: string;
   contentPoster?: string;
   refetch: () => void;
+  sortBy?: string;
+  setSortBy?: (sort: string) => void;
+  currentPage?: number;
+  setCurrentPage?: (page: number) => void;
+  totalPages?: number;
 };
 
 export default function ReviewsSection({
@@ -28,6 +35,11 @@ export default function ReviewsSection({
   contentTitle,
   contentPoster,
   refetch,
+  sortBy = 'likes',
+  setSortBy,
+  currentPage = 0,
+  setCurrentPage,
+  totalPages = 1,
 }: ReviewsSectionProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { requireAuth } = useAuth();
@@ -41,6 +53,17 @@ export default function ReviewsSection({
 
   const mostHelpfulReview = data[0];
   const otherReviews = data.slice(1);
+
+  // Sort options for reviews
+  const reviewSortOptions = {
+    title: 'Sort By',
+    key: 'sortBy',
+    options: [
+      { label: 'Most Liked', value: 'likes' },
+      { label: 'Most Recent', value: 'recent' },
+    ] as any,
+    multiple: false,
+  };
   // Convert Review to ExtendedReview format for ExtendedReviewCard
   const convertToExtendedReview = (review: Review): ExtendedReview => ({
     ...review,
@@ -122,11 +145,19 @@ export default function ReviewsSection({
           </Button>
         </div>
 
+        {/* Sort Controls */}
+        <ReviewsFilters
+          sortOptions={reviewSortOptions}
+          initialSortBy={sortBy}
+          hideParam
+          setCurrentSortBy={setSortBy}
+        />
+
         <div className={styles.container}>
           {/* Most Helpful Review */}
           {mostHelpfulReview && (
             <div className={styles.cardWrapper}>
-              <h3>Most Helpful Review</h3>
+              <h3>Most {sortBy === 'likes' ? 'Liked' : 'Recent'} Review</h3>
               <ExtendedReviewCard
                 review={convertToExtendedReview(
                   getReviewState(mostHelpfulReview.reviewId) ||
@@ -143,6 +174,7 @@ export default function ReviewsSection({
               />
             </div>
           )}
+
           {/* Other Reviews */}
           {otherReviews.length > 0 && (
             <div className={styles.cardWrapper}>
@@ -186,6 +218,16 @@ export default function ReviewsSection({
             </div>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            hideParam
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </section>
 
       {/* Add Review Popup */}
