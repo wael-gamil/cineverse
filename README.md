@@ -22,7 +22,7 @@ It allows users to discover, track, and review their favorite movies and TV show
 
 🚀 **SEO Optimized** – CineVerse achieves **100% SEO score on Google PageSpeed Insights**, ensuring top-notch discoverability and accessibility.  
 
-🔗 [Live Preview](https://your-live-demo-link.com) | 📂 [Backend Repository](https://github.com/yourusername/cineverse-backend)
+🔗 [Live Preview](https://cineverse.social/) | 📂 [Backend Repository](https://github.com/MahmoudAbdulfattah1/CineVerse)
 
 ![CineVerse Preview](./public/screenshot-wide.png)
 
