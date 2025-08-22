@@ -11,6 +11,7 @@ import styles from './topReviewersSidebar.module.css';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import avatarFallback from '@/public/avatar_fallback.png';
+import Image from 'next/image';
 export default function TopReviewersSidebar() {
   const { data: topReviewers = [], isLoading: loadingReviewers } =
     useTopReviewersQuery(5);
@@ -137,10 +138,12 @@ export default function TopReviewersSidebar() {
                     styles[`rank${idx + 1}`]
                   }`}
                 >
-                  <img
+                  <Image
                     src={reviewer.user.imageUrl || avatarFallback.src}
                     alt={reviewer.user.name}
                     className={styles.avatarImage}
+                    sizes='(max-width: 768px) 100vw, 400px'
+                    priority
                   />
                   {/* Rank badge overlay */}
                   <div className={styles.rankBadge} aria-hidden>
