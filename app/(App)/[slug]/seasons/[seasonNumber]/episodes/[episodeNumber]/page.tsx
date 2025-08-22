@@ -122,6 +122,8 @@ export async function generateMetadata({
 }
 
 export default async function Episode({ params }: EpisodeProps) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   const { episodeNumber, seasonNumber, slug } = await params;
   const queryClient = getQueryClient();
 
@@ -181,6 +183,12 @@ export default async function Episode({ params }: EpisodeProps) {
         '@type': 'TVSeries',
         name: details.title,
         genre: details.genres,
+        url: `${baseUrl}/${slug}`,
+      },
+      partOfSeason: {
+        '@type': 'TVSeason',
+        name: `Season ${seasonNumber}`,
+        url: `${baseUrl}/${slug}/seasons/${seasonNumber}`,
       },
     };
     const breadcrumb = {
@@ -191,58 +199,64 @@ export default async function Episode({ params }: EpisodeProps) {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: baseUrl,
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: details.title,
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: `${baseUrl}/${slug}`,
         },
         {
           '@type': 'ListItem',
           position: 3,
           name: `Season ${seasonNumber}`,
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: `${baseUrl}/${slug}/seasons/${seasonNumber}`,
         },
         {
           '@type': 'ListItem',
           position: 4,
           name: `Episode ${episodeNumber}`,
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+          item: `${baseUrl}/${slug}/seasons/${seasonNumber}/episodes/${episodeNumber}`,
         },
       ],
     };
     return (
-      <HydrationBoundary state={dehydratedState}>
+      <>
         <script
-          id={`${details.title}-${seasonNumber}-${episodeNumber}-schema`}
+          id={`episode-schema-${details.id}-s${seasonNumber}-e${episodeNumber}`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              ...structuredData,
-              breadcrumb,
-            }),
+            __html: JSON.stringify(structuredData),
           }}
         />
-        <ContentHero
-          content={normalizeContent(episodeDetails)}
-          backgroundUrl={details.backdropUrl}
-          fallbackPoster={seasonDetails.posterUrl || details.posterUrl}
-          genres={details.genres}
+        <script
+          id={`breadcrumb-schema-${details.id}-s${seasonNumber}-e${episodeNumber}`}
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumb),
+          }}
         />
-        <ContentOverview
-          content={normalizeContent(episodeDetails)}
-          genres={details.genres}
-        />
-        <ContentSectionWrapper
-          section='reviews'
-          id={details.id}
-          contentTitle={details.title}
-          contentPoster={details.posterUrl}
-          sortBy='likes'
-        />
-      </HydrationBoundary>
+        <HydrationBoundary state={dehydratedState}>
+          <ContentHero
+            content={normalizeContent(episodeDetails)}
+            backgroundUrl={details.backdropUrl}
+            fallbackPoster={seasonDetails.posterUrl || details.posterUrl}
+            genres={details.genres}
+          />
+          <ContentOverview
+            content={normalizeContent(episodeDetails)}
+            genres={details.genres}
+          />
+          <ContentSectionWrapper
+            section='reviews'
+            id={details.id}
+            contentTitle={details.title}
+            contentPoster={details.posterUrl}
+            sortBy='likes'
+          />
+        </HydrationBoundary>
+      </>
     );
   } catch (error) {
     notFound();

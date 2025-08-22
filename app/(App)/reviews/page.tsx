@@ -47,6 +47,8 @@ type ReviewsPageProps = {
 };
 
 export default async function Reviews({ searchParams }: ReviewsPageProps) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   const awaitedSearchParams = await searchParams;
   const sortBy = awaitedSearchParams['sortBy'] || 'recent';
   const page = parseInt(awaitedSearchParams['page'] || '1', 10) - 1;
@@ -77,15 +79,13 @@ export default async function Reviews({ searchParams }: ReviewsPageProps) {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: 'Community Reviews | CineVerse',
-    url: `${
-      process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-    }/reviews`,
+    url: `${baseUrl}/reviews`,
     description:
       'Read and discover community reviews for movies and TV series. Share your thoughts, rate content, and find your next watch based on trusted user reviews on CineVerse.',
     isPartOf: {
       '@type': 'WebSite',
       name: 'CineVerse',
-      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      url: baseUrl,
     },
   };
 
@@ -98,28 +98,30 @@ export default async function Reviews({ searchParams }: ReviewsPageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        item: baseUrl,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Reviews',
-        item: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-        }/reviews`,
+        item: `${baseUrl}/reviews`,
       },
     ],
   };
   return (
     <>
       <script
-        id='reviews page schema'
+        id='reviews-structured-data'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...structuredData,
-            breadcrumb,
-          }),
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <script
+        id='reviews-breadcrumb'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumb),
         }}
       />
       <div className={styles.pageContainer}>

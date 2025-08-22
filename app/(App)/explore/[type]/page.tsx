@@ -53,6 +53,8 @@ export default async function ContentPage({
   params,
   searchParams,
 }: ContentPageProps) {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
   const { type } = await params;
   if (!validTypes.includes(type)) return notFound();
 
@@ -102,9 +104,7 @@ export default async function ContentPage({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: `Explore ${type === 'movies' ? 'Movies' : 'TV Series'} | CineVerse`,
-    url: `${
-      process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-    }/explore/${type}`,
+    url: `${baseUrl}/explore/${type}`,
     description: `Browse and discover ${
       type === 'movies' ? 'movies' : 'TV series'
     } by genre, year, rating, and language on CineVerse.`,
@@ -114,36 +114,40 @@ export default async function ContentPage({
           name: genre,
         }))
       : undefined,
-    sameAs: [
-      `${
-        process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-      }/explore/${type}`,
+    sameAs: [`${baseUrl}/explore/${type}`],
+  };
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: baseUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: `Explore ${type === 'movies' ? 'Movies' : 'TV Series'}`,
+        item: `${baseUrl}/explore/${type}`,
+      },
     ],
   };
-  const breadcrumb = [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: `Explore ${type === 'movies' ? 'Movies' : 'TV Series'}`,
-      item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
-    },
-  ];
   return (
     <>
       <script
-        id='explore page schema'
+        id='explore-page-structured-data'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...structuredData,
-            breadcrumb,
-          }),
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <script
+        id='explore-page-breadcrumb'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumb),
         }}
       />
       <section className={styles.content}>

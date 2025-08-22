@@ -190,6 +190,7 @@ const sectionConfig: Record<
 };
 
 export default async function Home() {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
   const { content } = await getContents(
@@ -212,20 +213,18 @@ export default async function Home() {
     '@type': 'WebSite',
     name: 'CineVerse',
     alternateName: 'CineVerse - Movie and TV Series Platform',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+    url: baseUrl,
     description:
       'The ultimate platform for movie and TV series enthusiasts. Discover new content, create personalized watchlists, share detailed reviews, and connect with fellow cinema lovers.',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
-        }/search?q={search_term_string}`,
+        urlTemplate: `${baseUrl}/search?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
-    sameAs: [process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'],
+    sameAs: [baseUrl],
   };
   const breadcrumb = {
     '@context': 'https://schema.org',
@@ -235,7 +234,7 @@ export default async function Home() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        item: baseUrl,
       },
     ],
   };
@@ -246,10 +245,14 @@ export default async function Home() {
         id='home-page-structured-data'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...structuredData,
-            breadcrumb,
-          }),
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <script
+        id='home-page-breadcrumb-data'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumb),
         }}
       />
       <HeroSectionWrapper contents={contents} rawContent={content} />
