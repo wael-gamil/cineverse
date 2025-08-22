@@ -8,7 +8,6 @@ import PublicTabsWrapper from '@/components/pages/profile/publicTabsWrapper';
 import PublicUserInfoPanel from '@/components/pages/profile/publicUserInfoPanel';
 import { Metadata } from 'next';
 import { generateUserProfileMetadata } from '@/utils/metadata';
-import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -104,7 +103,7 @@ export default async function PublicProfilePage({
     return (
       <>
         {/* Structured Data */}
-        <Script
+        <script
           id={`${userProfile.name || userProfile.username}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{

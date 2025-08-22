@@ -12,7 +12,7 @@ import {
   generateContentMetadata,
   generateMovieStructuredData,
 } from '@/utils/metadata';
-import Script from 'next/script';
+ 
 
 type MovieOrSeriesPageProps = {
   params: Promise<{ slug: string }>;
@@ -88,7 +88,7 @@ export default async function MovieOrSeriesPage({
     return (
       <>
         {/* Structured Data */}
-        <Script
+        <script
           id={`${details.title}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{

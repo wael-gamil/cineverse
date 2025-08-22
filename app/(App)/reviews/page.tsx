@@ -8,7 +8,6 @@ import SkeletonReviewsList from '@/components/shared/reviewsList/skeletonReviews
 import { FilterOpt } from '@/constants/types/movie';
 import { cookies } from 'next/headers';
 import { Metadata } from 'next';
-import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -113,7 +112,7 @@ export default async function Reviews({ searchParams }: ReviewsPageProps) {
   };
   return (
     <>
-      <Script
+      <script
         id='reviews page schema'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
