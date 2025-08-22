@@ -1,6 +1,28 @@
 # CineVerse 🎬
 
-A modern, feature-rich movie and TV series tracking application built with Next.js 14. CineVerse allows users to discover, track, and review their favorite movies and TV shows with a beautiful, responsive interface.
+![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
+![TanStack Query](https://img.shields.io/badge/TanStack%20Query-FF4154?logo=reactquery&logoColor=white)
+![TanStack Store](https://img.shields.io/badge/TanStack%20Store-FF4154?logo=reactquery&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer%20Motion-0055FF?logo=framer&logoColor=white)
+![CSS Modules](https://img.shields.io/badge/CSS%20Modules-000000?logo=cssmodules&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000)
+![pnpm](https://img.shields.io/badge/pnpm-F69220?logo=pnpm&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)
+![VM Deployment](https://img.shields.io/badge/Deployed%20on-VM-333?logo=linux&logoColor=white)
+
+---
+
+**CineVerse** is a modern, feature-rich movie and TV series tracking application built with Next.js 15.  
+It allows users to discover, track, and review their favorite movies and TV shows with a beautiful, responsive interface.
+
+🚀 **SEO Optimized** – CineVerse achieves **100% SEO score on Google PageSpeed Insights**, ensuring top-notch discoverability and accessibility.  
+
+🔗 [Live Preview](https://your-live-demo-link.com) | 📂 [Backend Repository](https://github.com/yourusername/cineverse-backend)
 
 ![CineVerse Preview](./public/screenshot-wide.png)
 
@@ -63,7 +85,7 @@ A modern, feature-rich movie and TV series tracking application built with Next.
 
 ### Frontend
 
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: CSS Modules with custom CSS variables
 - **State Management**: [TanStack Store](https://tanstack.com/store)
@@ -137,7 +159,7 @@ pnpm start
 
 ```
 cineverse/
-├── app/                             # Next.js 14 App Router
+├── app/                             # Next.js 15 App Router
 │   ├── (App)/                       # Main application routes
 │   │   ├── (Auth)/                  # Authentication pages
 │   │   │   ├── login/               # Login page
