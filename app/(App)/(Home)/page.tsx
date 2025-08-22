@@ -318,7 +318,7 @@ export default async function Home() {
             </MotionSection>
           );
         })}
-        {token && (
+        {!token && (
           <MotionSection variantType='fade'>
             <CommunityFloat />
           </MotionSection>
