@@ -13,6 +13,7 @@ import type { Season } from '@/constants/types/movie';
 import { getQueryClient } from '@/lib/getQueryClient';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
+import Script from 'next/script';
 
 type SeasonProps = {
   params: Promise<{ seasonNumber: number; slug: string }>;
@@ -140,17 +141,43 @@ export default async function Season({ params }: SeasonProps) {
       },
     }),
   };
-
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: details.title,
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `Season ${seasonNumber}`,
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
+    ],
+  };
   return (
     <>
       {/* Structured Data */}
-      <script
+      <Script
+        id={`${details.title}-${seasonNumber}-schema`}
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
+          __html: JSON.stringify({
+            ...structuredData,
+            breadcrumb,
+          }),
         }}
       />
-
       <HydrationBoundary state={dehydratedState}>
         <ContentHero
           content={normalizeContent(seasonDetails)}

@@ -10,6 +10,7 @@ import MotionSection from '@/components/shared/motionSection';
 import { Metadata } from 'next';
 import { generateHomeMetadata } from '@/utils/metadata';
 import { cookies } from 'next/headers';
+import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -212,7 +213,7 @@ export default async function Home() {
     '@type': 'WebSite',
     name: 'CineVerse',
     alternateName: 'CineVerse - Movie and TV Series Platform',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
     description:
       'The ultimate platform for movie and TV series enthusiasts. Discover new content, create personalized watchlists, share detailed reviews, and connect with fellow cinema lovers.',
     potentialAction: {
@@ -220,26 +221,38 @@ export default async function Home() {
       target: {
         '@type': 'EntryPoint',
         urlTemplate: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
         }/search?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
-    sameAs: [
-      process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app',
+    sameAs: [process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'],
+  };
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
     ],
   };
-
   return (
     <>
       {/* Structured Data */}
-      <script
+      <Script
+        id='home-page-structured-data'
         type='application/ld+json'
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
+          __html: JSON.stringify({
+            ...structuredData,
+            breadcrumb,
+          }),
         }}
       />
-
       <HeroSectionWrapper contents={contents} rawContent={content} />
       <div className={styles.container}>
         {/* First half */}

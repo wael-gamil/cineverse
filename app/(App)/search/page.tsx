@@ -10,6 +10,7 @@ import { Suspense } from 'react';
 import SearchResultSkeleton from '@/components/ui/search/searchResultSkeleton';
 import SearchResultWrapper from '@/components/ui/search/searchResultWrapper';
 import { Metadata } from 'next';
+import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,9 +84,61 @@ export default async function Search({
   const query = awaitedSearchParams.q || '';
   const page = parseInt(awaitedSearchParams.page || '1', 10) - 1;
   const type = (awaitedSearchParams.type as FilterType) || '';
+  // Generate structured data for search page
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'CineVerse',
+    alternateName: 'CineVerse - Movie and TV Series Platform',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+    description:
+      'Search movies, TV series, actors, and directors on CineVerse. Discover new content and find detailed information, reviews, and ratings.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
+        }/search?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+    sameAs: [process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'],
+  };
 
+  // Generate breadcrumb structured data for search page
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Search',
+        item: `${
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
+        }/search${query ? `?q=${encodeURIComponent(query)}` : ''}`,
+      },
+    ],
+  };
   return (
     <SearchPageClient>
+      <Script
+        id='search-results-schema'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            ...structuredData,
+            breadcrumb,
+          }),
+        }}
+      />
       <div className={styles.header}>
         <div className={styles.headerTop}>
           <div className={styles.headerLeft}>
