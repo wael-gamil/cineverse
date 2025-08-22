@@ -7,15 +7,14 @@ export function WebsiteStructuredData() {
     name: 'CineVerse',
     description:
       'The ultimate platform for movie and TV series enthusiasts. Discover new content, create personalized watchlists, share detailed reviews, and connect with fellow cinema lovers.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
     potentialAction: [
       {
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
           urlTemplate: `${
-            process.env.NEXT_PUBLIC_SITE_URL ||
-            'https://cineverse-xi.vercel.app'
+            process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
           }/search?q={search_term_string}`,
         },
         'query-input': 'required name=search_term_string',

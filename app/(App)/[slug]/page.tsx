@@ -12,6 +12,7 @@ import {
   generateContentMetadata,
   generateMovieStructuredData,
 } from '@/utils/metadata';
+import Script from 'next/script';
 
 type MovieOrSeriesPageProps = {
   params: Promise<{ slug: string }>;
@@ -34,7 +35,6 @@ export async function generateMetadata({
 
     return generateContentMetadata(details, slug);
   } catch (error) {
-   
     return {
       title: 'Content Not Found | CineVerse',
       description: 'The requested movie or TV series could not be found.',
@@ -67,17 +67,37 @@ export default async function MovieOrSeriesPage({
 
     // Generate structured data for SEO
     const structuredData = generateMovieStructuredData(details, slug);
-
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: details.title,
+          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        },
+      ],
+    };
     return (
       <>
         {/* Structured Data */}
-        <script
+        <Script
+          id={`${details.title}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
+            __html: JSON.stringify({
+              ...structuredData,
+              breadcrumb,
+            }),
           }}
         />
-
         <HydrationBoundary state={dehydratedState}>
           <ContentHero content={normalizeContent(details)} />
           <ContentOverview content={normalizeContent(details)} />

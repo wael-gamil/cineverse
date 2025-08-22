@@ -10,6 +10,7 @@ import {
   generatePersonMetadata,
   generatePersonStructuredData,
 } from '@/utils/metadata';
+import Script from 'next/script';
 
 type PersonPageProps = {
   params: Promise<{ id: number }>;
@@ -61,17 +62,33 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
     // Generate structured data for SEO
     const structuredData = generatePersonStructuredData(extendedPersonDetails);
-
+    const breadcrumb = [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: extendedPersonDetails.name,
+        item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+      },
+    ];
     return (
       <>
         {/* Structured Data */}
-        <script
+        <Script
+          id={`${extendedPersonDetails.name}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
+            __html: JSON.stringify({
+              ...structuredData,
+              breadcrumb,
+            }),
           }}
         />
-
         <HydrationBoundary state={dehydratedState}>
           <HeroSectionWrapper person={extendedPersonDetails} />
 

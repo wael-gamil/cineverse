@@ -11,6 +11,7 @@ import SectionHeader from '@/components/shared/contentSliderSection/sectionHeade
 import OrderTabs from '@/components/ui/orderTabs/orderTabs';
 import { Metadata } from 'next';
 import { generateExploreMetadata } from '@/utils/metadata';
+import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -97,32 +98,83 @@ export default async function ContentPage({
   const sortOpt = rawFilterOpt.filter(item => {
     return item.key === 'sortBy';
   })[0];
-
+  // Generate structured data for explore page
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Explore ${type === 'movies' ? 'Movies' : 'TV Series'} | CineVerse`,
+    url: `${
+      process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
+    }/explore/${type}`,
+    description: `Browse and discover ${
+      type === 'movies' ? 'movies' : 'TV series'
+    } by genre, year, rating, and language on CineVerse.`,
+    hasPart: genres.length
+      ? genres.map(genre => ({
+          '@type': 'CreativeWork',
+          name: genre,
+        }))
+      : undefined,
+    sameAs: [
+      `${
+        process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
+      }/explore/${type}`,
+    ],
+  };
+  const breadcrumb = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: `Explore ${type === 'movies' ? 'Movies' : 'TV Series'}`,
+      item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+    },
+  ];
   return (
-    <section className={styles.content}>
-      <div className={styles.controls}>
-        <SectionHeader
-          title={type == 'movies' ? 'Movies' : 'Tv Series'}
-          variant={'lined'}
-          filterTabs={
-            <>
-              <Filter sections={filterOpt} initialSelected={filtersSelected} />
-              <Sort sortOptions={sortOpt} initialSortBy={sortBy} />
-              <OrderTabs initialOrder={order as 'ASC' | 'DESC'} />
-            </>
-          }
-        />
-      </div>
-      <Suspense
-        key={JSON.stringify(awaitedSearchParams)}
-        fallback={<SkeletonContentList />}
-      >
-        <ContentListWrapper
-          filters={{ genres, year, rate, lang, sortBy, order }}
-          page={page}
-          type={backendType}
-        />
-      </Suspense>
-    </section>
+    <>
+      <Script
+        id='explore page schema'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            ...structuredData,
+            breadcrumb,
+          }),
+        }}
+      />
+      <section className={styles.content}>
+        <div className={styles.controls}>
+          <SectionHeader
+            title={type == 'movies' ? 'Movies' : 'Tv Series'}
+            variant={'lined'}
+            filterTabs={
+              <>
+                <Filter
+                  sections={filterOpt}
+                  initialSelected={filtersSelected}
+                />
+                <Sort sortOptions={sortOpt} initialSortBy={sortBy} />
+                <OrderTabs initialOrder={order as 'ASC' | 'DESC'} />
+              </>
+            }
+          />
+        </div>
+        <Suspense
+          key={JSON.stringify(awaitedSearchParams)}
+          fallback={<SkeletonContentList />}
+        >
+          <ContentListWrapper
+            filters={{ genres, year, rate, lang, sortBy, order }}
+            page={page}
+            type={backendType}
+          />
+        </Suspense>
+      </section>
+    </>
   );
 }

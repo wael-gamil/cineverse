@@ -8,6 +8,7 @@ import PublicTabsWrapper from '@/components/pages/profile/publicTabsWrapper';
 import PublicUserInfoPanel from '@/components/pages/profile/publicUserInfoPanel';
 import { Metadata } from 'next';
 import { generateUserProfileMetadata } from '@/utils/metadata';
+import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
@@ -74,24 +75,45 @@ export default async function PublicProfilePage({
           userProfile.bio || `${userProfile.name}'s profile on CineVerse`,
         image: userProfile.profilePicture,
         url: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
         }/profile/${userProfile.username}`,
         sameAs: `${
-          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app'
+          process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
         }/profile/${userProfile.username}`,
       },
     };
-
+    const breadcrumb = {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: userProfile.name,
+          item: `${
+            process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social'
+          }/profile/${userProfile.username}`,
+        },
+      ],
+    };
     return (
       <>
         {/* Structured Data */}
-        <script
+        <Script
+          id={`${userProfile.name || userProfile.username}-schema`}
           type='application/ld+json'
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
+            __html: JSON.stringify({
+              ...structuredData,
+              breadcrumb,
+            }),
           }}
         />
-
         <HydrationBoundary state={dehydratedState}>
           <div className={styles.container}>
             <PublicUserInfoPanel

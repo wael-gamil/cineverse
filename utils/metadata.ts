@@ -8,8 +8,7 @@ import {
 } from '@/constants/types/movie';
 
 const SITE_NAME = 'CineVerse';
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse-xi.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cineverse.social';
 const DEFAULT_IMAGE = `${SITE_URL}/og-logo.png`;
 const WHATSAPP_IMAGE = `${SITE_URL}/whatsapp-share-400x400.webp`;
 

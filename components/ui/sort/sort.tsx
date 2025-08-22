@@ -10,8 +10,15 @@ import { FilterOpt } from '@/constants/types/movie';
 type SortProps = {
   initialSortBy: string;
   sortOptions: FilterOpt;
+  hideParam?: boolean;
+  setCurrentSortBy?: (sort: string) => void;
 };
-export default function Sort({ initialSortBy, sortOptions }: SortProps) {
+export default function Sort({
+  initialSortBy,
+  sortOptions,
+  hideParam = false,
+  setCurrentSortBy,
+}: SortProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [sortBy, setSortBy] = useState(initialSortBy || '');
@@ -23,13 +30,17 @@ export default function Sort({ initialSortBy, sortOptions }: SortProps) {
   }, [initialSortBy]);
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
+    if (!hideParam) {
+      const params = new URLSearchParams(searchParams.toString());
 
-    if (sortBy) params.set('sortBy', sortBy);
-    else params.delete('sortBy');
+      if (sortBy) params.set('sortBy', sortBy);
+      else params.delete('sortBy');
 
-    router.push(`?${params.toString()}`, { scroll: false });
-    setTimeout(() => closePanel(), 200);
+      router.push(`?${params.toString()}`, { scroll: false });
+      setTimeout(() => closePanel(), 200);
+    } else {
+      if (setCurrentSortBy) setCurrentSortBy(sortBy);
+    }
   }, [sortBy]);
 
   return (
