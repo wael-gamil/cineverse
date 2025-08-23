@@ -23,10 +23,12 @@ function GoogleAnalyticsInner() {
       pathname +
       (searchParams?.toString() ? `?${searchParams.toString()}` : '');
 
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      page_title: document.title,
-      page_location: window.location.href,
-    });
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('config', GA_MEASUREMENT_ID, {
+        page_title: document.title,
+        page_location: window.location.href,
+      });
+    }
   }, [pathname, searchParams]);
 
   return null;
