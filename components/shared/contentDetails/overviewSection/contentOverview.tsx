@@ -153,19 +153,20 @@ export default function ContentOverview({
                   </span>
                 </div>
               </div>
-
-              <div className={styles.clusterItem}>
-                <div className={styles.clusterIcon}>
-                  <Icon name='calendar' strokeColor='white' />
-                </div>
-                <div className={styles.clusterContent}>
-                  <span className={styles.clusterLabel}>Release Date</span>
-                  <span className={styles.clusterValue}>
-                    {content.releaseDate}
-                  </span>
-                </div>
-              </div>
-
+              {typeof content.releaseDate === 'string' &&
+                content.releaseDate && (
+                  <div className={styles.clusterItem}>
+                    <div className={styles.clusterIcon}>
+                      <Icon name='calendar' strokeColor='white' />
+                    </div>
+                    <div className={styles.clusterContent}>
+                      <span className={styles.clusterLabel}>Release Date</span>
+                      <span className={styles.clusterValue}>
+                        {content.releaseDate}
+                      </span>
+                    </div>
+                  </div>
+                )}
               {typeof content.runtime === 'number' && content.runtime > 0 && (
                 <div className={styles.clusterItem}>
                   <div className={styles.clusterIcon}>
@@ -233,11 +234,12 @@ export default function ContentOverview({
           )}
 
           {/* Series Info Cluster */}
-          {(content.numberOfSeasons || content.numberOfEpisodes) && (
+          {(typeof content.numberOfSeasons === 'number' ||
+            typeof content.numberOfEpisodes === 'number') && (
             <div className={`${styles.infoCluster}`}>
               <h3 className={styles.clusterTitle}>Series Info</h3>
               <div className={styles.clusterItems}>
-                {content.numberOfSeasons && (
+                {typeof content.numberOfSeasons === 'number' && (
                   <div className={styles.clusterItem}>
                     <div className={styles.clusterIcon}>
                       <Icon name='tv-alt' strokeColor='white' />
@@ -251,7 +253,7 @@ export default function ContentOverview({
                   </div>
                 )}
 
-                {content.numberOfEpisodes && (
+                {typeof content.numberOfEpisodes === 'number' && (
                   <div className={styles.clusterItem}>
                     <div className={styles.clusterIcon}>
                       <Icon name='film' strokeColor='white' />
