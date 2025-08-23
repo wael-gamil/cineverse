@@ -66,41 +66,56 @@ export default function EpisodesSection({
       {expanded && (
         <GridContainer layout='grid' cardMinWidth={270} scrollRows={1}>
           {episodes.length > 0 ? (
-            episodes.map(episode => (
-              <Card
-                key={episode.id}
-                title={episode.title}
-                subtitle={episode.releaseDate}
-                description={episode.overview}
-                href={`${pathname}/${
-                  !episodesData ? 'seasons/' + seasonNumber + '/' : ''
-                }episodes/${episode.episodeNumber}`}
-                imageUrl={
-                  episode.posterUrl ||
-                  currentSeason?.posterUrl ||
-                  fallbackPoster ||
-                  seriesData?.posterUrl
-                }
-                badges={[
-                  {
-                    iconName: 'film' as IconName,
-                    color: 'primary',
-                    text: 'episode',
-                    number: episode.episodeNumber,
-                    position: 'top-left',
-                  },
-                  {
-                    iconName: 'clock' as IconName,
-                    number: episode.runTime,
-                    position: 'top-right',
-                  },
-                ]}
-                imageHeight='image-md'
-                layout='below'
-                minWidth={270}
-                maxWidth={300}
-              />
-            ))
+            episodes.map(episode => {
+              const runtime: string =
+                typeof episode.runTime === 'number' && !isNaN(episode.runTime)
+                  ? (() => {
+                      const totalMinutes = episode.runTime;
+                      const hours = Math.floor(totalMinutes / 60);
+                      const minutes = totalMinutes % 60;
+                      return hours > 0
+                        ? `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`
+                        : `${minutes}m`;
+                    })()
+                  : typeof episode.runTime === 'string'
+                  ? episode.runTime
+                  : '';
+              return (
+                <Card
+                  key={episode.id}
+                  title={episode.title}
+                  subtitle={episode.releaseDate}
+                  description={episode.overview}
+                  href={`${pathname}/${
+                    !episodesData ? 'seasons/' + seasonNumber + '/' : ''
+                  }episodes/${episode.episodeNumber}`}
+                  imageUrl={
+                    episode.posterUrl ||
+                    currentSeason?.posterUrl ||
+                    fallbackPoster ||
+                    seriesData?.posterUrl
+                  }
+                  badges={[
+                    {
+                      iconName: 'film' as IconName,
+                      color: 'primary',
+                      text: 'episode',
+                      number: episode.episodeNumber,
+                      position: 'top-left',
+                    },
+                    {
+                      iconName: 'clock' as IconName,
+                      text: runtime,
+                      position: 'top-right',
+                    },
+                  ]}
+                  imageHeight='image-md'
+                  layout='below'
+                  minWidth={270}
+                  maxWidth={300}
+                />
+              );
+            })
           ) : isLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard
