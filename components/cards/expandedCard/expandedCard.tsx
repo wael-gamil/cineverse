@@ -72,7 +72,7 @@ export default function ExpandedCard({
   const { mutate: removeFromWatchlist, isPending: isRemovingFromWatchlist } =
     useWatchlistActionMutation();
   const { data: watchlistId = null, isLoading: isCheckingWatchlist } =
-    useWatchlistExistsQuery(rawContent.id, isAuthenticated);
+    useWatchlistExistsQuery(content?.id ?? 0, isAuthenticated);
 
   const isInWatchlist = watchlistId !== null;
 
@@ -85,7 +85,11 @@ export default function ExpandedCard({
     }
 
     const addPromise = new Promise<void>((resolve, reject) => {
-      addToWatchlist(rawContent.id, {
+      if (!content) {
+        reject(new Error('Content is not loaded.'));
+        return;
+      }
+      addToWatchlist(content.id, {
         onSuccess: () => {
           resolve();
         },
@@ -112,11 +116,11 @@ export default function ExpandedCard({
       return;
     }
 
-    if (!watchlistId) return; // Don't attempt removal if no watchlistId
+    if (!watchlistId || !content) return; // Don't attempt removal if no watchlistId or content is null
 
     const removePromise = new Promise<void>((resolve, reject) => {
       removeFromWatchlist(
-        { mode: 'delete', id: watchlistId, contentId: rawContent.id },
+        { mode: 'delete', id: watchlistId, contentId: content.id },
         {
           onSuccess: data => {
             resolve();
