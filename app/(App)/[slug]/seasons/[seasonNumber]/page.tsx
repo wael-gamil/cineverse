@@ -184,33 +184,31 @@ export default async function Season({ params }: SeasonProps) {
           __html: JSON.stringify(breadcrumb),
         }}
       />
-      <HydrationBoundary state={dehydratedState}>
-        <ContentHero
-          content={normalizeContent(seasonDetails)}
-          backgroundUrl={details.backdropUrl}
-          fallbackPoster={details.posterUrl}
-          genres={details.genres}
-        />
-        <ContentOverview
-          content={normalizeContent(seasonDetails)}
-          genres={details.genres}
-        />
+      <ContentHero
+        content={normalizeContent(seasonDetails)}
+        backgroundUrl={details.backdropUrl}
+        fallbackPoster={details.posterUrl}
+        genres={details.genres}
+      />
+      <ContentOverview
+        content={normalizeContent(seasonDetails)}
+        genres={details.genres}
+      />
 
-        <ContentSectionWrapper
-          section='episodes'
-          id={details.id}
-          seasonNumber={seasonNumber}
-          fallbackPoster={seasonDetails.posterUrl || details.posterUrl}
-          seasonsData={[seasonDetails]}
-        />
-        <ContentSectionWrapper
-          section='reviews'
-          id={seasonDetails.id}
-          contentTitle={details.title}
-          contentPoster={details.posterUrl}
-          sortBy='likes'
-        />
-      </HydrationBoundary>
+      <ContentSectionWrapper
+        section='episodes'
+        id={details.id}
+        seasonNumber={seasonNumber}
+        fallbackPoster={seasonDetails.posterUrl || details.posterUrl}
+        seasonsData={[seasonDetails]}
+      />
+      <ContentSectionWrapper
+        section='reviews'
+        id={seasonDetails.id}
+        contentTitle={details.title}
+        contentPoster={details.posterUrl}
+        sortBy='likes'
+      />
     </>
   );
 }

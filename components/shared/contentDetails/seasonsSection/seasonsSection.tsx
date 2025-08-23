@@ -88,10 +88,12 @@ export default function SeasonsSection({
                   maxWidth={400}
                 >
                   <div className={styles.contentDetails}>
-                    <div className={styles.date}>
-                      <Icon name='calendar' strokeColor='muted' width={16} />
-                      <span>{season.releaseDate?.split('-')[0]}</span>
-                    </div>
+                    {season.releaseDate && (
+                      <div className={styles.date}>
+                        <Icon name='calendar' strokeColor='muted' width={16} />
+                        <span>{season.releaseDate?.split('-')[0]}</span>
+                      </div>
+                    )}
                     <div className={styles.genres}>
                       {seriesData &&
                         seriesData.genres
