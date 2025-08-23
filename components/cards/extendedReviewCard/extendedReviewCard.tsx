@@ -236,6 +236,8 @@ export default function ExtendedReviewCard({
           <button
             className={styles.readMoreButton}
             onClick={handleReadMoreClick}
+            style={{ minWidth: 44, minHeight: 44 }}
+            aria-label={isExpanded ? 'Show Less' : 'Read More'}
           >
             {isExpanded ? 'Show Less' : 'Read More'}
           </button>

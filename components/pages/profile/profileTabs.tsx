@@ -37,6 +37,8 @@ export default function ProfileTabs({
           aria-selected={activeTab === tab.id}
           aria-controls={`${tab.id}-panel`}
           type='button'
+          style={{ minWidth: 44, minHeight: 44 }}
+          aria-label={`Go to ${tab.label} section`}
         >
           {tab.label}
         </button>

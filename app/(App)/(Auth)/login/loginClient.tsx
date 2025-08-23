@@ -182,15 +182,22 @@ export default function LoginPage() {
                 />
               </Button>
             </div>
-            <Link href='/forget-password'>Forget password?</Link>
+            <Link
+              href='/forget-password'
+              aria-label='Go to forget password'
+              style={{ minWidth: 44, minHeight: 44 }}
+            >
+              Forget password?
+            </Link>
           </div>
 
           {/* Submit */}
           <div>
-            <Button 
-              type='submit' 
-              width='100%' 
+            <Button
+              type='submit'
+              width='100%'
               disabled={isLoading || !fieldsComplete}
+              ariaLabel='Sign in'
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
@@ -216,7 +223,11 @@ export default function LoginPage() {
           <span>Don't have an account?</span>
         </div>
 
-        <Link href='/register' className={styles.registerLink}>
+        <Link
+          href='/register'
+          className={styles.registerLink}
+          aria-label='Go to register'
+        >
           <Button width='100%' variant='outline'>
             Create an account
           </Button>

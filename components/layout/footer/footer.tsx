@@ -32,7 +32,12 @@ export default function Footer() {
               { name: 'Watchlist', path: '/watchlist' },
             ].map(({ name, path }) => (
               <li key={name}>
-                <Link href={path} className={styles.link}>
+                <Link
+                  href={path}
+                  className={styles.link}
+                  aria-label={`Go to ${name}`}
+                  style={{ minWidth: 44, minHeight: 44 }}
+                >
                   {name}
                 </Link>
               </li>

@@ -172,6 +172,8 @@ export default function ContentHeroSimple({
                 <button
                   className={styles.readMoreBtn}
                   onClick={() => setShowFullBio(prev => !prev)}
+                  style={{ minWidth: 44, minHeight: 44 }}
+                  aria-label={showFullBio ? 'Show Less' : 'Read More'}
                 >
                   {showFullBio ? 'Show Less' : 'Read More'}
                 </button>

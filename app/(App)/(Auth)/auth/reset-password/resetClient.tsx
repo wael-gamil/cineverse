@@ -181,7 +181,12 @@ export default function ResetPasswordPage() {
         )}
 
         {success && (
-          <Link href='/login' className={styles.registerLink}>
+          <Link
+            href='/login'
+            className={styles.registerLink}
+            aria-label='Go to login'
+            style={{ minWidth: 44, minHeight: 44 }}
+          >
             <Button width='100%' variant='outline'>
               Go to Login
             </Button>

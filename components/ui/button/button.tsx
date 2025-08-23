@@ -49,7 +49,7 @@ export default function Button({
       onClick={onClick}
       aria-label={ariaLabel}
       type={type}
-      style={{ width, ...style }}
+      style={{ width, ...style, minWidth: 44, minHeight: 44 }}
       disabled={disabled}
       title={title}
     >
