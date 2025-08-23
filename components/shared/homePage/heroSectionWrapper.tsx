@@ -131,8 +131,18 @@ export default function HeroSectionWrapper({
     >
       {!isMobile && (
         <div className={styles.externalLink}>
-          <Button variant='ghost' padding='sm' borderRadius='fullRadius' title='View Details'>
-            <Link href={`/${rawContent[activeIndex].slug}`} target='_blank'>
+          <Button
+            variant='ghost'
+            padding='sm'
+            borderRadius='fullRadius'
+            title='View Details'
+          >
+            <Link
+              href={`/${rawContent[activeIndex].slug}`}
+              target='_blank'
+              aria-label={`Go to ${rawContent[activeIndex].title}`}
+              style={{ minWidth: 44, minHeight: 44 }}
+            >
               <Icon name='ExternalLink' strokeColor='white' />
             </Link>
           </Button>

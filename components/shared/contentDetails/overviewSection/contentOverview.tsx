@@ -127,6 +127,9 @@ export default function ContentOverview({
                 <button
                   className={styles.readMoreBtn}
                   onClick={() => setShowFullDescription(prev => !prev)}
+                  style={{ minWidth: 44, minHeight: 44 }}
+                  type='button'
+                  aria-label={showFullDescription ? 'Show Less' : 'Read More'}
                 >
                   {showFullDescription ? 'Show Less' : 'Read More'}
                 </button>

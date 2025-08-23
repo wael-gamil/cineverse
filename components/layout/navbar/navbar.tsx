@@ -104,7 +104,12 @@ export default function Navbar() {
       >
         <div className={styles.wrapper}>
           {/* Logo Section */}
-          <Link href={'/'} className={styles.navbarLogo}>
+          <Link
+            href={'/'}
+            className={styles.navbarLogo}
+            aria-label='Go to home'
+            style={{ minWidth: 44, minHeight: 44 }}
+          >
             <div className={styles.iconWrapper}>
               <div className={styles.iconBackground}></div>
               <Icon name='film' strokeColor='primary' />
@@ -159,7 +164,11 @@ export default function Navbar() {
                 <UserPanel closePanel={closeUserPanel} />
               </PanelWrapper>
             ) : (
-              <Link href={getLoginUrl()}>
+              <Link
+                href={getLoginUrl()}
+                aria-label='Go to login'
+                style={{ minWidth: 44, minHeight: 44 }}
+              >
                 <Button
                   variant='solid'
                   color='neutral'
@@ -200,7 +209,14 @@ export default function Navbar() {
               <NavLinks isMobile closeMenu={closeMobilePanel} />
               <div className={styles.divider}></div>
               {!hasMounted ? (
-                <Button variant='solid' color='primary' width='100%' disabled title='Loading...'>
+                <Button
+                  variant='solid'
+                  color='primary'
+                  width='100%'
+                  disabled
+                  title='Loading...'
+                  aria-label='Loading...'
+                >
                   <Icon
                     name='loader'
                     width={20}
@@ -216,6 +232,7 @@ export default function Navbar() {
                   color='primary'
                   width='100%'
                   onClick={handleLogin}
+                  aria-label='Login'
                 >
                   Login
                 </Button>

@@ -378,13 +378,14 @@ export default function ExpandedCard({
         style={expandedStyle}
       >
         {/* Close Button */}
-        <button
+        {/* <button
           className={styles.closeButton}
           onClick={handleClose}
           aria-label='Close expanded view'
+          style={{ minWidth: 44, minHeight: 44 }}
         >
           <Icon name='close' strokeColor='white' />
-        </button>
+        </button> */}
 
         {/* Backdrop Image */}
         {content?.backgroundUrl && (

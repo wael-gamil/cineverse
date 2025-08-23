@@ -146,7 +146,11 @@ export default function HeroMetadata({
 
       <div className={styles.metaHeader}>
         {slug ? (
-          <Link href={`/${slug}`}>
+          <Link
+            href={`/${slug}`}
+            aria-label={`Go to ${content.title}`}
+            style={{ minWidth: 44, minHeight: 44 }}
+          >
             <h1 className={`${styles.title} ${styles.linkTitle}`}>
               {content.title}
             </h1>
@@ -157,7 +161,12 @@ export default function HeroMetadata({
         {showExternalLink && (
           <div className={styles.externalLink}>
             <Button variant='ghost' padding='sm' borderRadius='fullRadius'>
-              <Link href={`/${slug}`} target='_blank'>
+              <Link
+                href={`/${slug}`}
+                target='_blank'
+                aria-label={`Go to ${content.title}`}
+                style={{ minWidth: 44, minHeight: 44 }}
+              >
                 <Icon name='ExternalLink' strokeColor='muted' />
               </Link>
             </Button>

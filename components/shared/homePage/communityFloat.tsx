@@ -51,13 +51,23 @@ export default function CommunityFloat() {
           </div> */}
           <div className={styles.cta}>
             <Button>
-              <Link href='/register' className={styles.link}>
+              <Link
+                href='/register'
+                className={styles.link}
+                aria-label='Go to register'
+                style={{ minWidth: 44, minHeight: 44 }}
+              >
                 <Icon name='user' strokeColor='white' />
                 Sign Up Free
               </Link>
             </Button>{' '}
             <Button variant='outline'>
-              <Link href={getLoginUrl()} className={styles.link}>
+              <Link
+                href={getLoginUrl()}
+                className={styles.link}
+                aria-label='Go to login'
+                style={{ minWidth: 44, minHeight: 44 }}
+              >
                 Sign In
               </Link>
             </Button>

@@ -110,7 +110,12 @@ export default function ForgetPasswordPage() {
           <span>Back to login?</span>
         </div>
 
-        <Link href='/login' className={styles.registerLink}>
+        <Link
+          href='/login'
+          className={styles.registerLink}
+          aria-label='Go to login'
+          style={{ minWidth: 44, minHeight: 44 }}
+        >
           <Button width='100%' variant='outline'>
             Sign in
           </Button>

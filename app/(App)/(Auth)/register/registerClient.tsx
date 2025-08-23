@@ -347,7 +347,12 @@ export default function RegisterPage() {
           <span>Already have an account?</span>
         </div>
 
-        <Link href='/login' className={styles.registerLink}>
+        <Link
+          href='/login'
+          className={styles.registerLink}
+          aria-label='Go to login'
+          style={{ minWidth: 44, minHeight: 44 }}
+        >
           <Button width='100%' variant='outline'>
             Sign in
           </Button>

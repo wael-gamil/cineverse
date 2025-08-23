@@ -264,6 +264,7 @@ export default function AddReviewPopup({
                         aria-label={`Rate ${starValue} out of 10`}
                         disabled={isSubmitting}
                         title={`Rate ${starValue} out of 10`}
+                        style={{ minWidth: 44, minHeight: 44 }}
                       >
                         <Icon
                           name='starFilled'
