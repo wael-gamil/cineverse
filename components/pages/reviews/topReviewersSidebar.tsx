@@ -141,6 +141,7 @@ export default function TopReviewersSidebar() {
                   <Image
                     src={reviewer.user.imageUrl || avatarFallback.src}
                     alt={reviewer.user.name}
+                    fill
                     className={styles.avatarImage}
                     sizes='(max-width: 768px) 100vw, 400px'
                     priority
