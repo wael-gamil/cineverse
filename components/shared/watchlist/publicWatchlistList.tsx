@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePublicUserWatchlistQuery } from '@/hooks/usePublicUserWatchlistQuery';
 import { useContentSummary } from '@/hooks/useContentSummary';
@@ -9,9 +9,10 @@ import Card from '@/components/cards/card/card';
 import Pagination from '@/components/ui/pagination/pagination';
 import SkeletonCard from '@/components/cards/card/skeletonCard';
 import styles from './watchList.module.css';
-import { WatchlistItem } from '@/constants/types/movie';
+import { Content, WatchlistItem } from '@/constants/types/movie';
 import EmptyCard from '@/components/cards/card/emptyCard';
 import useResponsiveLayout from '@/hooks/useResponsiveLayout';
+import ExpandedCard from '@/components/cards/expandedCard/expandedCard';
 
 type PublicWatchlistListProps = {
   username: string;
@@ -27,7 +28,19 @@ export default function PublicWatchlistList({
   const router = useRouter();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedItem, setSelectedItem] = useState<WatchlistItem | null>(null);
-
+  const [navigateToSlug, setNavigateToSlug] = useState<boolean>(false);
+  const [expandedCard, setExpandedCard] = useState<{
+    isOpen: boolean;
+    content: Content | WatchlistItem | null;
+    cardPosition: DOMRect | null;
+    slug?: string;
+  }>({
+    isOpen: false,
+    content: null,
+    cardPosition: null,
+    slug: undefined,
+  });
+  const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useResponsiveLayout();
   const { data, isLoading, isError } = usePublicUserWatchlistQuery({
     username,
@@ -61,15 +74,62 @@ export default function PublicWatchlistList({
       setSelectedItem(null);
       setSelectedId(null);
     }
-  }, [summaryData, selectedItem, router]);
+  }, [navigateToSlug, router]);
 
   const handleCardClick = (item: WatchlistItem) => {
     if (selectedId === item.contentId) return;
 
     setSelectedId(item.contentId);
     setSelectedItem(item);
+    setNavigateToSlug(true);
   };
+  const handleInfoClick = (
+    e: React.MouseEvent | undefined,
+    item: WatchlistItem
+  ) => {
+    setSelectedId(item.contentId);
+    setSelectedItem(item);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
 
+      // Get the card element position
+      const target = e.currentTarget as HTMLElement;
+      const cardElement =
+        target.closest('.card') || target.closest('[class*="cardWrapper"]');
+      if (cardElement) {
+        const cardRect = cardElement.getBoundingClientRect();
+        setExpandedCard({
+          isOpen: true,
+          content: item,
+          cardPosition: cardRect,
+          slug: '',
+        });
+      }
+    }
+  };
+  // Update expandedCard slug when summaryData is fetched and expandedCard is open
+  useEffect(() => {
+    if (
+      expandedCard.isOpen &&
+      summaryData?.slug &&
+      expandedCard.slug !== summaryData.slug
+    ) {
+      setExpandedCard(prev => ({
+        ...prev,
+        slug: summaryData.slug,
+      }));
+    }
+  }, [summaryData?.slug, expandedCard.isOpen]);
+
+  const closeExpandedCard = () => {
+    setExpandedCard({
+      isOpen: false,
+      content: null,
+      cardPosition: null,
+      slug: undefined,
+    });
+  };
   const totalPages = data?.totalPages;
   const currentPage = data?.currentPage;
 
@@ -93,7 +153,7 @@ export default function PublicWatchlistList({
               maxWidth={500}
             />
           ))}
-        {(isError || !data?.items?.length) && (
+        {!isLoading && (isError || !data?.items?.length) && (
           <EmptyCard maxWidth={250} minWidth={250} minHeight={'image-lg'} />
         )}
         {data?.items.map((item: WatchlistItem) => (
@@ -105,6 +165,10 @@ export default function PublicWatchlistList({
               layout='overlay'
               imageHeight='image-lg'
               onClick={() => handleCardClick(item)}
+              additionalButton={{
+                iconName: 'info',
+                onClick: e => handleInfoClick(e, item),
+              }}
               badges={[
                 {
                   number: Number(item.imdbRate.toFixed(1)),
@@ -128,6 +192,17 @@ export default function PublicWatchlistList({
             </div>
           )
         : null}
+      {expandedCard.isOpen &&
+        expandedCard.content &&
+        expandedCard.cardPosition && (
+          <ExpandedCard
+            content={expandedCard.content}
+            isOpen={expandedCard.isOpen}
+            onClose={closeExpandedCard}
+            cardPosition={expandedCard.cardPosition}
+            slug={expandedCard.slug}
+          />
+        )}
     </>
   );
 }

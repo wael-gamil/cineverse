@@ -13,6 +13,7 @@ import {
   Content,
   NormalizedContent,
   normalizeContent,
+  WatchlistItem,
 } from '@/constants/types/movie';
 import { useContentDetailsQuery } from '@/hooks/useContentDetailsQuery';
 import { useAddToWatchlistMutation } from '@/hooks/useAddToWatchlistMutation';
@@ -24,11 +25,11 @@ import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 
 interface ExpandedCardProps {
-  content: Content;
+  content: Content | WatchlistItem;
   isOpen: boolean;
   onClose: () => void;
   cardPosition: DOMRect;
-  containerRef: React.RefObject<HTMLDivElement | null>;
+  slug?: string;
 }
 
 export default function ExpandedCard({
@@ -36,7 +37,7 @@ export default function ExpandedCard({
   isOpen,
   onClose,
   cardPosition,
-  containerRef,
+  slug,
 }: ExpandedCardProps) {
   const router = useRouter();
   const expandedRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,14 @@ export default function ExpandedCard({
   useEffect(() => {
     setIsHydrated(true);
   }, []);
-  const { data: details, isLoading } = useContentDetailsQuery(rawContent.slug);
+  const getContentSlug = () => {
+    if (slug) return slug;
+    if ('slug' in rawContent && typeof rawContent.slug === 'string') {
+      return rawContent.slug;
+    }
+    return '';
+  };
+  const { data: details, isLoading } = useContentDetailsQuery(getContentSlug());
   const content = details ? normalizeContent(details) : null;
   const { mutate: addToWatchlist, isPending: isAddingToWatchlist } =
     useAddToWatchlistMutation();
@@ -163,10 +171,8 @@ export default function ExpandedCard({
     const availableHeight = window.innerHeight - 120;
     const cardBottom = cardPosition.bottom;
     const cardTop = cardPosition.top;
-
     // Check if card is in bottom third of screen
     const isBottomCard = cardTop > window.innerHeight * 0.6;
-
     if (isBottomCard) {
       // For bottom cards: grow upward from card bottom
       const expandedTop = cardBottom - expandedHeight;
@@ -290,7 +296,7 @@ export default function ExpandedCard({
   }, [isOpen, onClose]);
 
   const handleViewDetails = () => {
-    router.push(`/${rawContent.slug}`); // Using ID instead of slug for now
+    router.push(`/${getContentSlug()}`); // Using ID instead of slug for now
   };
 
   const handleClose = () => {
@@ -397,7 +403,7 @@ export default function ExpandedCard({
 
         {/* Content Section */}
         <div className={styles.contentSection}>
-          {isLoading ? (
+          {isLoading || slug === '' ? (
             // Skeleton Loading State
             <div className={styles.skeletonContent}>
               <div className={styles.posterAndInfo}>
@@ -450,8 +456,8 @@ export default function ExpandedCard({
                 {/* Mini Poster */}
                 <div className={styles.miniPoster}>
                   <Image
-                    src={rawContent.posterUrl || fallbackImage}
-                    alt={rawContent.title}
+                    src={content?.imageUrl || fallbackImage}
+                    alt={content?.title || 'Poster Image'}
                     fill
                     className={styles.posterImage}
                     sizes='80px'
@@ -463,21 +469,23 @@ export default function ExpandedCard({
                 <div className={styles.titleSection}>
                   <h3 className={styles.title}>{content?.title}</h3>
                   <div className={styles.metadata}>
-                    {typeof rawContent.releaseDate === 'string' &&
-                      rawContent.releaseDate > '0' && (
+                    {content &&
+                      typeof content.releaseDate === 'string' &&
+                      content.releaseDate > '0' && (
                         <Badge
-                          text={rawContent.releaseDate.split('-')[0]}
+                          text={content.releaseDate.split('-')[0]}
                           iconName='calendar'
                           backgroundColor='bg-white'
                           size='size-md'
                         />
                       )}
-                    {typeof rawContent.imdbRate === 'number' &&
-                      rawContent.imdbRate > 0 && (
+                    {content &&
+                      typeof content.imdbRate === 'number' &&
+                      content.imdbRate > 0 && (
                         <Badge
                           iconName='starFilled'
                           text='IMDB'
-                          number={Number(rawContent.imdbRate.toFixed(1))}
+                          number={Number(content.imdbRate.toFixed(1))}
                           backgroundColor='bg-white'
                           size='size-md'
                         />
@@ -486,7 +494,7 @@ export default function ExpandedCard({
 
                   {/* Genres */}
                   <div className={styles.genres}>
-                    {rawContent.genres?.slice(0, 3).map(genre => (
+                    {content?.genres?.slice(0, 3).map(genre => (
                       <Badge
                         key={genre}
                         text={genre}
