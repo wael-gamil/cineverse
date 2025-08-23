@@ -82,8 +82,14 @@ export default function ContentSliderSection({
   const totalElements = totalElementsByFilter[filter] ?? fetchedContent.length;
   const isMobile = useResponsiveLayout();
   const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
-  const minHeight =
-    cardProps?.imageHeight === 'image-md' ? 300 : 400 + (isMobile ? 250 : 0);
+  console.log(cardProps);
+  const minHeight = isMobile
+    ? (cardProps?.imageHeight === 'image-md' ? 320 : 400) + 260
+    : cardProps?.layout === 'wide'
+    ? 250
+    : cardProps?.imageHeight === 'image-md'
+    ? 320
+    : 400;
   const [animation, setAnimation] = useState<'slideLeft' | 'slideRight'>(
     'slideLeft'
   );
