@@ -61,7 +61,7 @@ export default function PublicWatchlistList({
 
   // Navigate once we have the summary
   useEffect(() => {
-    if (summaryData && selectedItem) {
+    if (navigateToSlug && summaryData && selectedItem) {
       const slug = summaryData.slug;
       let path = `/${slug}`;
 
@@ -74,7 +74,7 @@ export default function PublicWatchlistList({
       setSelectedItem(null);
       setSelectedId(null);
     }
-  }, [navigateToSlug, router]);
+  }, [navigateToSlug, selectedItem, summaryData, router]);
 
   const handleCardClick = (item: WatchlistItem) => {
     if (selectedId === item.contentId) return;
