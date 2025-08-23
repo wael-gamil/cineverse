@@ -43,7 +43,7 @@ export default function ForgetPasswordPage() {
       {
         onSuccess: () => {
           toast.success(
-            `✅ A reset link was sent to ${email}. Please check your inbox.`,
+            `A reset link was sent to ${email}. Please check your inbox.`,
             {
               className: 'toast-success',
             }
