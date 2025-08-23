@@ -34,6 +34,7 @@ export default function TrailerPlayer({
       if (!iframeRef.current) return;
       const newPlayer = new (window as any).YT.Player(iframeRef.current, {
         videoId,
+        host: 'https://www.youtube-nocookie.com',
         playerVars: {
           autoplay: 1,
           mute: 1,
