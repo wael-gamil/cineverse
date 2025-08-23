@@ -205,7 +205,7 @@ export default async function Season({ params }: SeasonProps) {
         />
         <ContentSectionWrapper
           section='reviews'
-          id={details.id}
+          id={seasonDetails.id}
           contentTitle={details.title}
           contentPoster={details.posterUrl}
           sortBy='likes'
