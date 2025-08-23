@@ -31,14 +31,16 @@ export default function PublicReviewsTab({ username }: PublicReviewsTabProps) {
     size: 10,
   });
 
-  const userReviewsQuery = useUserReviews(username, page, 10, !!username);
-  // Choose the appropriate query based on login status
+  const userReviewsQuery = isAuthenticated
+    ? useUserReviews(username, page, 10, !!username)
+    : null;
+
   const {
     data: reviewsData,
     isLoading: reviewsLoading,
     error: reviewsError,
     refetch,
-  } = isAuthenticated ? userReviewsQuery : publicReviewsQuery;
+  } = isAuthenticated ? userReviewsQuery! : publicReviewsQuery;
   // Set up reaction handler with debouncing and optimistic updates
   const { handleReactToReview, getReviewState } = useReviewReactionHandler({
     reviews: reviewsData?.reviews || [],
