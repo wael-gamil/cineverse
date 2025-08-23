@@ -44,6 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         'Discover what the community is saying about movies and TV series.',
     },
+    alternates: {
+      canonical: `${baseUrl}/reviews`,
+    },
   };
 }
 
