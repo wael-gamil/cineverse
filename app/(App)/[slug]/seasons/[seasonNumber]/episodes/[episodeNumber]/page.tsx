@@ -250,7 +250,7 @@ export default async function Episode({ params }: EpisodeProps) {
           />
           <ContentSectionWrapper
             section='reviews'
-            id={details.id}
+            id={episodeDetails.id}
             contentTitle={details.title}
             contentPoster={details.posterUrl}
             sortBy='likes'
