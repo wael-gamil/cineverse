@@ -56,7 +56,6 @@ export default function SearchResult({
         target.closest('.card') || target.closest('[class*="cardWrapper"]');
       if (cardElement) {
         const cardRect = cardElement.getBoundingClientRect();
-        console.log(cardRect);
         setExpandedCard({
           isOpen: true,
           content: item,

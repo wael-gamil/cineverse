@@ -156,7 +156,6 @@ export default function MysterySection() {
             isOpen={expandedCard.isOpen}
             onClose={closeExpandedCard}
             cardPosition={expandedCard.cardPosition}
-            containerRef={containerRef}
           />
         )}
     </>

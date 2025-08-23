@@ -430,7 +430,6 @@ export default function ContentSliderSection({
             isOpen={expandedCard.isOpen}
             onClose={closeExpandedCard}
             cardPosition={expandedCard.cardPosition}
-            containerRef={containerRef}
           />
         )}
     </div>

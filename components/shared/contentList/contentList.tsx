@@ -155,7 +155,6 @@ export default function ContentList({
             isOpen={expandedCard.isOpen}
             onClose={closeExpandedCard}
             cardPosition={expandedCard.cardPosition}
-            containerRef={containerRef}
           />
         )}
     </>
