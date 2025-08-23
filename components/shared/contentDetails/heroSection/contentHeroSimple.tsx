@@ -148,7 +148,7 @@ export default function ContentHeroSimple({
       </div>
       <div className={styles.content}>
         <div className={styles.contentHeader}>
-          <h1 className={styles.title}>{title}</h1>
+          <h2 className={styles.title}>{title}</h2>
           <div className={styles.badges}>
             {badges.map(badge => (
               <Badge key={badge} text={badge} backgroundColor='bg-muted' />

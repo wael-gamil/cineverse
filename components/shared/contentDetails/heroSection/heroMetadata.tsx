@@ -151,12 +151,12 @@ export default function HeroMetadata({
             aria-label={`Go to ${content.title}`}
             style={{ minWidth: 44, minHeight: 44 }}
           >
-            <h1 className={`${styles.title} ${styles.linkTitle}`}>
+            <h2 className={`${styles.title} ${styles.linkTitle}`}>
               {content.title}
-            </h1>
+            </h2>
           </Link>
         ) : (
-          <h1 className={styles.title}>{content.title}</h1>
+          <h2 className={styles.title}>{content.title}</h2>
         )}
         {showExternalLink && (
           <div className={styles.externalLink}>
