@@ -400,7 +400,6 @@ export default function ExpandedCard({
               fill
               className={styles.backdropImage}
               sizes='400px'
-              priority
             />
             <div className={styles.backdropGradient} />
           </div>
@@ -466,7 +465,6 @@ export default function ExpandedCard({
                     fill
                     className={styles.posterImage}
                     sizes='80px'
-                    priority
                   />
                 </div>
 

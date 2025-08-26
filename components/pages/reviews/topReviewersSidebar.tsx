@@ -144,7 +144,6 @@ export default function TopReviewersSidebar() {
                     fill
                     className={styles.avatarImage}
                     sizes='(max-width: 768px) 100vw, 400px'
-                    priority
                   />
                   {/* Rank badge overlay */}
                   <div className={styles.rankBadge} aria-hidden>

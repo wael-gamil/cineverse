@@ -164,7 +164,6 @@ export default function Card({
         onError={() => setHasError(true)}
         className={styles.posterImage}
         sizes='(max-width: 768px) 100vw, 400px'
-        priority
       />
       {renderBadges()}
       {additionalButton && (
@@ -284,7 +283,6 @@ export default function Card({
           onError={() => setHasError(true)}
           className={styles.posterImage}
           sizes='(max-width: 768px) 100vw, 400px'
-          priority
         />
       </div>
       <div className={styles.wideDetails}>

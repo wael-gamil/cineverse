@@ -30,7 +30,6 @@ export default function UserPanel({ closePanel }: Props) {
             alt='User Avatar'
             fill
             sizes='(max-width: 768px) 100vw, 50vw'
-            priority
           />
         </div>
         <div className={styles.userInfoText}>
