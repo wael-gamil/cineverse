@@ -41,6 +41,12 @@ export default function ContentHero({
   const [showTrailer, setShowTrailer] = useState(false);
   const [trailerLoaded, setTrailerLoaded] = useState(false);
   const isMobile = useResponsiveLayout();
+  const isTablet = useResponsiveLayout(1200);
+  const [showAnimated, setShowAnimated] = useState(false);
+  useEffect(() => {
+    // Trigger animation after hydration and layout detection
+    setShowAnimated(true);
+  }, [isTablet]);
   const { data, isLoading } =
     content.type === 'movie' || content.type === 'series'
       ? useTrailerQuery(content.id)
@@ -276,11 +282,11 @@ export default function ContentHero({
           </>
         )}
         {/* Content Metadata */}
-        {(!trailerFocusMode || isFadingOut) && (
+        {(!trailerFocusMode || isFadingOut) && !isTablet && (
           <div
             className={`${styles.container} ${
               isFadingOut ? styles.fadeOut : ''
-            }`}
+            } ${showAnimated ? styles.fadeIn : ''}`}
           >
             {(!showTrailer || !trailerLoaded) && (
               <div className={styles.posterWrapper}>
@@ -335,50 +341,56 @@ export default function ContentHero({
         )}
       </div>{' '}
       {/* Mobile Metadata */}
-      <div className={styles.mobileContainer}>
-        {(!showTrailer || !trailerLoaded) && (
-          <div className={styles.posterWrapper}>
-            <Image
-              src={content.imageUrl || fallbackPoster}
-              alt={content.title}
-              fill
-              className={styles.posterImage}
-              sizes='(max-width: 768px) 100vw, 50vw'
-              priority
-            />
-          </div>
-        )}
-        <HeroMetadata
-          content={content}
-          runtime={runtime}
-          fallbackPoster={fallbackPoster}
-          trailerAvailable={!!videoId}
-          isMuted={isMuted}
-          onPlayTrailer={handlePlayTrailer}
-          onToggleMute={toggleMute}
-          onShare={() => {
-            if (navigator.share) {
-              navigator.share({
-                url: slug
-                  ? `${window.location.origin}/${encodeURI(slug)}`
-                  : window.location.href,
-                title: content.title,
-                text: content.description,
-              });
-            } else {
-              navigator.clipboard.writeText(
-                slug
-                  ? `${window.location.origin}/${encodeURI(slug)}`
-                  : window.location.href
-              );
-              alert('Link copied to clipboard!');
-            }
-          }}
-          genres={genres}
-          showExternalLink={showExternalLink}
-          slug={slug}
-        />
-      </div>
+      {isTablet && (
+        <div
+          className={`${styles.mobileContainer} ${
+            showAnimated ? styles.fadeIn : ''
+          }`}
+        >
+          {(!showTrailer || !trailerLoaded) && (
+            <div className={styles.posterWrapper}>
+              <Image
+                src={content.imageUrl || fallbackPoster}
+                alt={content.title}
+                fill
+                className={styles.posterImage}
+                sizes='(max-width: 768px) 100vw, 50vw'
+                priority
+              />
+            </div>
+          )}
+          <HeroMetadata
+            content={content}
+            runtime={runtime}
+            fallbackPoster={fallbackPoster}
+            trailerAvailable={!!videoId}
+            isMuted={isMuted}
+            onPlayTrailer={handlePlayTrailer}
+            onToggleMute={toggleMute}
+            onShare={() => {
+              if (navigator.share) {
+                navigator.share({
+                  url: slug
+                    ? `${window.location.origin}/${encodeURI(slug)}`
+                    : window.location.href,
+                  title: content.title,
+                  text: content.description,
+                });
+              } else {
+                navigator.clipboard.writeText(
+                  slug
+                    ? `${window.location.origin}/${encodeURI(slug)}`
+                    : window.location.href
+                );
+                alert('Link copied to clipboard!');
+              }
+            }}
+            genres={genres}
+            showExternalLink={showExternalLink}
+            slug={slug}
+          />
+        </div>
+      )}
     </section>
   );
 }
