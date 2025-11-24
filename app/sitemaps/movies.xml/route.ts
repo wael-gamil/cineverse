@@ -33,7 +33,7 @@ export async function GET() {
       },
     }));
   } catch (err) {
-    console.error('Error fetching movies', err);
+    // Error fetching movies - continue with empty array
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
