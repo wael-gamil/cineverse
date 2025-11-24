@@ -21,7 +21,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json(contentDetails);
   } catch (error) {
-    console.error('Error fetching content details:', error);
     return NextResponse.json(
       { error: 'Failed to fetch content details' },
       { status: 500 }

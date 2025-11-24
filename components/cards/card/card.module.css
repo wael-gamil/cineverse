@@ -138,8 +138,9 @@
   background: var(--color-surface-70);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
-.belowImage {
+.imageWrapper.belowImage {
   height: 275px;
+  min-height: 275px;
 }
 /* === CONTENT STYLING (SHARED) === */
 .contentTitle {

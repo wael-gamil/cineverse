@@ -31,7 +31,7 @@ export async function GET() {
       },
     }));
   } catch (err) {
-    console.error('Error fetching series', err);
+    // Error fetching series - continue with empty array
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

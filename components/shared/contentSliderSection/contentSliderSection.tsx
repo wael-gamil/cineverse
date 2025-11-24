@@ -82,9 +82,9 @@ export default function ContentSliderSection({
   const totalElements = totalElementsByFilter[filter] ?? fetchedContent.length;
   const isMobile = useResponsiveLayout();
   const minWidth = isMobile ? 200 : cardProps?.minWidth || 270;
-  console.log(cardProps);
+  // On mobile, let cards size naturally based on content instead of fixed minHeight
   const minHeight = isMobile
-    ? (cardProps?.imageHeight === 'image-md' ? 320 : 400) + 260
+    ? undefined
     : cardProps?.layout === 'wide'
     ? 250
     : cardProps?.imageHeight === 'image-md'

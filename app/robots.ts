@@ -18,7 +18,7 @@ export default function robots(): MetadataRoute.Robots {
           '/forget-password',
           '/reset-password',
           '/oauth2/',
-          '/*?page=*', // Prevent indexing of paginated pages beyond first few
+          '/*?page=*',
         ],
       },
       {
