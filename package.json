@@ -14,7 +14,7 @@
     "@tanstack/store": "^0.7.0",
     "framer-motion": "^12.23.0",
     "jsonwebtoken": "^9.0.2",
-    "next": "15.3.2",
+    "next": "^15.3.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2"
