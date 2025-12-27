@@ -9,8 +9,11 @@ export async function logout(router?: any) {
     await fetch('/api/auth/logout', {
       method: 'POST',
     });
-
-    userStore.setState({ username: null, email: null, profilePicture: null });
+    userStore.setState(() => ({
+      username: null,
+      email: null,
+      profilePicture: null,
+    }));
     localStorage.removeItem('cineverse-user');
 
     // Show logout success toast

@@ -25,12 +25,11 @@ export const setUserWithExpiry = (
   profilePicture?: string | null
 ) => {
   const expiresAt = Date.now() + 2 * 60 * 60 * 1000; // 2 hours in ms
-  userStore.setState({
+  userStore.setState(() => ({
     username,
     email,
     profilePicture: profilePicture || null,
-  });
-
+  }));
   if (typeof window !== 'undefined') {
     const payload = {
       username,
@@ -83,11 +82,11 @@ if (typeof window !== 'undefined') {
       const parsed = JSON.parse(saved);
       const { username, email, profilePicture, expiresAt } = parsed;
       if (expiresAt && Date.now() < expiresAt) {
-        userStore.setState({
+        userStore.setState(() => ({
           username,
           email,
           profilePicture: profilePicture || null,
-        });
+        }));
       } else {
         localStorage.removeItem('cineverse-user');
       }
